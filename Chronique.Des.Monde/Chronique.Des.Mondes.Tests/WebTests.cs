@@ -1,4 +1,4 @@
-namespace Chronique.Des.Monde.Tests;
+namespace Chronique.Des.Mondes.Tests;
 
 [TestClass]
 public class WebTests
@@ -7,7 +7,7 @@ public class WebTests
     public async Task GetWebResourceRootReturnsOkStatusCode()
     {
         // Arrange
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Chronique_Des_Monde_AppHost>();
+        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Chronique_Des_Mondes_AppHost>();
         appHost.Services.ConfigureHttpClientDefaults(clientBuilder =>
         {
             clientBuilder.AddStandardResilienceHandler();
