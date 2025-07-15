@@ -4,7 +4,7 @@ using Scalar.Aspire;
 var builder = DistributedApplication.CreateBuilder(args);
 
 var apiService = builder
-    .AddProject<Projects.Chronique_Des_Monde_ApiService>("apiservice");
+    .AddProject<Projects.Chronique_Des_Mondes_ApiService>("apiservice");
 
 // Add Scalar API Reference for all services
 var scalar = builder.AddScalarApiReference(options =>
@@ -18,7 +18,7 @@ scalar
     .WithApiReference(apiService);
 
 
-builder.AddProject<Projects.Chronique_Des_Monde_Web>("webfrontend")
+builder.AddProject<Projects.Chronique_Des_Mondes_Web>("webfrontend")
     .WithExternalHttpEndpoints()
     .WithReference(apiService)
     .WaitFor(apiService);

@@ -2,15 +2,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36025.13 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Monde.AppHost", "Chronique.Des.Monde.AppHost\Chronique.Des.Monde.AppHost.csproj", "{7643E66E-5247-46C3-ADA8-DF08104207A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.AppHost", "Chronique.Des.Mondes.AppHost\Chronique.Des.Mondes.AppHost.csproj", "{7643E66E-5247-46C3-ADA8-DF08104207A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Monde.ServiceDefaults", "Chronique.Des.Monde.ServiceDefaults\Chronique.Des.Monde.ServiceDefaults.csproj", "{CB4BB9F7-53C4-6799-83FE-1BFF14F4B2D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.ServiceDefaults", "Chronique.Des.Mondes.ServiceDefaults\Chronique.Des.Mondes.ServiceDefaults.csproj", "{CB4BB9F7-53C4-6799-83FE-1BFF14F4B2D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Monde.ApiService", "Chronique.Des.Monde.ApiService\Chronique.Des.Monde.ApiService.csproj", "{B13D206E-93F2-BA79-6A72-D85C12D0023E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.ApiService", "Chronique.Des.Mondes.ApiService\Chronique.Des.Mondes.ApiService.csproj", "{B13D206E-93F2-BA79-6A72-D85C12D0023E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Monde.Web", "Chronique.Des.Monde.Web\Chronique.Des.Monde.Web.csproj", "{28A85AC2-9B48-7AA5-8561-E1AC9DE261D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.Web", "Chronique.Des.Mondes.Web\Chronique.Des.Mondes.Web.csproj", "{28A85AC2-9B48-7AA5-8561-E1AC9DE261D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Monde.Tests", "Chronique.Des.Monde.Tests\Chronique.Des.Monde.Tests.csproj", "{6930F6DE-D1E7-5715-B657-5AC07CE75123}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.Tests", "Chronique.Des.Mondes.Tests\Chronique.Des.Mondes.Tests.csproj", "{6930F6DE-D1E7-5715-B657-5AC07CE75123}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

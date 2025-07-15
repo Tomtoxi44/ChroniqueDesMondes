@@ -1,5 +1,5 @@
-using Chronique.Des.Monde.Web;
-using Chronique.Des.Monde.Web.Components;
+using Chronique.Des.Mondes.Web;
+using Chronique.Des.Mondes.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 

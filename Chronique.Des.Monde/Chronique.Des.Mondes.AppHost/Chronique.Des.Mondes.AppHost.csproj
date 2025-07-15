@@ -12,8 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Chronique.Des.Monde.ApiService\Chronique.Des.Monde.ApiService.csproj" />
-    <ProjectReference Include="..\Chronique.Des.Monde.Web\Chronique.Des.Monde.Web.csproj" />
+    <ProjectReference Include="..\Chronique.Des.Mondes.ApiService\Chronique.Des.Mondes.ApiService.csproj" />
+    <ProjectReference Include="..\Chronique.Des.Mondes.Web\Chronique.Des.Mondes.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

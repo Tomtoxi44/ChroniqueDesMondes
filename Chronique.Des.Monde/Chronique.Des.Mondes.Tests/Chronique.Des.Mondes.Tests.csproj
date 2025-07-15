@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Chronique.Des.Monde.AppHost\Chronique.Des.Monde.AppHost.csproj" />
+    <ProjectReference Include="..\Chronique.Des.Mondes.AppHost\Chronique.Des.Mondes.AppHost.csproj" />
   </ItemGroup>
 
   <ItemGroup>

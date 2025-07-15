@@ -1,4 +1,4 @@
-namespace Chronique.Des.Monde.Web;
+namespace Chronique.Des.Mondes.Web;
 
 public class WeatherApiClient(HttpClient httpClient)
 {
