@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Chronique.Des.Mondes.AppHost\Chronique.Des.Mondes.AppHost.csproj" />
+    <ProjectReference Include="..\Chronique.Des.Mondes.User\Chronique.Des.Mondes.User.csproj" />
   </ItemGroup>
 
   <ItemGroup>
