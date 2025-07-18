@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36025.13 d17.14
+VisualStudioVersion = 17.14.36025.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.AppHost", "Chronique.Des.Mondes.AppHost\Chronique.Des.Mondes.AppHost.csproj", "{7643E66E-5247-46C3-ADA8-DF08104207A3}"
 EndProject
@@ -11,6 +11,20 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.Web", "Chronique.Des.Mondes.Web\Chronique.Des.Mondes.Web.csproj", "{28A85AC2-9B48-7AA5-8561-E1AC9DE261D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.Tests", "Chronique.Des.Mondes.Tests\Chronique.Des.Mondes.Tests.csproj", "{6930F6DE-D1E7-5715-B657-5AC07CE75123}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Back", "Back", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Front", "Front", "{45C747CF-02CC-4845-8A5E-CC1A60EDE798}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{9C1EBFA6-83E7-4658-9345-0540C4F8E1DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aspire", "Aspire", "{50518BDB-288A-49C5-B4F7-2DCD285FA9B8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{F94F2451-4CA4-4AF8-9433-FBF85916C814}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.SampleWeather", "Chronique.Des.Mondes.SampleWeather\Chronique.Des.Mondes.SampleWeather.csproj", "{FA3296D7-2665-4830-8718-3FB670431E27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.User", "Chronique.Des.Mondes.User\Chronique.Des.Mondes.User.csproj", "{A897E310-66FB-416E-8F8F-0177E9C34276}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,9 +52,28 @@ Global
 		{6930F6DE-D1E7-5715-B657-5AC07CE75123}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6930F6DE-D1E7-5715-B657-5AC07CE75123}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6930F6DE-D1E7-5715-B657-5AC07CE75123}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA3296D7-2665-4830-8718-3FB670431E27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA3296D7-2665-4830-8718-3FB670431E27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA3296D7-2665-4830-8718-3FB670431E27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA3296D7-2665-4830-8718-3FB670431E27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A897E310-66FB-416E-8F8F-0177E9C34276}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A897E310-66FB-416E-8F8F-0177E9C34276}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A897E310-66FB-416E-8F8F-0177E9C34276}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A897E310-66FB-416E-8F8F-0177E9C34276}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7643E66E-5247-46C3-ADA8-DF08104207A3} = {50518BDB-288A-49C5-B4F7-2DCD285FA9B8}
+		{CB4BB9F7-53C4-6799-83FE-1BFF14F4B2D8} = {50518BDB-288A-49C5-B4F7-2DCD285FA9B8}
+		{B13D206E-93F2-BA79-6A72-D85C12D0023E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{28A85AC2-9B48-7AA5-8561-E1AC9DE261D1} = {45C747CF-02CC-4845-8A5E-CC1A60EDE798}
+		{6930F6DE-D1E7-5715-B657-5AC07CE75123} = {9C1EBFA6-83E7-4658-9345-0540C4F8E1DC}
+		{9C1EBFA6-83E7-4658-9345-0540C4F8E1DC} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{F94F2451-4CA4-4AF8-9433-FBF85916C814} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{FA3296D7-2665-4830-8718-3FB670431E27} = {F94F2451-4CA4-4AF8-9433-FBF85916C814}
+		{A897E310-66FB-416E-8F8F-0177E9C34276} = {F94F2451-4CA4-4AF8-9433-FBF85916C814}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1447205F-E63C-4637-876A-F5462110F983}
