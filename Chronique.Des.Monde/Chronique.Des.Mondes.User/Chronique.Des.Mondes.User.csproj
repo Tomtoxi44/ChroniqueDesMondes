@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Chronique.Des.Mondes.Data\Chronique.Des.Mondes.Data.csproj" />
+  </ItemGroup>
+
 </Project>
