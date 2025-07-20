@@ -1,3 +1,4 @@
+using Chronique.Des.Monde.Player.Business;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Chronique.Des.Mondes.ApiService.Extensions
@@ -6,8 +7,8 @@ namespace Chronique.Des.Mondes.ApiService.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            // Enregistrez vos services ici
-            services.AddScoped<UserService>();
+            services.AddScoped<UserBusiness>();
+            services.AddScoped<PlayerCharacterBusiness>();
             services.AddScoped<PasswordService>();
             services.AddScoped<JwtService>();
 

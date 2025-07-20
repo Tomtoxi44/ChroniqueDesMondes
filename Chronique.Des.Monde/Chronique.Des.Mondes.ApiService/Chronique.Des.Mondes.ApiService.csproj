@@ -7,9 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Chronique.Des.Monde.Common\Chronique.Des.Monde.Common.csproj" />
+    <ProjectReference Include="..\Chronique.Des.Monde.Player\Chronique.Des.Monde.Player.csproj" />
     <ProjectReference Include="..\Chronique.Des.Mondes.SampleWeather\Chronique.Des.Mondes.SampleWeather.csproj" />
     <ProjectReference Include="..\Chronique.Des.Mondes.ServiceDefaults\Chronique.Des.Mondes.ServiceDefaults.csproj" />
     <ProjectReference Include="..\Chronique.Des.Mondes.User\Chronique.Des.Mondes.User.csproj" />
+    <ProjectReference Include="..\Chronique.Des.Mondes.Web\Chronique.Des.Mondes.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
