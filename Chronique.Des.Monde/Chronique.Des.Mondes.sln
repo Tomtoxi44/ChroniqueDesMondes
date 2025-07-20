@@ -32,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{7D43B7FC-B10
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{6CAF8E29-866E-4DF8-8F28-2A0B417DB906}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Monde.Player", "Chronique.Des.Monde.Player\Chronique.Des.Monde.Player.csproj", "{DB98938F-60ED-4603-BC06-B869E3430A90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{982284A1-A9C5-4D8F-8855-B72D10ED52D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{982284A1-A9C5-4D8F-8855-B72D10ED52D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{982284A1-A9C5-4D8F-8855-B72D10ED52D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB98938F-60ED-4603-BC06-B869E3430A90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB98938F-60ED-4603-BC06-B869E3430A90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB98938F-60ED-4603-BC06-B869E3430A90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB98938F-60ED-4603-BC06-B869E3430A90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +93,7 @@ Global
 		{982284A1-A9C5-4D8F-8855-B72D10ED52D6} = {6CAF8E29-866E-4DF8-8F28-2A0B417DB906}
 		{7D43B7FC-B105-46A0-B7BF-ACDF59F0918E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{6CAF8E29-866E-4DF8-8F28-2A0B417DB906} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{DB98938F-60ED-4603-BC06-B869E3430A90} = {F94F2451-4CA4-4AF8-9433-FBF85916C814}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1447205F-E63C-4637-876A-F5462110F983}
