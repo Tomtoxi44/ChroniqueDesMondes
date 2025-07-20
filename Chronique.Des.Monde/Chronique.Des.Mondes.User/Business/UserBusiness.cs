@@ -3,11 +3,11 @@ using Chronique.Des.Mondes.Data.Models;
 using Chronique.Des.Mondes.User.Model;
 using Microsoft.EntityFrameworkCore;
 
-public class UserService
+public class UserBusiness
 {
     private readonly AppDbContext _dbContext;
 
-    public UserService(AppDbContext dbContext)
+    public UserBusiness(AppDbContext dbContext)
     {
         _dbContext = dbContext;
     }

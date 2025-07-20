@@ -22,6 +22,10 @@ public class PlayerCharacter
 
     public string? Background {  get; set; } = string.Empty;
 
+    public string Class { get; set; } = string.Empty;
+
+    public int Life { get; set; }
+
     [Required]
     [Range(0, 20)]
     public int Leveling { get; set; }
@@ -34,25 +38,37 @@ public class PlayerCharacter
     [Range(0, 20)]
     public int Strong { get; set; }
 
+    public int AdditionalStrong { get; set; }
+
     [Required]
     [Range(0, 20)]
     public int Dexterity { get; set; }
+
+    public int AdditionalDexterity { get; set; }
 
     [Required]
     [Range(0, 20)]
     public int Constitution { get; set; }
 
+    public int AdditionalConstitution { get; set; }
+
     [Required]
     [Range(0, 20)]
     public int Intelligence { get; set; }
+
+    public int AdditionalIntelligence { get; set; }
 
     [Required]
     [Range(0, 20)]
     public int Wisdoms { get; set; }
 
+    public int AdditionalWisdoms { get; set; }
+
     [Required]
     [Range(0, 20)]
     public int Charism { get; set; }
+
+    public int AdditionalCharism { get; set; }
 
     public Users? Users { get; set; }
 
