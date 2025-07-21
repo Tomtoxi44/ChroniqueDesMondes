@@ -2,15 +2,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36025.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.AppHost", "Chronique.Des.Mondes.AppHost\Chronique.Des.Mondes.AppHost.csproj", "{7643E66E-5247-46C3-ADA8-DF08104207A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cmd.AppHost", "Cmd.AppHost\Cmd.AppHost.csproj", "{7643E66E-5247-46C3-ADA8-DF08104207A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.ServiceDefaults", "Chronique.Des.Mondes.ServiceDefaults\Chronique.Des.Mondes.ServiceDefaults.csproj", "{CB4BB9F7-53C4-6799-83FE-1BFF14F4B2D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cmd.ServiceDefaults", "Cmd.ServiceDefaults\Cmd.ServiceDefaults.csproj", "{CB4BB9F7-53C4-6799-83FE-1BFF14F4B2D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.ApiService", "Chronique.Des.Mondes.ApiService\Chronique.Des.Mondes.ApiService.csproj", "{B13D206E-93F2-BA79-6A72-D85C12D0023E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cmd.ApiService", "Cmd.ApiService\Cmd.ApiService.csproj", "{B13D206E-93F2-BA79-6A72-D85C12D0023E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.Web", "Chronique.Des.Mondes.Web\Chronique.Des.Mondes.Web.csproj", "{28A85AC2-9B48-7AA5-8561-E1AC9DE261D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cmd.Web", "Cmd.Web\Cmd.Web.csproj", "{28A85AC2-9B48-7AA5-8561-E1AC9DE261D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.Tests", "Chronique.Des.Mondes.Tests\Chronique.Des.Mondes.Tests.csproj", "{6930F6DE-D1E7-5715-B657-5AC07CE75123}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cmd.Tests", "Cmd.Tests\Cmd.Tests.csproj", "{6930F6DE-D1E7-5715-B657-5AC07CE75123}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Back", "Back", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -22,25 +22,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aspire", "Aspire", "{50518B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{F94F2451-4CA4-4AF8-9433-FBF85916C814}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.SampleWeather", "Chronique.Des.Mondes.SampleWeather\Chronique.Des.Mondes.SampleWeather.csproj", "{FA3296D7-2665-4830-8718-3FB670431E27}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cmd.SampleWeather", "Cmd.SampleWeather\Cmd.SampleWeather.csproj", "{FA3296D7-2665-4830-8718-3FB670431E27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.User", "Chronique.Des.Mondes.User\Chronique.Des.Mondes.User.csproj", "{A897E310-66FB-416E-8F8F-0177E9C34276}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cmd.Business.Common", "Cmd.Business.Common\Cmd.Business.Common.csproj", "{A897E310-66FB-416E-8F8F-0177E9C34276}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.Data", "Chronique.Des.Mondes.Data\Chronique.Des.Mondes.Data.csproj", "{982284A1-A9C5-4D8F-8855-B72D10ED52D6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cmd.Data.Common", "Cmd.Data.Common\Cmd.Data.Common.csproj", "{982284A1-A9C5-4D8F-8855-B72D10ED52D6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{7D43B7FC-B105-46A0-B7BF-ACDF59F0918E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{6CAF8E29-866E-4DF8-8F28-2A0B417DB906}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.Player", "Chronique.Des.Monde.Player\Chronique.Des.Mondes.Player.csproj", "{DB98938F-60ED-4603-BC06-B869E3430A90}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cmd.Business.CharacterDnd", "Chronique.Des.Monde.Player\Cmd.Business.CharacterDnd.csproj", "{DB98938F-60ED-4603-BC06-B869E3430A90}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{E21BD343-8336-4567-9154-B4924656A05A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.Common", "Chronique.Des.Monde.Common\Chronique.Des.Mondes.Common.csproj", "{7B1D4239-42F4-4CDB-82CD-7E9438E8C23F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cmd.Common", "Chronique.Des.Monde.Common\Cmd.Common.csproj", "{7B1D4239-42F4-4CDB-82CD-7E9438E8C23F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abstraction", "Abstraction", "{D6FCCB33-12F8-4F60-9232-1E73336FE158}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronique.Des.Mondes.Abstraction", "Chronique.Des.Mondes.Abstraction\Chronique.Des.Mondes.Abstraction.csproj", "{1FE1DF21-4F09-4F4B-9131-7755F8921442}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cmd.Abstraction", "Cmd.Abstraction\Cmd.Abstraction.csproj", "{1FE1DF21-4F09-4F4B-9131-7755F8921442}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cmd.Data.Dnd", "Cmd.Data.Dnd\Cmd.Data.Dnd.csproj", "{00A5D966-E17B-4DE2-AADD-7CD0737BD862}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -92,6 +94,10 @@ Global
 		{1FE1DF21-4F09-4F4B-9131-7755F8921442}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FE1DF21-4F09-4F4B-9131-7755F8921442}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FE1DF21-4F09-4F4B-9131-7755F8921442}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00A5D966-E17B-4DE2-AADD-7CD0737BD862}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00A5D966-E17B-4DE2-AADD-7CD0737BD862}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00A5D966-E17B-4DE2-AADD-7CD0737BD862}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00A5D966-E17B-4DE2-AADD-7CD0737BD862}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,6 +119,7 @@ Global
 		{7B1D4239-42F4-4CDB-82CD-7E9438E8C23F} = {E21BD343-8336-4567-9154-B4924656A05A}
 		{D6FCCB33-12F8-4F60-9232-1E73336FE158} = {F94F2451-4CA4-4AF8-9433-FBF85916C814}
 		{1FE1DF21-4F09-4F4B-9131-7755F8921442} = {D6FCCB33-12F8-4F60-9232-1E73336FE158}
+		{00A5D966-E17B-4DE2-AADD-7CD0737BD862} = {6CAF8E29-866E-4DF8-8F28-2A0B417DB906}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1447205F-E63C-4637-876A-F5462110F983}
