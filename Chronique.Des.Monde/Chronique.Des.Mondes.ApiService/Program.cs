@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Chronique.Des.Mondes.ApiService.Extensions;
+using Chronique.Des.Mondes.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 

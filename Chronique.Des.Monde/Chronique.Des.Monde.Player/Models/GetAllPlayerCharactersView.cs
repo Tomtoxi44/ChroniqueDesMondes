@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Chronique.Des.Monde.Player.Models;
+﻿namespace Chronique.Des.Mondes.Player.Models;
 
 public record class GetAllPlayerCharactersView
 {

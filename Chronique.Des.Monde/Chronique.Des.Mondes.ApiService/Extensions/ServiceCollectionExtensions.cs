@@ -1,18 +1,38 @@
-using Chronique.Des.Monde.Player.Business;
-using Microsoft.Extensions.DependencyInjection;
+namespace Chronique.Des.Mondes.ApiService.Extensions;
 
-namespace Chronique.Des.Mondes.ApiService.Extensions
+using Chronique.Des.Mondes.Abstraction;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
-        {
-            services.AddScoped<UserBusiness>();
-            services.AddScoped<PlayerCharacterBusiness>();
-            services.AddScoped<PasswordService>();
-            services.AddScoped<JwtService>();
+        services.AddCommonBusiness();
+        services.AddDndBusiness();
+        services.AddSkyrimBusiness();
+        
+        return services;
+    }
 
-            return services;
-        }
+    public static IServiceCollection AddCommonBusiness(this IServiceCollection services)
+    {
+        services.AddTransient<UserBusiness>();
+        services.AddScoped<PasswordService>();
+        services.AddScoped<JwtService>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddDndBusiness(this IServiceCollection services)
+    {
+        services.AddKeyedTransient<IPlayerCharacterBusiness, PlayerCharacterBusinessDnd>("Dnd");
+
+        return services;
+    }
+
+    public static IServiceCollection AddSkyrimBusiness(this IServiceCollection services)
+    {
+        services.AddKeyedTransient<IPlayerCharacterBusiness, PlayerCharacterBusinessSky>("Skyrim");
+
+        return services;
     }
 }

@@ -1,6 +1,6 @@
 using Chronique.Des.Mondes.Data;
 using Chronique.Des.Mondes.Data.Models;
-using Chronique.Des.Mondes.User.Model;
+using Chronique.Des.Mondes.User.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class UserBusiness

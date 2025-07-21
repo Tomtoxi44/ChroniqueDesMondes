@@ -1,4 +1,4 @@
-﻿namespace Chronique.Des.Mondes.User.Model;
+﻿namespace Chronique.Des.Mondes.User.Models;
 
 using System;
 using System.Collections.Generic;

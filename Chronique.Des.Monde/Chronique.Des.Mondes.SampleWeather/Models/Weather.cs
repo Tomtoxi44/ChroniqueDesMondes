@@ -1,4 +1,4 @@
-﻿namespace Chronique.Des.Mondes.SampleWeather.Model;
+﻿namespace Chronique.Des.Mondes.SampleWeather.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

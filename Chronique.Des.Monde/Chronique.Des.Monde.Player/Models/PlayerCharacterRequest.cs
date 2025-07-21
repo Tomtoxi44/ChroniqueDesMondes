@@ -1,17 +1,6 @@
-﻿namespace Chronique.Des.Monde.Player.Models;
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
+﻿namespace Chronique.Des.Mondes.Player.Models;
 public record class PlayerCharacterRequest
 {
-    public int UserId { get; set; }
-
     public string Picture { get; set; } = string.Empty;
 
     public string Name { get; set; } = string.Empty;

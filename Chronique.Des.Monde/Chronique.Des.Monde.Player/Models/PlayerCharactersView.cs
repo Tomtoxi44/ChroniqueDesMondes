@@ -1,12 +1,4 @@
-﻿namespace Chronique.Des.Monde.Player.Models;
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿namespace Chronique.Des.Mondes.Player.Models;
 public class PlayerCharactersView
 {
     public int Id { get; set; }

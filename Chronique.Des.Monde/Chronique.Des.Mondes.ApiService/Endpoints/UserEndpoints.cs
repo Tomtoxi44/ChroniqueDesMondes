@@ -1,4 +1,4 @@
-using Chronique.Des.Mondes.User.Model;
+using Chronique.Des.Mondes.User.Models;
 using Microsoft.AspNetCore.Authorization;
 
 public static class UserEndpoints

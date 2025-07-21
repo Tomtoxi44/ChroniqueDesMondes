@@ -7,28 +7,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-public class PlayerCharacter
+public abstract class ACharacter
 {
     public int Id { get; set; }
 
     [Required]
     public int UserId { get; set; }
 
-    public string Picture { get; set; } =string.Empty;
+    public string Picture { get; set; } = string.Empty;
 
     [Required]
     public string Name { get; set; } = string.Empty;
 
-    public string? Background {  get; set; } = string.Empty;
+    public string? Background { get; set; } = string.Empty;
 
-    public string Class { get; set; } = string.Empty;
+
 
     public int Life { get; set; }
 
     [Required]
     [Range(0, 20)]
     public int Leveling { get; set; }
+}
+
+public class PlayerCharacter : ACharacter
+{
+    public string Class { get; set; } = string.Empty;
 
     [Required]
     [Range(0, 50)]

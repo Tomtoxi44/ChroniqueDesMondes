@@ -1,3 +1,4 @@
+using Chronique.Des.Mondes.ServiceDefaults;
 using Chronique.Des.Mondes.Web;
 using Chronique.Des.Mondes.Web.Components;
 using Microsoft.AspNetCore.Authentication.Cookies;

@@ -1,4 +1,4 @@
-﻿using Chronique.Des.Mondes.SampleWeather.Model;
+﻿using Chronique.Des.Mondes.SampleWeather.Models;
 
 namespace Chronique.Des.Mondes.SampleWeather.Business;
 

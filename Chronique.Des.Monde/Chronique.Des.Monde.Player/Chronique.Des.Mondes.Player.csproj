@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Chronique.Des.Monde.Common\Chronique.Des.Monde.Common.csproj" />
+    <ProjectReference Include="..\Chronique.Des.Monde.Common\Chronique.Des.Mondes.Common.csproj" />
+    <ProjectReference Include="..\Chronique.Des.Mondes.Abstraction\Chronique.Des.Mondes.Abstraction.csproj" />
     <ProjectReference Include="..\Chronique.Des.Mondes.Data\Chronique.Des.Mondes.Data.csproj" />
   </ItemGroup>
 

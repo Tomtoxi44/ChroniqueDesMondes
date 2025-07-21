@@ -1,29 +1,28 @@
-﻿namespace Chronique.Des.Monde.Player.Business;
+﻿namespace Chronique.Des.Mondes.Player.Business;
 
-using Chronique.Des.Monde.Common;
-using Chronique.Des.Monde.Player.Models;
+using Chronique.Des.Mondes.Abstraction;
+using Chronique.Des.Mondes.Common;
 using Chronique.Des.Mondes.Data;
 using Chronique.Des.Mondes.Data.Models;
-using System;
+using Chronique.Des.Mondes.Player.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 
 
-public class PlayerCharacterBusiness
+public class PlayerCharacterBusiness : IPlayerCharacterBusiness
 {
     private readonly AppDbContext _dbContext;
 
     public PlayerCharacterBusiness(AppDbContext dbContext)
     {
-        _dbContext = dbContext;
+        this._dbContext = dbContext;
     }
 
-    public List<GetAllPlayerCharactersView>  GetAllPlayerCharacterAsync(int userId)
+    public List<GetAllPlayerCharactersView>  GetAllPlayerCharacter(int userId)
     {
-        var playerCharacters = _dbContext.PlayerCharacter.Where(playerCharacter => playerCharacter.UserId == userId)
+        var playerCharacters = this._dbContext.PlayerCharacter.Where(playerCharacter => playerCharacter.UserId == userId)
                 .Select(playerCharacter => new GetAllPlayerCharactersView()
                 {
                     Id = playerCharacter.Id,
@@ -42,14 +41,12 @@ public class PlayerCharacterBusiness
         return playerCharacters;
     }
 
-    public PlayerCharactersView GetPlayerCharacterByPlayerIdAsync(int userId,int playerCharacterId)
+    public PlayerCharactersView GetPlayerCharacterByPlayerId(int playerCharacterId)
     {
-        var character = _dbContext.PlayerCharacter.FirstOrDefault(playerCharacter => playerCharacter.UserId == userId || playerCharacter.Id == playerCharacterId);
+        var character = this._dbContext.PlayerCharacter.FirstOrDefault(playerCharacter => playerCharacter.Id == playerCharacterId);
 
-        if (character is null)
-        {
-            throw new BusinessException($"playerCharacterId is null{playerCharacterId}" );
-        }
+        if(character is null)
+            throw new BusinessException($"The playerCharacterId is not found{playerCharacterId}" );
 
         var result = new PlayerCharactersView()
         {
@@ -81,9 +78,7 @@ public class PlayerCharacterBusiness
     public async Task CreatePlayerCharacterRequestAsync(PlayerCharacterRequest playerCharacter, int userId)
     {
         if (playerCharacter is null)
-        {
-            throw new BusinessException("Le PlayerCharacterRequest est null.");
-        }
+            throw new BusinessException("The PlayerCharacterRequest is null.");
 
         var addPlayerCharacter = new PlayerCharacter()
         {
@@ -109,8 +104,54 @@ public class PlayerCharacterBusiness
             AdditionalCharism = this.SetAdditionalStats(playerCharacter.Charism),
         };
 
-        _dbContext.PlayerCharacter.Add(addPlayerCharacter);
-        await _dbContext.SaveChangesAsync();
+        this._dbContext.PlayerCharacter.Add(addPlayerCharacter);
+        await this._dbContext.SaveChangesAsync();
+    }
+
+    public async Task UpdatePlayerCharacterAsync(PlayerCharacterRequest playerCharacter, int playerCharacterId)
+    {
+        if(playerCharacter is null)
+            throw new BusinessException("The PlayerCharacterRequest is null.");
+
+        var matchingCharacter = this._dbContext.PlayerCharacter.FirstOrDefault(playerCharacter => playerCharacter.Id == playerCharacterId);
+
+        if(matchingCharacter is null)
+            throw new BusinessException($"playerCharacterId is not found{playerCharacterId}");
+
+
+        matchingCharacter.Name = playerCharacter.Name;
+        matchingCharacter.Leveling = playerCharacter.Leveling;
+        matchingCharacter.Picture = playerCharacter.Picture;
+        matchingCharacter.Background = playerCharacter.Background;
+        matchingCharacter.Class = playerCharacter.Class;
+        matchingCharacter.ClassArmor = playerCharacter.ClassArmor;
+        matchingCharacter.Life = playerCharacter.Life;
+        matchingCharacter.Strong = playerCharacter.Strong;
+        matchingCharacter.Dexterity = playerCharacter.Dexterity;
+        matchingCharacter.Constitution = playerCharacter.Constitution;
+        matchingCharacter.Intelligence = playerCharacter.Intelligence;
+        matchingCharacter.Wisdoms = playerCharacter.Wisdoms;
+        matchingCharacter.Charism = playerCharacter.Charism;
+        matchingCharacter.AdditionalStrong = this.SetAdditionalStats(playerCharacter.Strong);
+        matchingCharacter.AdditionalDexterity = this.SetAdditionalStats(playerCharacter.Dexterity);
+        matchingCharacter.AdditionalConstitution = this.SetAdditionalStats(playerCharacter.Constitution);
+        matchingCharacter.AdditionalIntelligence = this.SetAdditionalStats(playerCharacter.Intelligence);
+        matchingCharacter.AdditionalWisdoms = this.SetAdditionalStats(playerCharacter.Wisdoms);
+        matchingCharacter.AdditionalCharism = this.SetAdditionalStats(playerCharacter.Charism);
+
+        await this._dbContext.PlayerCharacter.AddAsync(matchingCharacter);
+        await this._dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeletedPlayerCharacterAsync(int playerCharacterId)
+    {
+        var matchingCharacter = this._dbContext.PlayerCharacter.FirstOrDefault(playerCharacter => playerCharacter.Id == playerCharacterId);
+
+        if (matchingCharacter is null)
+            throw new BusinessException($"playerCharacterId is not found{playerCharacterId}");
+
+        this._dbContext.PlayerCharacter.Remove(matchingCharacter);
+        await this._dbContext.SaveChangesAsync();
     }
 
     private int SetAdditionalStats(int stats)

@@ -1,4 +1,4 @@
-﻿namespace Chronique.Des.Monde.Common;
+﻿namespace Chronique.Des.Mondes.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
