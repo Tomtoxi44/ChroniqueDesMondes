@@ -11,7 +11,7 @@ public static class CharacterEndpoint
 {
     public static void MapPlayerCharacterEndpoint(this WebApplication app)
     {
-        app.MapGroup("/player-character").RequireAuthorization();
+        app.MapGroup("/character").RequireAuthorization();
 
         app.MapGet(string.Empty, async (int userId, HttpRequest httpRequest, CharacterDndBusiness dndBusiness) =>
         {
@@ -33,10 +33,10 @@ public static class CharacterEndpoint
             }
         });
 
-        app.MapGet($"/playerId", async(int playerId, HttpRequest httpRequest, [FromHeader(Name = "X-GameType")] string gameType, IServiceProvider serviceProvider) =>
+        app.MapGet($"/characterId", async(int characterId, HttpRequest httpRequest, [FromHeader(Name = "X-GameType")] string gameType, IServiceProvider serviceProvider) =>
         {
-            var servicePlayer = serviceProvider.GetRequiredKeyedService<ICharacterBusiness>(gameType);
-            servicePlayer.GetPlayerCharacterByPlayerId(playerId);
+            var serviceCharacter = serviceProvider.GetRequiredKeyedService<ICharacterBusiness>(gameType);
+            serviceCharacter.GetCharacterByCharacterId(characterId);
 
             var token = httpRequest.Headers["Authorization"].ToString().Replace(oldValue: "Bearer ", "");
 

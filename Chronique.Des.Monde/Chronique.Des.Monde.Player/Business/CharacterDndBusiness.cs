@@ -7,8 +7,8 @@ using Cmd.Common;
 using Character.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
-
+using Cmd.Abstraction.ModelsRequest;
+using Cmd.Abstraction.ModelsView;
 
 public class CharacterDndBusiness : ICharacterBusiness
 {
@@ -181,7 +181,7 @@ public class CharacterDndBusiness : ICharacterBusiness
         return 5;
     }
 
-    public ICharacterView GetCharacterByPlayerId(int characterId)
+    public ICharacterView GetCharacterByCharacterId(int characterId)
     {
         throw new NotImplementedException();
     }
@@ -190,6 +190,7 @@ public class CharacterDndBusiness : ICharacterBusiness
     {
         var newCharacter = new CharacterDnd
         {
+            Life = character.Life,
             Strong = (int)character.Competences.GetValueOrDefault(nameof(CharacterDnd.Strong)),
         };
          
