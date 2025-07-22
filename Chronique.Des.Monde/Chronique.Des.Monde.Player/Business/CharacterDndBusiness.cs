@@ -40,14 +40,14 @@ public class CharacterDndBusiness : ICharacterBusiness
         return characterDnds;
     }
 
-    public CharactersDndView GetCharacterDndByPlayerId(int characterDndId)
+    public CharacterDndView GetCharacterDndByPlayerId(int characterDndId)
     {
         var character = this._dbContext.CharacterDnd.FirstOrDefault(characterDnd => characterDnd.Id == characterDndId);
 
         if(character is null)
             throw new BusinessException($"The characterDndId is not found{characterDndId}" );
 
-        var result = new CharactersDndView()
+        var result = new CharacterDndView()
         {
             Id = character.Id,
             Class = character.Class,
@@ -179,5 +179,19 @@ public class CharacterDndBusiness : ICharacterBusiness
                 return 4;
         }
         return 5;
+    }
+
+    public ICharacterView GetCharacterByPlayerId(int characterId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void CreateCharacter(CharacterRequest character)
+    {
+        var newCharacter = new CharacterDnd
+        {
+            Strong = (int)character.Competences.GetValueOrDefault(nameof(CharacterDnd.Strong)),
+        };
+         
     }
 }

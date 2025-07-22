@@ -1,5 +1,8 @@
 ﻿namespace Cmd.Business.Character.Models;
-public class CharactersDndView
+
+using Cmd.Abstraction;
+
+public class CharacterDndView : ICharacterView
 {
     public int Id { get; set; }
 
@@ -40,4 +43,11 @@ public class CharactersDndView
     public int Charism { get; set; }
 
     public int AdditionalCharism { get; set; }
+
+    public IReadOnlyDictionary<string, object> Competences => new Dictionary<string, object>()
+    {
+        { nameof(Dexterity), this.Dexterity},
+    };
+
+    public IReadOnlyDictionary<string, object> Stats => new Dictionary<string, object>();
 }

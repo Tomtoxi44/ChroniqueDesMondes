@@ -1,6 +1,7 @@
 namespace Cmd.ApiService.Extensions;
 
 using Abstraction;
+using Cmd.Business.Character.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -18,13 +19,6 @@ public static class ServiceCollectionExtensions
         services.AddTransient<UserBusiness>();
         services.AddScoped<PasswordService>();
         services.AddScoped<JwtService>();
-
-        return services;
-    }
-
-    public static IServiceCollection AddDndBusiness(this IServiceCollection services)
-    {
-        // services.AddKeyedTransient<IPlayerCharacterBusiness, PlayerCharacterBusinessDnd>("Dnd");
 
         return services;
     }

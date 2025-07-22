@@ -36,7 +36,7 @@ public static class CharacterEndpoint
         app.MapGet($"/playerId", async(int playerId, HttpRequest httpRequest, [FromHeader(Name = "X-GameType")] string gameType, IServiceProvider serviceProvider) =>
         {
             var servicePlayer = serviceProvider.GetRequiredKeyedService<ICharacterBusiness>(gameType);
-            // servicePlayer.GetPlayerCharacterByPlayerId(playerId);
+            servicePlayer.GetPlayerCharacterByPlayerId(playerId);
 
             var token = httpRequest.Headers["Authorization"].ToString().Replace(oldValue: "Bearer ", "");
 
