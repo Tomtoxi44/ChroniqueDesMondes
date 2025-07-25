@@ -8,6 +8,4 @@ public class DndDbContext : DbContext
     public DndDbContext(DbContextOptions<DndDbContext> options) : base(options)
     {
     }
-
-    public DbSet<CharacterDnd> CharacterDnd { get; set; }
 }

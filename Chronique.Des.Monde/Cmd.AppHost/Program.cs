@@ -1,10 +1,8 @@
-using Google.Protobuf.WellKnownTypes;
+using Aspire.Hosting;
 using Scalar.Aspire;
 
 var builder = DistributedApplication.CreateBuilder(args);
-
-var apiService = builder
-    .AddProject<Projects.Cmd_ApiService>("apiservice");
+var db = builder.AddConnectionString("DefaultConnection");
 
 // Add Scalar API Reference for all services
 var scalar = builder.AddScalarApiReference(options =>
@@ -13,14 +11,22 @@ var scalar = builder.AddScalarApiReference(options =>
     options.WithTheme(ScalarTheme.Purple);
 });
 
-// Configure API References for specific services
-scalar
-    .WithApiReference(apiService);
+var migrations = builder.AddProject<Projects.Cdm_MigrationsManager>("migrations").WithReference(db).WaitFor(db);
+
+
+var apiService = builder
+    .AddProject<Projects.Cmd_ApiService>("apiservice")
+    .WithReference(migrations)
+    .WaitForCompletion(migrations);
 
 
 builder.AddProject<Projects.Cmd_Web>("webfrontend")
     .WithExternalHttpEndpoints()
     .WithReference(apiService)
     .WaitFor(apiService);
+
+// Configure API References for specific services
+scalar
+    .WithApiReference(apiService);
 
 builder.Build().Run();

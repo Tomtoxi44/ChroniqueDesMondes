@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Cdm.MigrationsManager\Cdm.MigrationsManager.csproj" />
     <ProjectReference Include="..\Cmd.ApiService\Cmd.ApiService.csproj" />
     <ProjectReference Include="..\Cmd.Web\Cmd.Web.csproj" />
   </ItemGroup>

@@ -1,7 +1,5 @@
 ﻿namespace Cmd.Abstraction.ModelsRequest;
 
-using Cmd.Abstraction.ModelsView;
-
 public class CharacterRequest
 {
     public string? Background { get; set; }

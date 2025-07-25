@@ -11,7 +11,7 @@ public static class CharacterEndpoint
 {
     public static void MapPlayerCharacterEndpoint(this WebApplication app)
     {
-        app.MapGroup("/character").RequireAuthorization();
+        var characterCollectionGroup = app.MapGroup("/character").RequireAuthorization();
 
         app.MapGet(string.Empty, async (int userId, HttpRequest httpRequest, CharacterDndBusiness dndBusiness) =>
         {
@@ -37,13 +37,6 @@ public static class CharacterEndpoint
         {
             var serviceCharacter = serviceProvider.GetRequiredKeyedService<ICharacterBusiness>(gameType);
             serviceCharacter.GetCharacterByCharacterId(characterId);
-
-            var token = httpRequest.Headers["Authorization"].ToString().Replace(oldValue: "Bearer ", "");
-
-            if (string.IsNullOrEmpty(token))
-            {
-                return Results.BadRequest(new { Error = "Le token est manquant." });
-            }
 
             try
             {
@@ -95,5 +88,9 @@ public static class CharacterEndpoint
             }
         });
     }
+    //private IResult GetAllCharacter()
+    //{
+
+    //}
 }
 

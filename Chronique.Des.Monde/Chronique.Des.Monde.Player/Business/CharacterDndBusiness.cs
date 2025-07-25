@@ -21,7 +21,7 @@ public class CharacterDndBusiness : ICharacterBusiness
 
     public List<GetAllCharacterDndRequestView>  GetAllCharacterDnd(int userId)
     {
-        var characterDnds = this._dbContext.CharacterDnd.Where(characterDnd => characterDnd.UserId == userId)
+        var characterDnds = this._dbContext.Set<CharacterDnd>().Where(characterDnd => characterDnd.UserId == userId)
                 .Select(characterDnd => new GetAllCharacterDndRequestView()
                 {
                     Id = characterDnd.Id,
@@ -42,7 +42,7 @@ public class CharacterDndBusiness : ICharacterBusiness
 
     public CharacterDndView GetCharacterDndByPlayerId(int characterDndId)
     {
-        var character = this._dbContext.CharacterDnd.FirstOrDefault(characterDnd => characterDnd.Id == characterDndId);
+        var character = this._dbContext.Set<CharacterDnd>().FirstOrDefault(characterDnd => characterDnd.Id == characterDndId);
 
         if(character is null)
             throw new BusinessException($"The characterDndId is not found{characterDndId}" );
@@ -103,7 +103,7 @@ public class CharacterDndBusiness : ICharacterBusiness
             AdditionalCharism = this.SetAdditionalStats(characterDndDnd.Charism),
         };
 
-        this._dbContext.CharacterDnd.Add(addCharacterDnd);
+        this._dbContext.Set<CharacterDnd>().Add(addCharacterDnd);
         await this._dbContext.SaveChangesAsync();
     }
 
@@ -112,7 +112,7 @@ public class CharacterDndBusiness : ICharacterBusiness
         if(characterDndDnd is null)
             throw new BusinessException("The characterDndRequest is null.");
 
-        var matchingCharacter = this._dbContext.CharacterDnd.FirstOrDefault(cd=> cd.Id == characterDndId);
+        var matchingCharacter = this._dbContext.Set<CharacterDnd>().FirstOrDefault(cd=> cd.Id == characterDndId);
 
         if(matchingCharacter is null)
             throw new BusinessException($"characterDndId is not found{characterDndId}");
@@ -138,18 +138,18 @@ public class CharacterDndBusiness : ICharacterBusiness
         matchingCharacter.AdditionalWisdoms = this.SetAdditionalStats(characterDndDnd.Wisdoms);
         matchingCharacter.AdditionalCharism = this.SetAdditionalStats(characterDndDnd.Charism);
 
-        await this._dbContext.CharacterDnd.AddAsync(matchingCharacter);
+        await this._dbContext.Set<CharacterDnd>().AddAsync(matchingCharacter);
         await this._dbContext.SaveChangesAsync();
     }
 
     public async Task DeletedCharacterAsync(int characterDndId)
     {
-        var matchingCharacter = this._dbContext.CharacterDnd.FirstOrDefault(character => character.Id == characterDndId);
+        var matchingCharacter = this._dbContext.Set<CharacterDnd>().FirstOrDefault(character => character.Id == characterDndId);
 
         if (matchingCharacter is null)
             throw new BusinessException($"CharacterId is not found{characterDndId}");
 
-        this._dbContext.CharacterDnd.Remove(matchingCharacter);
+        this._dbContext.Set<CharacterDnd>().Remove(matchingCharacter);
         await this._dbContext.SaveChangesAsync();
     }
 
