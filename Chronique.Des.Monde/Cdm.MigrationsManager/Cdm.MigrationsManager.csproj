@@ -13,7 +13,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Cdm.Migrations\Cdm.Migrations.csproj" />
-		<ProjectReference Include="..\Cmd.ServiceDefaults\Cmd.ServiceDefaults.csproj" />
+		<ProjectReference Include="..\Cdm.ServiceDefaults\Cdm.ServiceDefaults.csproj" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>

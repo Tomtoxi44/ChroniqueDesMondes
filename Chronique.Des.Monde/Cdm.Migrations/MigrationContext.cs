@@ -1,7 +1,7 @@
 ﻿namespace Cdm.Migrations;
 
 using Chronique.Des.Mondes.Data.Models;
-using Cmd.Data.Dnd.Models;
+using Data.Dnd.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class MigrationContext : DbContext

@@ -1,4 +1,4 @@
-﻿namespace Cmd.Business.Character.Models;
+﻿namespace Cmd.Business.Character.ModelsRequest;
 public record class CharacterDndRequest
 {
     public string Picture { get; set; } = string.Empty;

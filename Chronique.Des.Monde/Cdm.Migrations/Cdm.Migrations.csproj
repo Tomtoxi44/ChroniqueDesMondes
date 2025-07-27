@@ -13,7 +13,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Cmd.Data.Common\Cmd.Data.Common.csproj" />
-	  <ProjectReference Include="..\Cmd.Data.Dnd\Cmd.Data.Dnd.csproj" />
+	  <ProjectReference Include="..\Cdm.Data.Common\Cdm.Data.Common.csproj" />
+	  <ProjectReference Include="..\Cdm.Data.Dnd\Cdm.Data.Dnd.csproj" />
 	</ItemGroup>
 </Project>

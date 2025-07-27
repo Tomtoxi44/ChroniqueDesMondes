@@ -47,7 +47,7 @@ namespace Cdm.Migrations.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Cmd.Data.Dnd.Models.CharacterDnd", b =>
+            modelBuilder.Entity("Cdm.Data.Dnd.Models.CharacterDnd", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

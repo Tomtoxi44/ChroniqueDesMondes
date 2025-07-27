@@ -1,14 +1,15 @@
 ﻿namespace Cmd.Business.Character.Business;
 
-using Cmd.Data.Dnd;
-using Cmd.Data.Dnd.Models;
+using Cdm.Data.Dnd;
+using Cdm.Data.Dnd.Models;
 using Abstraction;
-using Cmd.Common;
-using Character.Models;
+using Cdm.Common;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cmd.Abstraction.ModelsRequest;
 using Cmd.Abstraction.ModelsView;
+using Cmd.Business.Character.ModelsView;
+using Cmd.Business.Character.ModelsRequest;
 
 public class CharacterDndBusiness : ICharacterBusiness
 {

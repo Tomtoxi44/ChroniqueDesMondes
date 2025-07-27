@@ -1,4 +1,4 @@
-﻿namespace Cmd.Business.Character.Models;
+﻿namespace Cmd.Business.Character.ModelsView;
 
 using Cmd.Abstraction.ModelsView;
 

@@ -1,6 +1,6 @@
 using Cdm.Migrations;
 using Cdm.MigrationsManager;
-using Cmd.ServiceDefaults;
+using Cdm.ServiceDefaults;
 using Microsoft.EntityFrameworkCore;
 
 var builder = Host.CreateApplicationBuilder(args);
