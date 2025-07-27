@@ -1,6 +1,7 @@
 namespace Cmd.ApiService.Extensions;
 
 using Abstraction;
+using Business.Common.Business.User;
 using Cmd.Business.Character.Extensions;
 
 public static class ServiceCollectionExtensions

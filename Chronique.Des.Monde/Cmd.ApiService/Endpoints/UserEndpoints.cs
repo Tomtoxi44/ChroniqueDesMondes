@@ -1,3 +1,4 @@
+using Cmd.Business.Common.Business.User;
 using Cmd.Business.Common.Models;
 
 public static class UserEndpoints

@@ -3,6 +3,8 @@ using Chronique.Des.Mondes.Data.Models;
 using Cmd.Business.Common.Models;
 using Microsoft.EntityFrameworkCore;
 
+namespace Cmd.Business.Common.Business.User;
+
 public class UserBusiness
 {
     private readonly AppDbContext _dbContext;
@@ -14,7 +16,7 @@ public class UserBusiness
 
     public async Task<bool> IsEmailTakenAsync(string email)
     {
-        return await _dbContext.Users.AnyAsync(u => u.UserEmail == email);
+        return await this._dbContext.Set<Users>().AnyAsync(u => u.UserEmail == email);
     }
 
     public async Task RegisterUserAsync(UserRequest userRequest)
@@ -31,12 +33,12 @@ public class UserBusiness
             UserName = userRequest.UserName,
         };
 
-        _dbContext.Users.Add(user);
+        this._dbContext.Set<Users>().Add(user);
         await _dbContext.SaveChangesAsync();
     }
 
     public async Task<Users?> GetUserByEmailAsync(string email)
     {
-        return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserEmail == email);
+        return await this._dbContext.Set<Users>().FirstOrDefaultAsync(u => u.UserEmail == email);
     }
 }
