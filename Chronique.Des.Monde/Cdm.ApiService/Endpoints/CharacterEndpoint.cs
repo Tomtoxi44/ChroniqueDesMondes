@@ -13,17 +13,16 @@ public static class CharacterEndpoint
     {
         var characterCollectionGroup = app.MapGroup("/character").RequireAuthorization();
 
-        app.MapGet(string.Empty, async (int userId, HttpRequest httpRequest,[FromServices] CharacterDndBusiness dndBusiness) =>
+        app.MapGet(string.Empty, async (int userId, HttpRequest httpRequest,[FromHeader(Name = "X-GameType")] string gameType, IServiceProvider serviceProvider) =>
         {
-            var token = httpRequest.Headers.Authorization.ToString().Replace("Bearer ", "");
-
-            if (string.IsNullOrEmpty(token))
-                return Results.BadRequest(new { Error = "Le token est manquant." });
+            var serviceCharacter = serviceProvider.GetRequiredKeyedService<ICharacterBusiness>(gameType);
+            serviceCharacter.GetCharacterByCharacterId(userId);
 
             try
             {
-                var result = dndBusiness.GetAllCharacterDnd(userId);
-                return Results.Ok(result);
+                // var result = serviceCharacter.GetAllCharacterDnd(userId);
+                //return Results.Ok(result);
+                return Results.Ok();
             }
             catch (BusinessException ex)
             {
@@ -38,9 +37,8 @@ public static class CharacterEndpoint
 
             try
             {
-                // var result = business.GetPlayerCharacterByPlayerId(playerId);
-                // return Results.Ok(result);
-                return Results.Ok();
+                 var result = serviceCharacter.GetCharacterByCharacterId(characterId);
+                 return Results.Ok(result);
             }
             catch (BusinessException ex)
             {

@@ -20,7 +20,7 @@ public class CharacterDndBusiness : ICharacterBusiness
         this._dbContext = dbContext;
     }
 
-    public List<GetAllCharacterDndRequestView>  GetAllCharacterDnd(int userId)
+    public List<GetAllCharacterDndRequestView> GetAllCharacterDnd(int userId)
     {
         var characterDnds = this._dbContext.Set<CharacterDnd>().Where(characterDnd => characterDnd.UserId == userId)
                 .Select(characterDnd => new GetAllCharacterDndRequestView()
