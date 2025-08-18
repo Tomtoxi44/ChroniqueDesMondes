@@ -24,7 +24,7 @@ namespace Cdm.Migrations.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Chronique.Des.Mondes.Data.Models.Users", b =>
+            modelBuilder.Entity("Chronique.Des.Mondes.Data.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -47,7 +47,7 @@ namespace Cdm.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Cdm.Data.Dnd.Models.CharacterDnd", b =>

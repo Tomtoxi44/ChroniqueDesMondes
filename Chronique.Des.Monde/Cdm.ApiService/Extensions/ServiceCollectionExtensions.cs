@@ -1,7 +1,7 @@
 namespace Chronique.Des.Mondes.ApiService.Extensions;
 
 using Cmd.Business.Character.Extensions;
-using Cdm.Business.Common.Business.User;
+using Cdm.Business.Common.Business.Users;
 
 public static class ServiceCollectionExtensions
 {

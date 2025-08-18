@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Chronique.Des.Mondes.Data.Models;
 
-public class Users
+[Table("Users")]
+public class User
 {
     public int Id { get; set; }
 

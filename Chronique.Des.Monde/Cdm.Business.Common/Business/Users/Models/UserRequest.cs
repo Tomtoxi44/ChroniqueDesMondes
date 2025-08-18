@@ -1,4 +1,4 @@
-﻿namespace Cdm.Business.Common.Business.User.Models;
+﻿namespace Cdm.Business.Common.Business.Users.Models;
 
 using System;
 using System.Collections.Generic;

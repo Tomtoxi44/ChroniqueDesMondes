@@ -1,5 +1,6 @@
-using Cdm.Business.Common.Business.User;
-using Cdm.Business.Common.Business.User.Models;
+using Cdm.Business.Common.Business.Users;
+using Cdm.Business.Common.Business.Users.Models;
+using Microsoft.AspNetCore.Mvc;
 
 public static class UserEndpoints
 {
@@ -9,13 +10,13 @@ public static class UserEndpoints
         {
             userRequest.Password = passwordService.HashPassword(userRequest.Password);
             await userService.RegisterUserAsync(userRequest);
-            return Results.Ok("Utilisateur enregistr� avec succ�s !");
+            return Results.Ok("Utilisateur enregistré avec succès !");
         });
 
-        app.MapPost("/login", async (string email, string password, UserBusiness userService, PasswordService passwordService, JwtService jwtService) =>
+        app.MapPost("/login", async ([FromBody] LoginRequest loginRequest, UserBusiness userService, PasswordService passwordService, JwtService jwtService) =>
         {
-            var user = await userService.GetUserByEmailAsync(email);
-            if (user == null || !passwordService.VerifyPassword(user.Password, password))
+            var user = await userService.GetUserByEmailAsync(loginRequest.email);
+            if (user == null || !passwordService.VerifyPassword(user.Password, loginRequest.password))
             {
                 return Results.Unauthorized();
             }
@@ -24,4 +25,6 @@ public static class UserEndpoints
             return Results.Ok(new { Token = token });
         });
     }
+
+    public sealed record LoginRequest(string email, string password);
 }
