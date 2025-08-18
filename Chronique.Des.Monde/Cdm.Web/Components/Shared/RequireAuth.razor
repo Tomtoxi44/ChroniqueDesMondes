@@ -1,0 +1,47 @@
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+
+@if (isLoading)
+{
+    <div class="auth-loading">
+        <div class="loading-spinner"></div>
+        <p>Vérification des autorisations...</p>
+    </div>
+}
+else if (isAuthorized)
+{
+    @ChildContent
+}
+else
+{
+    <div class="auth-required">
+        <div class="auth-message">
+            <h2>Accès restreint</h2>
+            <p>Vous devez être connecté pour accéder à cette page.</p>
+            <a href="/login" class="btn btn-primary">Se connecter</a>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public bool RequireAuthentication { get; set; } = true;
+
+    private bool isLoading = true;
+    private bool isAuthorized = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!RequireAuthentication)
+        {
+            isAuthorized = true;
+            isLoading = false;
+            return;
+        }
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isAuthorized = authState.User.Identity?.IsAuthenticated ?? false;
+        isLoading = false;
+    }
+}

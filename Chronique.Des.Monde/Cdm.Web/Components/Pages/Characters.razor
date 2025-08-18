@@ -1,0 +1,81 @@
+﻿@page "/characters"
+@using Cdm.Web.Components.Shared
+
+<PageTitle>Mes Personnages - Chronique des Mondes</PageTitle>
+
+<RequireAuth RequireAuthentication="true">
+    <div class="characters-container animate-fade-in">
+        <div class="page-header">
+            <h1>Mes Personnages</h1>
+            <p>Gérez vos héros et leurs aventures</p>
+            <button class="btn btn-primary" @onclick="CreateNewCharacter">
+                <span class="btn-icon">⚔️</span>
+                Créer un nouveau personnage
+            </button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-warning animate-fade-in">
+                @errorMessage
+            </div>
+        }
+
+        @if (isLoading)
+        {
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>Chargement de vos personnages...</p>
+            </div>
+        }
+        else if (characters.Any())
+        {
+            <div class="characters-grid">
+                @foreach (var character in characters)
+                {
+                    <div class="character-card card animate-fade-in">
+                        <div class="character-avatar">
+                            <div class="avatar-placeholder">
+                                @GetCharacterIcon(character)
+                            </div>
+                            <div class="character-level">Niv. @character.Level</div>
+                        </div>
+                        <div class="character-info">
+                            <h3 class="character-name">@character.Name</h3>
+                            <p class="character-class">@character.CharacterClass @character.Race</p>
+                            <div class="character-stats">
+                                <div class="stat">
+                                    <span class="stat-label">PV</span>
+                                    <span class="stat-value">@character.HitPoints/@character.MaxHitPoints</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-label">CA</span>
+                                    <span class="stat-value">@character.ArmorClass</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="character-actions">
+                            <button class="btn btn-secondary btn-sm" @onclick="() => EditCharacter(character.Id)">
+                                Modifier
+                            </button>
+                            <button class="btn btn-outline btn-sm" @onclick="() => ViewCharacterDetails(character.Id)">
+                                Détails
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <div class="empty-icon">⚔️</div>
+                <h2>Aucun personnage créé</h2>
+                <p>Commencez votre aventure en créant votre premier héros !</p>
+                <button class="btn btn-primary btn-lg" @onclick="CreateNewCharacter">
+                    Créer mon premier personnage
+                </button>
+            </div>
+        }
+    </div>
+</RequireAuth>

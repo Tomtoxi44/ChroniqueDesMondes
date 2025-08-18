@@ -1,0 +1,261 @@
+﻿/* Styles spécifiques pour les pages d'authentification */
+
+/* Containers principaux */
+.login-container, .register-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--background-primary) 0%, var(--background-secondary) 100%);
+}
+
+/* Cards d'authentification */
+.login-card, .register-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--shadow-heavy);
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+}
+
+.register-card {
+    max-width: 450px;
+}
+
+/* Headers */
+.login-header, .register-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-title, .register-title {
+    font-family: var(--font-family-primary);
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.login-subtitle, .register-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-family: var(--font-family-secondary);
+}
+
+/* Logo dans l'auth */
+.login-header .logo, .register-header .logo {
+    height: 60px;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 2px 8px rgba(139, 69, 19, 0.3));
+}
+
+/* Forms d'authentification */
+.login-form, .register-form {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-family: var(--font-family-primary);
+    font-size: 0.95rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.875rem;
+    border: 1px solid var(--input-border);
+    border-radius: var(--border-radius);
+    background-color: var(--input-background);
+    color: var(--text-primary);
+    font-family: var(--font-family-secondary);
+    font-size: 1rem;
+    transition: all var(--animation-duration) var(--animation-timing);
+}
+
+.form-control::placeholder {
+    color: var(--text-placeholder);
+    opacity: 1;
+    font-style: italic;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.15);
+    background-color: var(--background-tertiary);
+}
+
+/* Remember me / Terms */
+.remember-me, .terms {
+    margin-bottom: 1.5rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-family: var(--font-family-secondary);
+    font-size: 0.9rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--primary-color);
+}
+
+.checkbox-label a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.checkbox-label a:hover {
+    text-decoration: underline;
+}
+
+/* Boutons d'action */
+.form-actions {
+    margin-bottom: 2rem;
+}
+
+.login-btn, .register-btn {
+    width: 100%;
+    padding: 0.875rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border: none;
+    border-radius: var(--border-radius);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--animation-duration) var(--animation-timing);
+    font-family: var(--font-family-primary);
+    box-shadow: var(--shadow-medium);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-btn:hover, .register-btn:hover {
+    background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-heavy);
+}
+
+.login-btn:active, .register-btn:active {
+    transform: translateY(0);
+}
+
+.login-btn:disabled, .register-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Spinner pour loading */
+.spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 0.5rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Footers */
+.login-footer, .register-footer {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.login-footer p, .register-footer p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.login-footer .btn, .register-footer .btn {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9rem;
+}
+
+/* Validation et messages d'erreur */
+.validation-summary {
+    background-color: rgba(220, 20, 60, 0.1);
+    border: 1px solid rgba(220, 20, 60, 0.3);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: var(--error-color);
+}
+
+.validation-summary ul {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.validation-message {
+    color: var(--error-color);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    font-family: var(--font-family-secondary);
+}
+
+/* Alerts */
+.alert {
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    font-family: var(--font-family-secondary);
+}
+
+.alert-error {
+    background-color: rgba(220, 20, 60, 0.1);
+    color: var(--error-color);
+    border: 1px solid rgba(220, 20, 60, 0.3);
+}
+
+.alert-success {
+    background-color: rgba(34, 139, 34, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(34, 139, 34, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .login-container, .register-container {
+        padding: 1rem;
+    }
+    
+    .login-card, .register-card {
+        padding: 1.5rem;
+    }
+    
+    .login-title, .register-title {
+        font-size: 1.75rem;
+    }
+    
+    .form-control {
+        padding: 0.75rem;
+    }
+}

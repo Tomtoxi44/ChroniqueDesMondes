@@ -1,0 +1,283 @@
+/* Dice Page Scoped Styles */
+.dice-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--background-secondary), var(--background-tertiary));
+    border-radius: var(--border-radius-large);
+    border: 1px solid var(--border-color);
+}
+
+.page-header h1 {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.page-header p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.dice-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.dice-controls {
+    padding: 2rem;
+}
+
+.dice-controls h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.dice-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.dice-input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.dice-input-group label {
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.dice-input-group .form-control {
+    padding: 0.75rem;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.dice-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn-lg .dice-icon {
+    margin-right: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.dice-result {
+    padding: 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, var(--card-background), var(--background-tertiary));
+}
+
+.result-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.result-total {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid;
+    box-shadow: var(--shadow-heavy);
+    animation: pulse 1s ease-in-out;
+}
+
+.critical-success {
+    background: linear-gradient(135deg, #32CD32, #228B22);
+    color: white;
+    border-color: #228B22;
+    animation: glow-green 2s ease-in-out infinite;
+}
+
+.critical-failure {
+    background: linear-gradient(135deg, #DC143C, #8B0000);
+    color: white;
+    border-color: #8B0000;
+    animation: glow-red 2s ease-in-out infinite;
+}
+
+.high-roll {
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));
+    color: var(--background-primary);
+    border-color: var(--secondary-dark);
+}
+
+.low-roll {
+    background: linear-gradient(135deg, #708090, #2F4F4F);
+    color: white;
+    border-color: #2F4F4F;
+}
+
+.normal-roll {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    border-color: var(--primary-dark);
+}
+
+@keyframes glow-green {
+    0%, 100% { box-shadow: 0 0 10px #32CD32; }
+    50% { box-shadow: 0 0 25px #32CD32, 0 0 35px #228B22; }
+}
+
+@keyframes glow-red {
+    0%, 100% { box-shadow: 0 0 10px #DC143C; }
+    50% { box-shadow: 0 0 25px #DC143C, 0 0 35px #8B0000; }
+}
+
+.result-details {
+    width: 100%;
+}
+
+.result-formula {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-family-primary);
+}
+
+.result-breakdown {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.result-placeholder {
+    padding: 2rem;
+    color: var(--text-muted);
+}
+
+.placeholder-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.dice-history {
+    padding: 2rem;
+}
+
+.dice-history h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.history-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    align-items: center;
+    padding: 0.75rem;
+    background-color: var(--background-tertiary);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    transition: all var(--animation-duration) var(--animation-timing);
+}
+
+.history-item:hover {
+    background-color: var(--card-background);
+    transform: translateX(5px);
+}
+
+.history-formula {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.history-result {
+    text-align: center;
+    font-weight: bold;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+}
+
+.history-time {
+    text-align: right;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.history-empty {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+}
+
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 0.5rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .dice-container {
+        padding: 1rem;
+    }
+    
+    .dice-section {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .dice-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .dice-actions {
+        flex-direction: column;
+    }
+    
+    .result-total {
+        font-size: 3rem;
+        width: 100px;
+        height: 100px;
+    }
+    
+    .history-item {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .history-time {
+        text-align: center;
+    }
+}

@@ -1,23 +1,37 @@
 ﻿@inherits LayoutComponentBase
+@using Cdm.Web.Services.Authentication
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+<div class="page" data-theme="dark-fantasy">
+    @if (AuthService.IsAuthenticated)
+    {
+        <div class="sidebar">
+            <NavMenu />
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+        <main>
+            <div class="top-row px-4">
+                <div class="user-info">
+                    <span>Bienvenue, Aventurier !</span>
+                    <!-- Utilisation d'un form pour la déconnexion -->
+                    <form method="post" action="/auth/logout" style="display: inline;">
+                        <button type="submit" class="btn btn-outline logout-btn">
+                            Déconnexion
+                        </button>
+                    </form>
+                </div>
+            </div>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
+            <article class="content px-4">
+                @Body
+            </article>
+        </main>
+    }
+    else
+    {
+        <main class="full-width">
+            <article class="content">
+                @Body
+            </article>
+        </main>
+    }
 </div>

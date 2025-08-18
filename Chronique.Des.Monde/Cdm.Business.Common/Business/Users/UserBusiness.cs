@@ -1,4 +1,4 @@
-using Chronique.Des.Mondes.Data;
+﻿using Chronique.Des.Mondes.Data;
 using Chronique.Des.Mondes.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +24,7 @@ public class UserBusiness
     public async Task RegisterUserAsync(UserRequest userRequest)
     {
         if (await IsEmailTakenAsync(userRequest.UserEmail))
-            throw new InvalidOperationException("L'email est d�j� utilis�.");
+            throw new InvalidOperationException("L'email est déjà utilisé.");
 
         var user = new User()
         {
