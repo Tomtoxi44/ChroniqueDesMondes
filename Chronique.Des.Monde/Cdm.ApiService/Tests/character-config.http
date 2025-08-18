@@ -1,0 +1,14 @@
+### Configuration des tests Character API
+@baseUrl = https://localhost:7428
+@baseUrlHttp = http://localhost:5597
+
+### Variables communes
+@userId = 1
+@gameType = dnd
+@characterId = 1
+@authToken = Bearer your-jwt-token-here
+
+### Headers communs
+# X-GameType: {{gameType}}
+# Authorization: {{authToken}}
+# Content-Type: application/json

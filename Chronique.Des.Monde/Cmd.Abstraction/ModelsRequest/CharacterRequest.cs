@@ -9,7 +9,7 @@ public class CharacterRequest
     public string? Name { get; set; }
     public string? Picture { get; set; }
 
-    public IReadOnlyDictionary<string, object> Competences { get; }
+    public IReadOnlyDictionary<string, object> Competences { get; set; } = new Dictionary<string, object>();
 
-    public IReadOnlyDictionary<string, object> Stats { get; }
+    public IReadOnlyDictionary<string, object> Stats { get; set; } = new Dictionary<string, object>();
 }

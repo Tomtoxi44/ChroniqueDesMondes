@@ -46,9 +46,23 @@ public class CharacterDndView : ICharacterView
 
     public IReadOnlyDictionary<string, object> Competences => new Dictionary<string, object>()
     {
-        { nameof(Dexterity), this.Dexterity},
-        { nameof(Intelligence), this.Intelligence},
+        { nameof(Class), Class },
+        { nameof(ClassArmor), ClassArmor },
+        { nameof(Strong), Strong },
+        { nameof(Dexterity), Dexterity },
+        { nameof(Constitution), Constitution },
+        { nameof(Intelligence), Intelligence },
+        { nameof(Wisdoms), Wisdoms },
+        { nameof(Charism), Charism }
     };
 
-    public IReadOnlyDictionary<string, object> Stats => new Dictionary<string, object>();
+    public IReadOnlyDictionary<string, object> Stats => new Dictionary<string, object>()
+    {
+        { nameof(AdditionalStrong), AdditionalStrong },
+        { nameof(AdditionalDexterity), AdditionalDexterity },
+        { nameof(AdditionalConstitution), AdditionalConstitution },
+        { nameof(AdditionalIntelligence), AdditionalIntelligence },
+        { nameof(AdditionalWisdoms), AdditionalWisdoms },
+        { nameof(AdditionalCharism), AdditionalCharism }
+    };
 }

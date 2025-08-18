@@ -5,8 +5,9 @@ using Cmd.Abstraction.ModelsView;
 
 public interface ICharacterBusiness
 {
-    // ICharacterView GetAllCharacterDnd(int userId);
-    ICharacterView GetCharacterByCharacterId(int characterId);
-    
-    void CreateCharacter(CharacterRequest character);
+    Task<IEnumerable<ICharacterView>> GetAllCharactersByUserId(int userId);
+    Task<ICharacterView> GetCharacterById(int characterId);
+    Task<ICharacterView> CreateCharacter(CharacterRequest character, int userId);
+    Task<ICharacterView> UpdateCharacter(CharacterRequest character, int characterId);
+    Task DeleteCharacter(int characterId);
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Cmd.Abstraction.ModelsRequest;
 using Cmd.Abstraction.ModelsView;
 using Cmd.Business.Character.ModelsView;
-using Cmd.Business.Character.ModelsRequest;
+using Microsoft.EntityFrameworkCore;
 
 public class CharacterDndBusiness : ICharacterBusiness
 {
@@ -17,46 +17,137 @@ public class CharacterDndBusiness : ICharacterBusiness
 
     public CharacterDndBusiness(DndDbContext dbContext)
     {
-        this._dbContext = dbContext;
+        _dbContext = dbContext;
     }
 
-    public List<GetAllCharacterDndRequestView> GetAllCharacterDnd(int userId)
+    #region Méthodes génériques (interface ICharacterBusiness)
+
+    public async Task<IEnumerable<ICharacterView>> GetAllCharactersByUserId(int userId)
     {
-        var characterDnds = this._dbContext.Set<CharacterDnd>().Where(characterDnd => characterDnd.UserId == userId)
-                .Select(characterDnd => new GetAllCharacterDndRequestView()
-                {
-                    Id = characterDnd.Id,
-                    Class = characterDnd.Class,
-                    Leveling = characterDnd.Leveling,
-                    Life = characterDnd.Life,
-                    Name = characterDnd.Name,
-                    Picture = characterDnd.Picture,
-                    UserId = characterDnd.UserId
-                }).ToList();
+        var characters = await _dbContext.Set<CharacterDnd>()
+            .Where(c => c.UserId == userId)
+            .ToListAsync();
 
-        if(characterDnds.Count > 0)
-            return new();
-        
-
-        return characterDnds;
+        return characters.Select(ConvertToCharacterView);
     }
 
-    public CharacterDndView GetCharacterDndByPlayerId(int characterDndId)
+    public async Task<ICharacterView> GetCharacterById(int characterId)
     {
-        var character = this._dbContext.Set<CharacterDnd>().FirstOrDefault(characterDnd => characterDnd.Id == characterDndId);
+        var character = await _dbContext.Set<CharacterDnd>()
+            .FirstOrDefaultAsync(c => c.Id == characterId);
 
-        if(character is null)
-            throw new BusinessException($"The characterDndId is not found{characterDndId}" );
+        if (character is null)
+            throw new BusinessException($"Character with ID {characterId} not found.");
 
-        var result = new CharacterDndView()
+        return ConvertToCharacterView(character);
+    }
+
+    public async Task<ICharacterView> CreateCharacter(CharacterRequest characterRequest, int userId)
+    {
+        if (characterRequest is null)
+            throw new BusinessException("The character request is null.");
+
+        var newCharacterDnd = MapCharacterRequestToEntity(characterRequest, userId);
+        CalculateAdditionalStats(newCharacterDnd);
+
+        _dbContext.Set<CharacterDnd>().Add(newCharacterDnd);
+        await _dbContext.SaveChangesAsync();
+
+        return ConvertToCharacterView(newCharacterDnd);
+    }
+
+    public async Task<ICharacterView> UpdateCharacter(CharacterRequest characterRequest, int characterId)
+    {
+        if (characterRequest is null)
+            throw new BusinessException("The character request is null.");
+
+        var existingCharacter = await _dbContext.Set<CharacterDnd>()
+            .FirstOrDefaultAsync(c => c.Id == characterId);
+
+        if (existingCharacter is null)
+            throw new BusinessException($"Character with ID {characterId} not found.");
+
+        // Mettre à jour les propriétés depuis le CharacterRequest générique
+        existingCharacter.Name = characterRequest.Name ?? existingCharacter.Name;
+        existingCharacter.Leveling = characterRequest.Leveling;
+        existingCharacter.Picture = characterRequest.Picture ?? existingCharacter.Picture;
+        existingCharacter.Background = characterRequest.Background ?? existingCharacter.Background;
+        existingCharacter.Life = characterRequest.Life;
+
+        // Mapper les compétences spécifiques D&D
+        existingCharacter.Class = GetStringValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.Class));
+        existingCharacter.ClassArmor = GetIntValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.ClassArmor));
+        existingCharacter.Strong = GetIntValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.Strong));
+        existingCharacter.Dexterity = GetIntValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.Dexterity));
+        existingCharacter.Constitution = GetIntValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.Constitution));
+        existingCharacter.Intelligence = GetIntValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.Intelligence));
+        existingCharacter.Wisdoms = GetIntValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.Wisdoms));
+        existingCharacter.Charism = GetIntValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.Charism));
+
+        CalculateAdditionalStats(existingCharacter);
+
+        await _dbContext.SaveChangesAsync();
+        return ConvertToCharacterView(existingCharacter);
+    }
+
+    public async Task DeleteCharacter(int characterId)
+    {
+        var character = await _dbContext.Set<CharacterDnd>()
+            .FirstOrDefaultAsync(c => c.Id == characterId);
+
+        if (character is null)
+            throw new BusinessException($"Character with ID {characterId} not found.");
+
+        _dbContext.Set<CharacterDnd>().Remove(character);
+        await _dbContext.SaveChangesAsync();
+    }
+
+    #endregion
+
+    #region Méthodes utilitaires privées
+
+    private CharacterDnd MapCharacterRequestToEntity(CharacterRequest characterRequest, int userId)
+    {
+        return new CharacterDnd
+        {
+            UserId = userId,
+            Name = characterRequest.Name ?? string.Empty,
+            Leveling = characterRequest.Leveling,
+            Picture = characterRequest.Picture ?? string.Empty,
+            Background = characterRequest.Background,
+            Life = characterRequest.Life,
+            Class = GetStringValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.Class)),
+            ClassArmor = GetIntValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.ClassArmor)),
+            Strong = GetIntValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.Strong)),
+            Dexterity = GetIntValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.Dexterity)),
+            Constitution = GetIntValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.Constitution)),
+            Intelligence = GetIntValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.Intelligence)),
+            Wisdoms = GetIntValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.Wisdoms)),
+            Charism = GetIntValueFromDictionary(characterRequest.Competences, nameof(CharacterDnd.Charism))
+        };
+    }
+
+    private void CalculateAdditionalStats(CharacterDnd character)
+    {
+        character.AdditionalStrong = SetAdditionalStats(character.Strong);
+        character.AdditionalDexterity = SetAdditionalStats(character.Dexterity);
+        character.AdditionalConstitution = SetAdditionalStats(character.Constitution);
+        character.AdditionalIntelligence = SetAdditionalStats(character.Intelligence);
+        character.AdditionalWisdoms = SetAdditionalStats(character.Wisdoms);
+        character.AdditionalCharism = SetAdditionalStats(character.Charism);
+    }
+
+    private CharacterDndView ConvertToCharacterView(CharacterDnd character)
+    {
+        return new CharacterDndView
         {
             Id = character.Id,
-            Class = character.Class,
-            Leveling = character.Leveling,
-            Life = character.Life,
             Name = character.Name,
+            Leveling = character.Leveling,
             Picture = character.Picture,
             Background = character.Background,
+            Life = character.Life,
+            Class = character.Class,
             ClassArmor = character.ClassArmor,
             Strong = character.Strong,
             Dexterity = character.Dexterity,
@@ -66,134 +157,53 @@ public class CharacterDndBusiness : ICharacterBusiness
             Charism = character.Charism,
             AdditionalStrong = character.AdditionalStrong,
             AdditionalDexterity = character.AdditionalDexterity,
-            AdditionalCharism = character.AdditionalCharism,
             AdditionalConstitution = character.AdditionalConstitution,
             AdditionalIntelligence = character.AdditionalIntelligence,
             AdditionalWisdoms = character.AdditionalWisdoms,
+            AdditionalCharism = character.AdditionalCharism
         };
-
-        return result;
     }
 
-    public async Task CreateCharacterDndRequestAsync(CharacterDndRequest characterDndDnd, int userId)
+    private int GetIntValueFromDictionary(IReadOnlyDictionary<string, object> dictionary, string key)
     {
-        if (characterDndDnd is null)
-            throw new BusinessException("The characterDndRequest is null.");
-
-        var addCharacterDnd = new CharacterDnd()
+        if (dictionary.TryGetValue(key, out var value))
         {
-            UserId = userId,
-            Name = characterDndDnd.Name,
-            Leveling = characterDndDnd.Leveling,
-            Picture = characterDndDnd.Picture,
-            Background = characterDndDnd.Background,
-            Class = characterDndDnd.Class,
-            ClassArmor = characterDndDnd.ClassArmor,
-            Life = characterDndDnd.Life,
-            Strong = characterDndDnd.Strong,
-            Dexterity = characterDndDnd.Dexterity,
-            Constitution = characterDndDnd.Constitution,
-            Intelligence = characterDndDnd.Intelligence,
-            Wisdoms = characterDndDnd.Wisdoms,
-            Charism = characterDndDnd.Charism,
-            AdditionalStrong = this.SetAdditionalStats(characterDndDnd.Strong),
-            AdditionalDexterity = this.SetAdditionalStats(characterDndDnd.Dexterity),
-            AdditionalConstitution = this.SetAdditionalStats(characterDndDnd.Constitution),
-            AdditionalIntelligence = this.SetAdditionalStats(characterDndDnd.Intelligence),
-            AdditionalWisdoms = this.SetAdditionalStats(characterDndDnd.Wisdoms),
-            AdditionalCharism = this.SetAdditionalStats(characterDndDnd.Charism),
-        };
-
-        this._dbContext.Set<CharacterDnd>().Add(addCharacterDnd);
-        await this._dbContext.SaveChangesAsync();
+            return value switch
+            {
+                int intValue => intValue,
+                string stringValue when int.TryParse(stringValue, out var parsedValue) => parsedValue,
+                _ => 0
+            };
+        }
+        return 0;
     }
 
-    public async Task UpdateCharacterDndAsync(CharacterDndRequest characterDndDnd, int characterDndId)
+    private string GetStringValueFromDictionary(IReadOnlyDictionary<string, object> dictionary, string key)
     {
-        if(characterDndDnd is null)
-            throw new BusinessException("The characterDndRequest is null.");
-
-        var matchingCharacter = this._dbContext.Set<CharacterDnd>().FirstOrDefault(cd=> cd.Id == characterDndId);
-
-        if(matchingCharacter is null)
-            throw new BusinessException($"characterDndId is not found{characterDndId}");
-
-
-        matchingCharacter.Name = characterDndDnd.Name;
-        matchingCharacter.Leveling = characterDndDnd.Leveling;
-        matchingCharacter.Picture = characterDndDnd.Picture;
-        matchingCharacter.Background = characterDndDnd.Background;
-        matchingCharacter.Class = characterDndDnd.Class;
-        matchingCharacter.ClassArmor = characterDndDnd.ClassArmor;
-        matchingCharacter.Life = characterDndDnd.Life;
-        matchingCharacter.Strong = characterDndDnd.Strong;
-        matchingCharacter.Dexterity = characterDndDnd.Dexterity;
-        matchingCharacter.Constitution = characterDndDnd.Constitution;
-        matchingCharacter.Intelligence = characterDndDnd.Intelligence;
-        matchingCharacter.Wisdoms = characterDndDnd.Wisdoms;
-        matchingCharacter.Charism = characterDndDnd.Charism;
-        matchingCharacter.AdditionalStrong = this.SetAdditionalStats(characterDndDnd.Strong);
-        matchingCharacter.AdditionalDexterity = this.SetAdditionalStats(characterDndDnd.Dexterity);
-        matchingCharacter.AdditionalConstitution = this.SetAdditionalStats(characterDndDnd.Constitution);
-        matchingCharacter.AdditionalIntelligence = this.SetAdditionalStats(characterDndDnd.Intelligence);
-        matchingCharacter.AdditionalWisdoms = this.SetAdditionalStats(characterDndDnd.Wisdoms);
-        matchingCharacter.AdditionalCharism = this.SetAdditionalStats(characterDndDnd.Charism);
-
-        await this._dbContext.Set<CharacterDnd>().AddAsync(matchingCharacter);
-        await this._dbContext.SaveChangesAsync();
-    }
-
-    public async Task DeletedCharacterAsync(int characterDndId)
-    {
-        var matchingCharacter = this._dbContext.Set<CharacterDnd>().FirstOrDefault(character => character.Id == characterDndId);
-
-        if (matchingCharacter is null)
-            throw new BusinessException($"CharacterId is not found{characterDndId}");
-
-        this._dbContext.Set<CharacterDnd>().Remove(matchingCharacter);
-        await this._dbContext.SaveChangesAsync();
+        if (dictionary.TryGetValue(key, out var value))
+        {
+            return value?.ToString() ?? string.Empty;
+        }
+        return string.Empty;
     }
 
     private int SetAdditionalStats(int stats)
     {
-        switch (stats)
+        return stats switch
         {
-            case 1:
-                return -5;
-            case <= 3:
-                return -4;
-            case <= 5:
-                return -3;
-            case <= 7:
-                return -2;
-            case <= 9:
-                return -1;
-            case <= 11:
-                return 0;
-            case <= 13:
-                return 1;
-            case <= 15:
-                return 2;
-            case <= 17:
-                return 3;
-            case <= 19:
-                return 4;
-        }
-        return 5;
-    }
-
-    public ICharacterView GetCharacterByCharacterId(int characterId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void CreateCharacter(CharacterRequest character)
-    {
-        var newCharacter = new CharacterDnd
-        {
-            Life = character.Life,
-            Strong = (int)character.Competences.GetValueOrDefault(nameof(CharacterDnd.Strong)),
+            1 => -5,
+            <= 3 => -4,
+            <= 5 => -3,
+            <= 7 => -2,
+            <= 9 => -1,
+            <= 11 => 0,
+            <= 13 => 1,
+            <= 15 => 2,
+            <= 17 => 3,
+            <= 19 => 4,
+            _ => 5
         };
-         
     }
+
+    #endregion
 }
