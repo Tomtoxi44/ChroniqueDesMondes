@@ -1,55 +1,60 @@
-﻿/* Styles spécifiques pour les pages d'authentification */
+﻿/* ======================
+   STYLES D'AUTHENTIFICATION ULTRA-OPTIMISÉS
+   ====================== */
 
-/* Containers principaux */
+/* Containers principaux - MARGES ULTRA RÉDUITES */
 .login-container, .register-container {
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
-    background: linear-gradient(135deg, var(--background-primary) 0%, var(--background-secondary) 100%);
+    padding: 0.5rem; /* Ultra réduit */
+    background: var(--background-primary); /* Suppression du gradient pour réduire l'effet de marge */
+    margin: 0; /* Assure aucune marge externe */
 }
 
-/* Cards d'authentification */
+/* Cards d'authentification - TAILLE ULTRA OPTIMISÉE */
 .login-card, .register-card {
     width: 100%;
-    max-width: 400px;
-    padding: 2rem;
-    border-radius: var(--border-radius-large);
+    max-width: 360px; /* Encore plus réduit */
+    padding: 1.5rem; /* Réduit de 1.75rem à 1.5rem */
+    border-radius: var(--border-radius);
     box-shadow: var(--shadow-heavy);
     background: var(--card-background);
     border: 1px solid var(--border-color);
+    margin: 0; /* Suppression de toute marge */
 }
 
 .register-card {
-    max-width: 450px;
+    max-width: 380px; /* Réduit pour le register */
 }
 
-/* Headers */
+/* Headers - ESPACEMENT ULTRA RÉDUIT */
 .login-header, .register-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem; /* Réduit de 1.5rem à 1.25rem */
 }
 
 .login-title, .register-title {
     font-family: var(--font-family-primary);
     color: var(--primary-color);
-    font-size: 2rem;
+    font-size: 1.6rem; /* Réduit de 1.75rem à 1.6rem */
     margin-bottom: 0.5rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .login-subtitle, .register-subtitle {
     color: var(--text-secondary);
-    font-size: 1rem;
+    font-size: 0.9rem; /* Réduit de 0.95rem */
     font-family: var(--font-family-secondary);
 }
 
-/* Logo dans l'auth */
+/* Logo dans l'auth - TAILLE ULTRA RÉDUITE */
 .login-header .logo, .register-header .logo {
-    height: 60px;
-    margin-bottom: 1rem;
+    height: 45px; /* Réduit de 50px à 45px */
+    margin-bottom: 0.75rem; /* Réduit */
     filter: drop-shadow(0 2px 8px rgba(139, 69, 19, 0.3));
+    object-fit: contain;
 }
 
 /* Forms d'authentification */
@@ -58,27 +63,27 @@
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem; /* Réduit de 1.25rem à 1rem */
 }
 
 .form-label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem; /* Réduit de 0.5rem */
     color: var(--text-secondary);
     font-weight: 500;
     font-family: var(--font-family-primary);
-    font-size: 0.95rem;
+    font-size: 0.85rem; /* Réduit de 0.9rem */
 }
 
 .form-control {
     width: 100%;
-    padding: 0.875rem;
+    padding: 0.65rem; /* Réduit de 0.75rem à 0.65rem */
     border: 1px solid var(--input-border);
     border-radius: var(--border-radius);
     background-color: var(--input-background);
     color: var(--text-primary);
     font-family: var(--font-family-secondary);
-    font-size: 1rem;
+    font-size: 0.9rem; /* Réduit de 0.95rem */
     transition: all var(--animation-duration) var(--animation-timing);
 }
 
@@ -95,9 +100,9 @@
     background-color: var(--background-tertiary);
 }
 
-/* Remember me / Terms */
+/* Remember me / Terms - ESPACEMENT ULTRA RÉDUIT */
 .remember-me, .terms {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem; /* Réduit de 1.25rem à 1rem */
 }
 
 .checkbox-label {
@@ -107,12 +112,12 @@
     cursor: pointer;
     color: var(--text-secondary);
     font-family: var(--font-family-secondary);
-    font-size: 0.9rem;
+    font-size: 0.8rem; /* Réduit de 0.85rem */
 }
 
 .checkbox-label input[type="checkbox"] {
-    width: 1.1rem;
-    height: 1.1rem;
+    width: 0.9rem; /* Réduit de 1rem */
+    height: 0.9rem;
     accent-color: var(--primary-color);
 }
 
@@ -125,15 +130,15 @@
     text-decoration: underline;
 }
 
-/* Boutons d'action */
+/* Boutons d'action - ULTRA OPTIMISÉS */
 .form-actions {
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem; /* Réduit de 1.5rem */
 }
 
 .login-btn, .register-btn {
     width: 100%;
-    padding: 0.875rem;
-    font-size: 1rem;
+    padding: 0.65rem; /* Réduit de 0.75rem */
+    font-size: 0.9rem; /* Réduit de 0.95rem */
     font-weight: 600;
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     border: none;
@@ -166,8 +171,8 @@
 /* Spinner pour loading */
 .spinner {
     display: inline-block;
-    width: 1rem;
-    height: 1rem;
+    width: 0.8rem; /* Réduit */
+    height: 0.8rem;
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
@@ -180,22 +185,22 @@
     100% { transform: rotate(360deg); }
 }
 
-/* Footers */
+/* Footers - ESPACEMENT ULTRA RÉDUIT */
 .login-footer, .register-footer {
     text-align: center;
-    padding-top: 1rem;
+    padding-top: 0.75rem; /* Réduit de 1rem */
     border-top: 1px solid var(--border-color);
 }
 
 .login-footer p, .register-footer p {
     color: var(--text-secondary);
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
+    margin-bottom: 0.75rem; /* Réduit de 1rem */
+    font-size: 0.8rem; /* Réduit de 0.85rem */
 }
 
 .login-footer .btn, .register-footer .btn {
-    padding: 0.5rem 1.5rem;
-    font-size: 0.9rem;
+    padding: 0.4rem 1rem; /* Réduit */
+    font-size: 0.8rem; /* Réduit */
 }
 
 /* Validation et messages d'erreur */
@@ -203,8 +208,8 @@
     background-color: rgba(220, 20, 60, 0.1);
     border: 1px solid rgba(220, 20, 60, 0.3);
     border-radius: var(--border-radius);
-    padding: 1rem;
-    margin-bottom: 1rem;
+    padding: 0.6rem; /* Réduit */
+    margin-bottom: 0.75rem; /* Réduit */
     color: var(--error-color);
 }
 
@@ -215,17 +220,17 @@
 
 .validation-message {
     color: var(--error-color);
-    font-size: 0.85rem;
+    font-size: 0.75rem; /* Réduit */
     margin-top: 0.25rem;
     font-family: var(--font-family-secondary);
 }
 
 /* Alerts */
 .alert {
-    padding: 0.75rem 1rem;
+    padding: 0.6rem 0.75rem; /* Réduit */
     border-radius: var(--border-radius);
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
+    margin-bottom: 0.75rem; /* Réduit */
+    font-size: 0.8rem; /* Réduit */
     font-family: var(--font-family-secondary);
 }
 
@@ -241,21 +246,62 @@
     border: 1px solid rgba(34, 139, 34, 0.3);
 }
 
-/* Responsive */
-@media (max-width: 480px) {
+/* Classes utilitaires pour éviter les marges excessives */
+.compact-container {
+    max-width: 100vw;
+    margin: 0;
+    padding: 0.25rem; /* Ultra minimal */
+}
+
+.compact-card {
+    margin: 0;
+    padding: 1.25rem;
+}
+
+/* Responsive - ULTRA OPTIMISÉ */
+@media (max-width: 640px) {
     .login-container, .register-container {
-        padding: 1rem;
+        padding: 0.25rem; /* Ultra minimal sur mobile */
+        min-height: 100vh;
+        justify-content: center; /* Centrage vertical restauré */
     }
     
     .login-card, .register-card {
-        padding: 1.5rem;
+        padding: 1.25rem; /* Réduit sur mobile */
+        margin: 0;
+        max-width: 100%;
+        width: calc(100% - 0.5rem); /* Marges minimales */
     }
     
     .login-title, .register-title {
-        font-size: 1.75rem;
+        font-size: 1.4rem; /* Réduit sur mobile */
     }
     
     .form-control {
-        padding: 0.75rem;
+        padding: 0.6rem; /* Réduit sur mobile */
+        font-size: 0.85rem;
+    }
+    
+    .login-header .logo, .register-header .logo {
+        height: 35px; /* Plus petit sur mobile */
     }
 }
+
+@media (max-width: 480px) {
+    .login-container, .register-container {
+        padding: 0.25rem;
+    }
+    
+    .login-card, .register-card {
+        padding: 1rem;
+        width: calc(100% - 0.5rem);
+    }
+    
+    .login-title, .register-title {
+        font-size: 1.25rem;
+    }
+    
+    .form-control {
+        padding: 0.55rem;
+    }
+}}

@@ -4,12 +4,19 @@
 <div class="page" data-theme="dark-fantasy">
     @if (AuthService.IsAuthenticated)
     {
-        <div class="sidebar">
+        <div class="sidebar @(isSidebarOpen ? "open" : "")" @onclick="CloseSidebar">
             <NavMenu />
         </div>
 
         <main>
             <div class="top-row px-4">
+                <!-- Toggle mobile menu -->
+                <button class="mobile-menu-toggle" @onclick="ToggleSidebar" aria-label="Ouvrir le menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+
                 <div class="user-info">
                     <span>Bienvenue, Aventurier !</span>
                     <!-- Utilisation d'un form pour la déconnexion -->
@@ -35,3 +42,20 @@
         </main>
     }
 </div>
+
+@code {
+    private bool isSidebarOpen = false;
+
+    private void ToggleSidebar()
+    {
+        isSidebarOpen = !isSidebarOpen;
+    }
+
+    private void CloseSidebar()
+    {
+        if (isSidebarOpen)
+        {
+            isSidebarOpen = false;
+        }
+    }
+}

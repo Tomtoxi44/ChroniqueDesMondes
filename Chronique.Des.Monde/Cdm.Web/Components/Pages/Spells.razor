@@ -1,0 +1,83 @@
+﻿@page "/spells"
+@using Cdm.Web.Services.Authentication
+
+<PageTitle>Grimoire de Sorts - Chronique des Mondes</PageTitle>
+
+<div class="spells-container">
+    <div class="page-header">
+        <h1 class="page-title">✨ Grimoire de Sorts</h1>
+        <p class="page-subtitle">Maîtrisez les arcanes et découvrez de puissants sorts</p>
+        
+        <div class="search-filters">
+            <input type="text" @bind="searchTerm" @bind:event="oninput" class="form-control search-input" placeholder="Rechercher un sort..." />
+            <select @bind="selectedSchool" class="form-control filter-select">
+                <option value="">Toutes les écoles</option>
+                <option value="Évocation">Évocation</option>
+                <option value="Enchantement">Enchantement</option>
+                <option value="Illusion">Illusion</option>
+                <option value="Nécromancie">Nécromancie</option>
+                <option value="Transmutation">Transmutation</option>
+                <option value="Divination">Divination</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="spells-grid">
+        @foreach (var spell in filteredSpells)
+        {
+            <div class="spell-card @GetSpellRarityClass(spell.Level)">
+                <div class="spell-header">
+                    <div class="spell-icon">@spell.Icon</div>
+                    <div class="spell-level">Niveau @spell.Level</div>
+                </div>
+                
+                <h3 class="spell-name">@spell.Name</h3>
+                <p class="spell-school">@spell.School</p>
+                
+                <div class="spell-details">
+                    <div class="spell-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Temps:</span>
+                            <span class="stat-value">@spell.CastingTime</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Portée:</span>
+                            <span class="stat-value">@spell.Range</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Durée:</span>
+                            <span class="stat-value">@spell.Duration</span>
+                        </div>
+                    </div>
+                    
+                    <p class="spell-description">@spell.Description</p>
+                    
+                    @if (spell.Components.Any())
+                    {
+                        <div class="spell-components">
+                            <span class="components-label">Composants:</span>
+                            @foreach (var component in spell.Components)
+                            {
+                                <span class="component-tag">@component</span>
+                            }
+                        </div>
+                    }
+                </div>
+                
+                <div class="spell-actions">
+                    <button class="btn btn-primary btn-sm">Apprendre</button>
+                    <button class="btn btn-secondary btn-sm">Détails</button>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!filteredSpells.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3>Aucun sort trouvé</h3>
+            <p>Essayez de modifier vos critères de recherche</p>
+        </div>
+    }
+</div>

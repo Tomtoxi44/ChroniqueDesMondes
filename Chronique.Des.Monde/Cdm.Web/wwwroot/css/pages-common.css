@@ -1,0 +1,301 @@
+﻿/* ======================
+   STYLES GLOBAUX POUR TOUTES LES PAGES
+   ====================== */
+
+/* Page header - utilisé par toutes les pages */
+.page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.1) 0%, 
+        rgba(218, 165, 32, 0.05) 100%);
+    border-radius: var(--border-radius-large);
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, 
+        rgba(218, 165, 32, 0.1) 0%, 
+        transparent 70%);
+    pointer-events: none;
+}
+
+.page-title {
+    font-family: var(--font-family-primary);
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.75rem;
+    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1;
+}
+
+.page-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    font-family: var(--font-family-secondary);
+    font-style: italic;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Filtres de recherche - utilisés par plusieurs pages */
+.search-filters {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.search-input, .filter-select {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--input-border);
+    border-radius: var(--border-radius);
+    background-color: var(--input-background);
+    color: var(--text-primary);
+    font-family: var(--font-family-secondary);
+    font-size: 0.95rem;
+    transition: all var(--animation-duration) var(--animation-timing);
+    min-width: 200px;
+}
+
+.search-input:focus, .filter-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.15);
+    background-color: var(--background-tertiary);
+}
+
+.search-input::placeholder {
+    color: var(--text-placeholder);
+    font-style: italic;
+}
+
+/* États vides - utilisés par toutes les pages avec filtres */
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.05) 0%, 
+        rgba(218, 165, 32, 0.03) 100%);
+    border-radius: var(--border-radius-large);
+    border: 2px dashed rgba(218, 165, 32, 0.3);
+    margin: 2rem 0;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+}
+
+.empty-state h3 {
+    color: var(--text-secondary);
+    font-family: var(--font-family-primary);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.empty-state .btn {
+    margin-top: 1rem;
+}
+
+/* Boutons globaux - styles harmonisés */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-family: var(--font-family-secondary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--animation-duration) var(--animation-timing);
+    cursor: pointer;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent);
+    transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    box-shadow: var(--shadow-medium);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-heavy);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--secondary-color), #b8860b);
+    color: white;
+    box-shadow: var(--shadow-medium);
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, var(--secondary-light), var(--secondary-color));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-heavy);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 2px solid var(--border-color);
+}
+
+.btn-outline:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Animations globales */
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.6s ease-out;
+}
+
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+/* Responsive global */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2rem;
+    }
+    
+    .page-subtitle {
+        font-size: 1rem;
+    }
+    
+    .search-filters {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .search-input, .filter-select {
+        min-width: 100%;
+        max-width: 300px;
+    }
+    
+    .page-header {
+        padding: 1.5rem 1rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 1.75rem;
+    }
+    
+    .empty-icon {
+        font-size: 3rem;
+    }
+    
+    .empty-state {
+        padding: 2rem 1rem;
+    }
+    
+    .btn {
+        padding: 0.65rem 1.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .btn-sm {
+        padding: 0.45rem 0.85rem;
+        font-size: 0.8rem;
+    }
+}

@@ -1,0 +1,245 @@
+﻿@page "/stats"
+@using Cdm.Web.Services.Authentication
+
+<PageTitle>Statistiques - Chronique des Mondes</PageTitle>
+
+<div class="stats-container">
+    <div class="stats-header">
+        <h1 class="stats-title">📊 Statistiques de l'Aventurier</h1>
+        <p class="stats-subtitle">Analysez vos performances et votre progression</p>
+    </div>
+
+    <!-- Métriques principales -->
+    <div class="stats-overview">
+        <div class="stat-card">
+            <div class="stat-icon">⚔️</div>
+            <div class="stat-content">
+                <div class="stat-number">@totalCombats</div>
+                <div class="stat-label">Combats Livrés</div>
+                <div class="stat-change positive">+@combatsThisWeek cette semaine</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🏆</div>
+            <div class="stat-content">
+                <div class="stat-number">@victories</div>
+                <div class="stat-label">Victoires</div>
+                <div class="stat-change positive">@winRate% de réussite</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🎲</div>
+            <div class="stat-content">
+                <div class="stat-number">@diceRolls</div>
+                <div class="stat-label">Lancers de Dés</div>
+                <div class="stat-change neutral">Moyenne: @averageRoll</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🎯</div>
+            <div class="stat-content">
+                <div class="stat-number">@experiencePoints</div>
+                <div class="stat-label">Points d'Expérience</div>
+                <div class="stat-change positive">+@xpGained cette session</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progression des personnages -->
+    <div class="character-progression">
+        <h2 class="section-title">🧙‍♂️ Progression des Personnages</h2>
+        <div class="character-grid">
+            @foreach (var character in characters)
+            {
+                <div class="character-card">
+                    <div class="character-avatar">@character.Icon</div>
+                    <h3>@character.Name</h3>
+                    <p class="character-class">@character.Class • Niveau @character.Level</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: @character.XpPercent%"></div>
+                    </div>
+                    <div class="progress-text">@character.CurrentXp / @character.NextLevelXp XP</div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Statistiques détaillées -->
+    <div class="detailed-stats">
+        <div class="stats-section">
+            <h2 class="section-title">🎲 Analyse des Dés</h2>
+            <div class="dice-stats">
+                <div class="dice-summary">
+                    <div class="dice-metric">
+                        <span class="metric-value">@criticalSuccess</span>
+                        <span class="metric-label">Critiques Réussis</span>
+                    </div>
+                    <div class="dice-metric">
+                        <span class="metric-value">@criticalFailures</span>
+                        <span class="metric-label">Échecs Critiques</span>
+                    </div>
+                    <div class="dice-metric">
+                        <span class="metric-value">@averageRoll</span>
+                        <span class="metric-label">Moyenne D20</span>
+                    </div>
+                    <div class="dice-metric">
+                        <span class="metric-value">@luckFactor%</span>
+                        <span class="metric-label">Facteur Chance</span>
+                    </div>
+                </div>
+
+                <div class="dice-chart">
+                    <h3>Distribution des résultats D20</h3>
+                    <div class="chart-bars">
+                        @for (int i = 1; i <= 20; i++)
+                        {
+                            var height = GetDiceFrequency(i);
+                            <div class="chart-bar" style="height: @(height)px" title="@i: @GetDiceCount(i) fois">
+                                <span class="bar-label">@i</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <h2 class="section-title">🏅 Accomplissements</h2>
+            <div class="achievements">
+                @foreach (var achievement in achievements)
+                {
+                    <div class="achievement-card @(achievement.IsUnlocked ? "unlocked" : "locked")">
+                        <div class="achievement-icon">@achievement.Icon</div>
+                        <div class="achievement-info">
+                            <h3>@achievement.Name</h3>
+                            <p>@achievement.Description</p>
+                            @if (achievement.IsUnlocked)
+                            {
+                                <span class="unlock-date">Débloqué le @achievement.UnlockDate?.ToString("dd/MM/yyyy")</span>
+                            }
+                            else
+                            {
+                                <div class="achievement-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: @achievement.Progress%"></div>
+                                    </div>
+                                    <span>@achievement.Progress% complété</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Activité récente -->
+    <div class="recent-activity">
+        <h2 class="section-title">📈 Activité Récente</h2>
+        <div class="activity-timeline">
+            @foreach (var activity in recentActivities)
+            {
+                <div class="activity-item">
+                    <div class="activity-icon">@activity.Icon</div>
+                    <div class="activity-content">
+                        <h4>@activity.Title</h4>
+                        <p>@activity.Description</p>
+                        <span class="activity-time">@activity.TimeAgo</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    // Données bouchonnées pour les statistiques
+    private int totalCombats = 127;
+    private int combatsThisWeek = 12;
+    private int victories = 89;
+    private int winRate = 70;
+    private int diceRolls = 1547;
+    private decimal averageRoll = 11.2m;
+    private int experiencePoints = 15750;
+    private int xpGained = 450;
+    private int criticalSuccess = 78;
+    private int criticalFailures = 65;
+    private int luckFactor = 52;
+
+    private List<Character> characters = new()
+    {
+        new() { Name = "Gorthak le Protecteur", Class = "Guerrier", Level = 5, Icon = "🛡️", CurrentXp = 6500, NextLevelXp = 8000, XpPercent = 81 },
+        new() { Name = "Lyralei l'Archimage", Class = "Mage", Level = 5, Icon = "🧙‍♀️", CurrentXp = 6100, NextLevelXp = 8000, XpPercent = 76 },
+        new() { Name = "Aranis Chassevent", Class = "Rôdeur", Level = 4, Icon = "🏹", CurrentXp = 4200, NextLevelXp = 6500, XpPercent = 65 },
+        new() { Name = "Sœur Luminara", Class = "Clerc", Level = 4, Icon = "✨", CurrentXp = 3800, NextLevelXp = 6500, XpPercent = 58 }
+    };
+
+    private List<Achievement> achievements = new()
+    {
+        new() { Name = "Tueur de Dragons", Description = "Vaincre un dragon ancien", Icon = "🐲", IsUnlocked = true, UnlockDate = DateTime.Now.AddDays(-15) },
+        new() { Name = "Maître Lanceur", Description = "Obtenir 10 critiques consécutifs", Icon = "🎯", IsUnlocked = true, UnlockDate = DateTime.Now.AddDays(-8) },
+        new() { Name = "Explorateur", Description = "Découvrir 50 lieux secrets", Icon = "🗺️", IsUnlocked = false, Progress = 76 },
+        new() { Name = "Collectionneur", Description = "Posséder 100 objets magiques", Icon = "💎", IsUnlocked = false, Progress = 43 },
+        new() { Name = "Vétéran", Description = "Survivre à 200 combats", Icon = "🏆", IsUnlocked = false, Progress = 63 },
+        new() { Name = "Sage", Description = "Atteindre le niveau 10", Icon = "📚", IsUnlocked = false, Progress = 50 }
+    };
+
+    private List<Activity> recentActivities = new()
+    {
+        new() { Title = "Niveau augmenté", Description = "Gorthak le Protecteur a atteint le niveau 5 !", Icon = "⚡", TimeAgo = "Il y a 2 heures" },
+        new() { Title = "Objet légendaire trouvé", Description = "Épée de flammes éternelles acquise", Icon = "⚔️", TimeAgo = "Il y a 5 heures" },
+        new() { Title = "Boss vaincu", Description = "Le Seigneur Liche a été défait !", Icon = "💀", TimeAgo = "Hier" },
+        new() { Title = "Nouvelle quête", Description = "Les Terres Oubliées - Chapitre 3", Icon = "📜", TimeAgo = "Il y a 2 jours" },
+        new() { Title = "Accomplissement débloqué", Description = "Maître Lanceur obtenu !", Icon = "🏅", TimeAgo = "Il y a 3 jours" }
+    };
+
+    // Données pour le graphique des dés (simulation)
+    private Dictionary<int, int> diceResults = new()
+    {
+        {1, 65}, {2, 68}, {3, 72}, {4, 75}, {5, 79}, {6, 82}, {7, 85}, {8, 88}, {9, 91}, {10, 94},
+        {11, 97}, {12, 89}, {13, 86}, {14, 83}, {15, 80}, {16, 77}, {17, 74}, {18, 71}, {19, 69}, {20, 78}
+    };
+
+    private int GetDiceFrequency(int value)
+    {
+        return diceResults.ContainsKey(value) ? Math.Max(diceResults[value] / 2, 5) : 5;
+    }
+
+    private int GetDiceCount(int value)
+    {
+        return diceResults.ContainsKey(value) ? diceResults[value] : 0;
+    }
+
+    // Classes pour les données
+    public class Character
+    {
+        public string Name { get; set; } = "";
+        public string Class { get; set; } = "";
+        public int Level { get; set; }
+        public string Icon { get; set; } = "";
+        public int CurrentXp { get; set; }
+        public int NextLevelXp { get; set; }
+        public int XpPercent { get; set; }
+    }
+
+    public class Achievement
+    {
+        public string Name { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Icon { get; set; } = "";
+        public bool IsUnlocked { get; set; }
+        public DateTime? UnlockDate { get; set; }
+        public int Progress { get; set; }
+    }
+
+    public class Activity
+    {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Icon { get; set; } = "";
+        public string TimeAgo { get; set; } = "";
+    }
+}

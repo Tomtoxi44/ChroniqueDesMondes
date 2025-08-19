@@ -1,103 +1,124 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 
 namespace Cdm.Web.Components.Pages;
 
 public partial class Dice : ComponentBase
 {
-    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
-
+    private readonly int[] availableDice = { 4, 6, 8, 10, 12, 20, 100 };
+    private readonly HashSet<int> selectedDice = new();
     private int diceCount = 1;
-    private int selectedDiceType = 20;
     private int modifier = 0;
-    private bool isRolling = false;
-    
-    private DiceResult? lastResult;
-    private List<DiceResult> rollHistory = new();
-    
-    private readonly List<SelectOption> diceTypes = new()
+    private DiceRoll? lastRoll;
+    private readonly List<DiceRoll> rollHistory = new();
+    private readonly Random random = new();
+
+    private void ToggleDice(int die)
     {
-        new(4, "d4 - Tétraèdre"),
-        new(6, "d6 - Cube"),
-        new(8, "d8 - Octaèdre"),
-        new(10, "d10 - Décaèdre"),
-        new(12, "d12 - Dodécaèdre"),
-        new(20, "d20 - Icosaèdre"),
-        new(100, "d100 - Percentile")
-    };
+        if (selectedDice.Contains(die))
+        {
+            selectedDice.Remove(die);
+        }
+        else
+        {
+            selectedDice.Clear();
+            selectedDice.Add(die);
+        }
+    }
 
-    private async Task RollDice()
+    private void RollDice()
     {
-        isRolling = true;
-        StateHasChanged();
+        if (!selectedDice.Any()) return;
 
-        // Simulation du temps de lancer
-        await Task.Delay(500);
-
-        var random = new Random();
-        var diceResults = new List<int>();
+        var die = selectedDice.First();
+        var rolls = new List<int>();
         
         for (int i = 0; i < diceCount; i++)
         {
-            diceResults.Add(random.Next(1, selectedDiceType + 1));
+            rolls.Add(random.Next(1, die + 1));
         }
-        
-        var total = diceResults.Sum() + modifier;
-        var formula = $"{diceCount}d{selectedDiceType}";
+
+        var total = rolls.Sum() + modifier;
+        var formula = $"{diceCount}d{die}";
         if (modifier != 0)
         {
-            formula += modifier > 0 ? $"+{modifier}" : $"{modifier}";
+            formula += modifier >= 0 ? $" + {modifier}" : $" - {Math.Abs(modifier)}";
         }
-        
-        lastResult = new DiceResult
+
+        lastRoll = new DiceRoll
         {
             Formula = formula,
-            DiceResults = diceResults,
+            IndividualRolls = rolls,
             Modifier = modifier,
             Total = total,
-            Timestamp = DateTime.Now
+            Time = DateTime.Now,
+            IsCritical = die == 20 && rolls.Any(r => r == 20),
+            IsFumble = die == 20 && rolls.Any(r => r == 1)
         };
-        
-        rollHistory.Insert(0, lastResult);
-        
-        isRolling = false;
-        StateHasChanged();
 
-        // Animation du résultat
-        await JSRuntime.InvokeVoidAsync("animateDiceResult");
+        rollHistory.Insert(0, lastRoll);
+        StateHasChanged();
+    }
+
+    private void QuickRoll(int die, int count, int mod)
+    {
+        selectedDice.Clear();
+        selectedDice.Add(die);
+        diceCount = count;
+        modifier = mod;
+        RollDice();
     }
 
     private void ClearHistory()
     {
         rollHistory.Clear();
-        lastResult = null;
+        StateHasChanged();
     }
 
-    private string GetResultClass(int total)
+    private string GetDiceIcon(int die)
     {
-        if (selectedDiceType == 20 && diceCount == 1)
+        return die switch
         {
-            return total switch
-            {
-                20 => "critical-success",
-                1 => "critical-failure",
-                >= 15 => "high-roll",
-                <= 5 => "low-roll",
-                _ => "normal-roll"
-            };
-        }
-        
-        return "normal-roll";
+            4 => "🔺",
+            6 => "⚀",
+            8 => "🔶",
+            10 => "🔟",
+            12 => "🟢",
+            20 => "🎲",
+            100 => "💯",
+            _ => "🎲"
+        };
     }
 
-    public class DiceResult
+    private string GetHistoryClass(DiceRoll roll)
+    {
+        var classes = new List<string> { "history-item" };
+        
+        if (roll.IsCritical) classes.Add("critical");
+        if (roll.IsFumble) classes.Add("fumble");
+        
+        return string.Join(" ", classes);
+    }
+
+    private int GetAbilityModifier()
+    {
+        // Simuler un modificateur de caractéristique typique
+        return random.Next(0, 6);
+    }
+
+    private int GetAttackBonus()
+    {
+        // Simuler un bonus d'attaque typique
+        return random.Next(2, 8);
+    }
+
+    public class DiceRoll
     {
         public string Formula { get; set; } = "";
-        public List<int> DiceResults { get; set; } = new();
+        public List<int> IndividualRolls { get; set; } = new();
         public int Modifier { get; set; }
         public int Total { get; set; }
-        public DateTime Timestamp { get; set; }
+        public DateTime Time { get; set; }
+        public bool IsCritical { get; set; }
+        public bool IsFumble { get; set; }
     }
-    
-    public record SelectOption(int Value, string Text);
 }
