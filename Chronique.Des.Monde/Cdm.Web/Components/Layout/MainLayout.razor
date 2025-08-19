@@ -1,0 +1,61 @@
+﻿@inherits LayoutComponentBase
+@using Cdm.Web.Services.Authentication
+
+<div class="page" data-theme="dark-fantasy">
+    @if (AuthService.IsAuthenticated)
+    {
+        <div class="sidebar @(isSidebarOpen ? "open" : "")" @onclick="CloseSidebar">
+            <NavMenu />
+        </div>
+
+        <main>
+            <div class="top-row px-4">
+                <!-- Toggle mobile menu -->
+                <button class="mobile-menu-toggle" @onclick="ToggleSidebar" aria-label="Ouvrir le menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+
+                <div class="user-info">
+                    <span>Bienvenue, Aventurier !</span>
+                    <!-- Utilisation d'un form pour la déconnexion -->
+                    <form method="post" action="/auth/logout" style="display: inline;">
+                        <button type="submit" class="btn btn-outline logout-btn">
+                            Déconnexion
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <article class="content px-4">
+                @Body
+            </article>
+        </main>
+    }
+    else
+    {
+        <main class="full-width">
+            <article class="content">
+                @Body
+            </article>
+        </main>
+    }
+</div>
+
+@code {
+    private bool isSidebarOpen = false;
+
+    private void ToggleSidebar()
+    {
+        isSidebarOpen = !isSidebarOpen;
+    }
+
+    private void CloseSidebar()
+    {
+        if (isSidebarOpen)
+        {
+            isSidebarOpen = false;
+        }
+    }
+}

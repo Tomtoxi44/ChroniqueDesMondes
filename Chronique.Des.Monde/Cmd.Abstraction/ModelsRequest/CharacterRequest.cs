@@ -1,0 +1,15 @@
+﻿namespace Cmd.Abstraction.ModelsRequest;
+
+public class CharacterRequest
+{
+    public string? Background { get; set; }
+    public int Id { get; set; }
+    public int Leveling { get; set; }
+    public int Life { get; set; }
+    public string? Name { get; set; }
+    public string? Picture { get; set; }
+
+    public IReadOnlyDictionary<string, object> Competences { get; set; } = new Dictionary<string, object>();
+
+    public IReadOnlyDictionary<string, object> Stats { get; set; } = new Dictionary<string, object>();
+}

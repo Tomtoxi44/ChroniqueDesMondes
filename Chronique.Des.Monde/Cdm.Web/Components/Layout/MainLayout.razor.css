@@ -1,0 +1,404 @@
+﻿/* ======================
+   LAYOUT PRINCIPAL MODERNE - ADAPTÉ À LA NOUVELLE LARGEUR
+   ====================== */
+
+/* Variables spécifiques au layout - LARGEUR RÉDUITE */
+:root {
+    --topbar-height: 64px;
+    --topbar-background: linear-gradient(135deg, 
+        rgba(26, 26, 26, 0.95) 0%, 
+        rgba(45, 45, 45, 0.92) 100%);
+    --topbar-border: rgba(139, 69, 19, 0.2);
+    --topbar-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+    --sidebar-width: 220px; /* Réduit de 280px à 220px pour correspondre au NavMenu */
+}
+
+/* Structure principale de la page */
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(135deg, 
+        var(--background-primary) 0%, 
+        var(--background-secondary) 100%);
+}
+
+/* Sidebar moderne - LARGEUR RÉDUITE */
+.sidebar {
+    background: var(--nav-background);
+    backdrop-filter: var(--nav-backdrop);
+    border-right: 1px solid var(--nav-border);
+    box-shadow: var(--nav-shadow);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 100;
+}
+
+.sidebar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(180deg, 
+        transparent 0%, 
+        rgba(139, 69, 19, 0.3) 50%, 
+        transparent 100%);
+}
+
+/* Top bar moderne et élégante */
+.top-row {
+    background: var(--topbar-background);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--topbar-border);
+    box-shadow: var(--topbar-shadow);
+    height: var(--topbar-height);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    transition: all var(--animation-duration) var(--animation-timing);
+}
+
+.top-row::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(139, 69, 19, 0.4) 50%, 
+        transparent 100%);
+}
+
+/* Bouton menu mobile */
+.mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(139, 69, 19, 0.1);
+    border: 1px solid rgba(139, 69, 19, 0.3);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all var(--animation-duration) var(--animation-timing);
+    gap: 4px;
+    margin-right: auto;
+}
+
+.mobile-menu-toggle:hover {
+    background: rgba(139, 69, 19, 0.2);
+    border-color: rgba(139, 69, 19, 0.5);
+    transform: scale(1.05);
+}
+
+.hamburger-line {
+    width: 20px;
+    height: 2px;
+    background: var(--text-secondary);
+    border-radius: 1px;
+    transition: all var(--animation-duration) var(--animation-timing);
+}
+
+.mobile-menu-toggle:hover .hamburger-line {
+    background: var(--secondary-color);
+}
+
+/* Informations utilisateur dans la top bar */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-family: var(--font-family-primary);
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all var(--animation-duration) var(--animation-timing);
+}
+
+.user-info:hover {
+    background: rgba(139, 69, 19, 0.1);
+    border-color: rgba(139, 69, 19, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.user-info span {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    position: relative;
+}
+
+.user-info span::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--secondary-color);
+    transition: width var(--animation-duration) var(--animation-timing);
+}
+
+.user-info:hover span::after {
+    width: 100%;
+}
+
+/* Bouton de déconnexion moderne */
+.logout-btn {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.85rem;
+    font-family: var(--font-family-secondary);
+    font-weight: 600;
+    background: linear-gradient(135deg, 
+        rgba(220, 20, 60, 0.1) 0%, 
+        rgba(139, 0, 0, 0.05) 100%);
+    border: 1px solid rgba(220, 20, 60, 0.3);
+    color: var(--text-secondary);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all var(--animation-duration) var(--animation-timing);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.logout-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(220, 20, 60, 0.1), 
+        transparent);
+    transition: left 0.5s ease;
+}
+
+.logout-btn:hover::before {
+    left: 100%;
+}
+
+.logout-btn:hover {
+    background: linear-gradient(135deg, 
+        rgba(220, 20, 60, 0.2) 0%, 
+        rgba(139, 0, 0, 0.1) 100%);
+    border-color: rgba(220, 20, 60, 0.5);
+    color: #ff6b6b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 20, 60, 0.2);
+}
+
+.logout-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(220, 20, 60, 0.3);
+}
+
+/* Zone de contenu principal */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.content {
+    flex: 1;
+    padding: 1.5rem; /* Réduit de 2rem à 1.5rem pour compenser la sidebar plus étroite */
+    position: relative;
+    animation: contentFadeIn 0.6s ease-out;
+}
+
+@keyframes contentFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mode plein écran pour pages non-authentifiées */
+.full-width {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.full-width .content {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive design - ADAPTÉ À LA NOUVELLE LARGEUR */
+@media (min-width: 641px) {
+    .page {
+        flex-direction: row;
+    }
+
+    .sidebar {
+        width: var(--sidebar-width); /* Utilise la nouvelle largeur */
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        flex-shrink: 0;
+    }
+
+    main {
+        width: calc(100% - var(--sidebar-width)); /* Adapté à la nouvelle largeur */
+    }
+
+    .top-row {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    .content {
+        padding: 1.5rem 2rem 1.5rem 2rem; /* Ajusté */
+    }
+}
+
+@media (max-width: 640px) {
+    :root {
+        --topbar-height: 56px;
+        --sidebar-width: 100%;
+    }
+
+    .page {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 75%; /* Réduit de 80% à 75% pour mobile */
+        max-width: 260px; /* Légèrement réduit */
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translateX(-100%);
+        transition: transform var(--animation-duration) var(--animation-timing);
+        z-index: 1000;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 100%;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--animation-duration) var(--animation-timing);
+    }
+
+    .sidebar.open::after {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .mobile-menu-toggle {
+        display: flex;
+    }
+
+    main {
+        width: 100%;
+    }
+
+    .top-row {
+        justify-content: space-between;
+        padding: 0 1rem;
+        height: var(--topbar-height);
+    }
+
+    .user-info {
+        gap: 1rem;
+        font-size: 0.9rem;
+        padding: 0.375rem 0.75rem;
+    }
+
+    .user-info span {
+        display: none;
+    }
+
+    .logout-btn {
+        padding: 0.375rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    .content {
+        padding: 1rem;
+    }
+}
+
+/* États de focus pour accessibilité */
+.logout-btn:focus,
+.mobile-menu-toggle:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Améliorations pour les écrans haute résolution */
+@media (min-resolution: 2dppx) {
+    .top-row {
+        backdrop-filter: blur(25px);
+    }
+    
+    .sidebar {
+        backdrop-filter: blur(20px);
+    }
+}
+
+/* Animations de chargement */
+.page {
+    animation: pageLoad 0.8s ease-out;
+}
+
+@keyframes pageLoad {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Thème sombre optimisé */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --topbar-background: linear-gradient(135deg, 
+            rgba(15, 15, 15, 0.98) 0%, 
+            rgba(25, 25, 25, 0.95) 100%);
+        --topbar-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    }
+}

@@ -1,0 +1,443 @@
+﻿/* ======================
+   NAVIGATION ULTRA-MODERNE - DESIGN PREMIUM
+   ====================== */
+
+/* Variables spécifiques à la navigation */
+:root {
+    --nav-width: 220px;
+    --nav-header-height: 70px;
+    --nav-item-height: 46px;
+    --nav-background: linear-gradient(135deg, 
+        rgba(20, 20, 20, 0.98) 0%, 
+        rgba(35, 35, 35, 0.95) 50%, 
+        rgba(45, 45, 45, 0.92) 100%);
+    --nav-border: rgba(139, 69, 19, 0.25);
+    --nav-backdrop: blur(20px);
+    --nav-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Container principal de navigation */
+.nav-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--nav-header-height);
+    padding: 1rem;
+    border-bottom: 1px solid var(--nav-border);
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.2) 0%, 
+        rgba(218, 165, 32, 0.12) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, 
+        rgba(218, 165, 32, 0.15) 0%, 
+        transparent 70%);
+    pointer-events: none;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 1;
+    position: relative;
+}
+
+.nav-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    filter: drop-shadow(0 3px 10px rgba(218, 165, 32, 0.4));
+    transition: all var(--animation-duration) var(--animation-timing);
+    border-radius: 6px;
+}
+
+.nav-logo:hover {
+    transform: scale(1.15) rotate(8deg);
+    filter: drop-shadow(0 5px 15px rgba(218, 165, 32, 0.6));
+}
+
+.nav-title {
+    font-family: var(--font-family-primary);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Zone de navigation scrollable */
+.nav-scrollable {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0.75rem 0;
+    height: calc(100vh - var(--nav-header-height));
+}
+
+/* Scrollbar ultra-fine */
+.nav-scrollable::-webkit-scrollbar {
+    width: 3px;
+}
+
+.nav-scrollable::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+}
+
+.nav-scrollable::-webkit-scrollbar-thumb {
+    background: rgba(218, 165, 32, 0.4);
+    border-radius: 2px;
+    transition: background 0.3s ease;
+}
+
+.nav-scrollable::-webkit-scrollbar-thumb:hover {
+    background: rgba(218, 165, 32, 0.6);
+}
+
+/* Sections de navigation - DESIGN PREMIUM */
+.nav-section {
+    margin-bottom: 1.75rem;
+    padding: 0 0.5rem;
+}
+
+.nav-section:last-child {
+    margin-bottom: 1rem;
+}
+
+.nav-section-title {
+    font-family: var(--font-family-primary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    position: relative;
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.15) 0%, 
+        rgba(218, 165, 32, 0.08) 100%);
+    border-radius: 10px;
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(139, 69, 19, 0.1);
+}
+
+.nav-section-title::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(218, 165, 32, 0.1) 50%, 
+        transparent 70%);
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.nav-section-title:hover::before {
+    opacity: 1;
+}
+
+.nav-section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        var(--secondary-color), 
+        transparent);
+    border-radius: 1px;
+}
+
+/* Items de navigation - DESIGN ULTRA-MODERNE */
+.nav-item {
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.75rem 1rem;
+    margin: 0 0.5rem;
+    border-radius: 12px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-family: var(--font-family-secondary);
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    min-height: var(--nav-item-height);
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.03) 0%, 
+        rgba(139, 69, 19, 0.05) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+}
+
+/* Effet de brillance moderne */
+.nav-link::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(218, 165, 32, 0.2) 50%, 
+        transparent 70%);
+    transform: rotate(45deg);
+    transition: transform 0.8s ease;
+    opacity: 0;
+}
+
+.nav-link:hover::before {
+    transform: rotate(45deg) translate(50%, 50%);
+    opacity: 1;
+}
+
+/* Indicateur gauche moderne */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 60%;
+    background: linear-gradient(180deg, 
+        var(--secondary-color), 
+        var(--primary-color));
+    border-radius: 0 3px 3px 0;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(218, 165, 32, 0.3);
+}
+
+/* États hover et active - ULTRA-MODERNES */
+.nav-link:hover {
+    color: var(--text-primary);
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.25) 0%, 
+        rgba(218, 165, 32, 0.18) 50%,
+        rgba(139, 69, 19, 0.25) 100%);
+    transform: translateX(8px) scale(1.02);
+    box-shadow: 
+        0 6px 20px rgba(139, 69, 19, 0.25),
+        inset 0 1px 3px rgba(218, 165, 32, 0.2),
+        0 0 15px rgba(218, 165, 32, 0.15);
+    border-color: rgba(218, 165, 32, 0.4);
+    backdrop-filter: blur(15px);
+}
+
+.nav-link:hover::after {
+    width: 4px;
+}
+
+.nav-link.active {
+    color: var(--secondary-color);
+    background: linear-gradient(135deg, 
+        rgba(139, 69, 19, 0.35) 0%, 
+        rgba(218, 165, 32, 0.25) 50%,
+        rgba(139, 69, 19, 0.35) 100%);
+    box-shadow: 
+        0 8px 25px rgba(139, 69, 19, 0.35),
+        inset 0 2px 5px rgba(218, 165, 32, 0.3),
+        0 0 20px rgba(218, 165, 32, 0.25);
+    border-color: rgba(218, 165, 32, 0.6);
+    transform: translateX(6px);
+    font-weight: 600;
+    backdrop-filter: blur(20px);
+}
+
+.nav-link.active::after {
+    width: 5px;
+    background: linear-gradient(180deg, 
+        var(--secondary-light), 
+        var(--secondary-color));
+    box-shadow: 0 0 15px rgba(218, 165, 32, 0.5);
+}
+
+/* Indicateur droit pour l'état actif */
+.nav-link.active::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 50%;
+    background: var(--secondary-color);
+    border-radius: 3px 0 0 3px;
+    box-shadow: 0 0 10px rgba(218, 165, 32, 0.6);
+    opacity: 1;
+}
+
+/* Icônes de navigation - ULTRA-STYLISÉES */
+.nav-icon {
+    font-size: 1.2rem;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 6px;
+    background: linear-gradient(135deg, 
+        rgba(218, 165, 32, 0.1), 
+        rgba(139, 69, 19, 0.1));
+    border: 1px solid rgba(218, 165, 32, 0.2);
+    position: relative;
+}
+
+.nav-icon::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(45deg, 
+        transparent, 
+        rgba(218, 165, 32, 0.3), 
+        transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.nav-link:hover .nav-icon {
+    transform: scale(1.2) rotate(5deg);
+    background: linear-gradient(135deg, 
+        rgba(218, 165, 32, 0.25), 
+        rgba(139, 69, 19, 0.2));
+    border-color: rgba(218, 165, 32, 0.4);
+    box-shadow: 0 3px 12px rgba(218, 165, 32, 0.3);
+}
+
+.nav-link:hover .nav-icon::before {
+    opacity: 1;
+}
+
+.nav-link.active .nav-icon {
+    transform: scale(1.25) rotate(8deg);
+    background: linear-gradient(135deg, 
+        rgba(218, 165, 32, 0.4), 
+        rgba(139, 69, 19, 0.3));
+    border-color: rgba(218, 165, 32, 0.6);
+    box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4);
+}
+
+/* Texte de navigation */
+.nav-text {
+    flex: 1;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+    position: relative;
+}
+
+.nav-link:hover .nav-text {
+    font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.nav-link.active .nav-text {
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* États focus pour accessibilité */
+.nav-link:focus {
+    outline: 2px solid var(--secondary-color);
+    outline-offset: 3px;
+    border-radius: 12px;
+}
+
+/* Animations d'entrée séquentielles */
+.nav-item {
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: navItemSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.nav-item:nth-child(1) { animation-delay: 0.1s; }
+.nav-item:nth-child(2) { animation-delay: 0.15s; }
+.nav-item:nth-child(3) { animation-delay: 0.2s; }
+.nav-item:nth-child(4) { animation-delay: 0.25s; }
+.nav-item:nth-child(5) { animation-delay: 0.3s; }
+.nav-item:nth-child(6) { animation-delay: 0.35s; }
+.nav-item:nth-child(7) { animation-delay: 0.4s; }
+
+@keyframes navItemSlideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    :root {
+        --nav-width: 100%;
+        --nav-header-height: 60px;
+        --nav-item-height: 44px;
+    }
+    
+    .nav-title {
+        font-size: 1rem;
+    }
+    
+    .nav-logo {
+        width: 32px;
+        height: 32px;
+    }
+    
+    .nav-link {
+        padding: 0.65rem 0.875rem;
+        font-size: 0.85rem;
+        border-radius: 10px;
+    }
+    
+    .nav-icon {
+        font-size: 1.1rem;
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* Mode sombre optimisé */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --nav-background: linear-gradient(135deg, 
+            rgba(10, 10, 10, 0.98) 0%, 
+            rgba(20, 20, 20, 0.95) 50%, 
+            rgba(30, 30, 30, 0.92) 100%);
+        --nav-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    }
+}

@@ -1,0 +1,100 @@
+﻿@page "/dice"
+
+<PageTitle>Lanceur de Dés - Chronique des Mondes</PageTitle>
+
+<div class="dice-container">
+    <div class="page-header">
+        <h1 class="page-title">🎲 Lanceur de Dés</h1>
+        <p class="page-subtitle">Laissez le destin décider de vos aventures</p>
+    </div>
+
+    <div class="dice-roller">
+        <div class="dice-selection">
+            <h3>Choisissez vos dés</h3>
+            <div class="dice-types">
+                @foreach (var die in availableDice)
+                {
+                    <button class="dice-btn @(selectedDice.Contains(die) ? "selected" : "")" 
+                            @onclick="() => ToggleDice(die)">
+                        <span class="dice-icon">@GetDiceIcon(die)</span>
+                        <span class="dice-label">d@die</span>
+                    </button>
+                }
+            </div>
+            
+            <div class="dice-controls">
+                <div class="control-group">
+                    <label>Nombre de dés:</label>
+                    <input type="number" @bind="diceCount" min="1" max="10" class="form-control dice-input" />
+                </div>
+                <div class="control-group">
+                    <label>Modificateur:</label>
+                    <input type="number" @bind="modifier" class="form-control dice-input" />
+                </div>
+            </div>
+            
+            <button class="btn btn-primary roll-btn" @onclick="RollDice" disabled="@(!selectedDice.Any())">
+                <span class="roll-icon">🎲</span>
+                Lancer les Dés
+            </button>
+        </div>
+
+        @if (lastRoll != null)
+        {
+            <div class="dice-result">
+                <h3>Résultat du Lancer</h3>
+                <div class="result-display">
+                    <div class="roll-formula">@lastRoll.Formula</div>
+                    <div class="roll-details">
+                        <span class="individual-rolls">[@string.Join(", ", lastRoll.IndividualRolls)]</span>
+                        @if (lastRoll.Modifier != 0)
+                        {
+                            <span class="modifier">@(lastRoll.Modifier >= 0 ? "+" : "")@lastRoll.Modifier</span>
+                        }
+                    </div>
+                    <div class="total-result">Total: @lastRoll.Total</div>
+                    
+                    @if (lastRoll.IsCritical)
+                    {
+                        <div class="critical-result">🎯 CRITIQUE !</div>
+                    }
+                    @if (lastRoll.IsFumble)
+                    {
+                        <div class="fumble-result">💥 ÉCHEC CRITIQUE !</div>
+                    }
+                </div>
+            </div>
+        }
+
+        <div class="dice-history">
+            <h3>Historique des Lancers</h3>
+            <div class="history-list">
+                @foreach (var roll in rollHistory.Take(10))
+                {
+                    <div class="history-item @GetHistoryClass(roll)">
+                        <span class="history-formula">@roll.Formula</span>
+                        <span class="history-total">@roll.Total</span>
+                        <span class="history-time">@roll.Time.ToString("HH:mm:ss")</span>
+                    </div>
+                }
+            </div>
+            
+            @if (rollHistory.Any())
+            {
+                <button class="btn btn-outline btn-sm" @onclick="ClearHistory">Effacer l'Historique</button>
+            }
+        </div>
+
+        <div class="quick-rolls">
+            <h3>Lancers Rapides</h3>
+            <div class="quick-roll-buttons">
+                <button class="btn btn-secondary btn-sm" @onclick="() => QuickRoll(20, 1, 0)">d20</button>
+                <button class="btn btn-secondary btn-sm" @onclick="() => QuickRoll(20, 1, GetAbilityModifier())">Jet de Carac</button>
+                <button class="btn btn-secondary btn-sm" @onclick="() => QuickRoll(20, 1, GetAttackBonus())">Attaque</button>
+                <button class="btn btn-secondary btn-sm" @onclick="() => QuickRoll(6, 1, 0)">Dégâts d6</button>
+                <button class="btn btn-secondary btn-sm" @onclick="() => QuickRoll(8, 1, 0)">Dégâts d8</button>
+                <button class="btn btn-secondary btn-sm" @onclick="() => QuickRoll(100, 1, 0)">d100</button>
+            </div>
+        </div>
+    </div>
+</div>

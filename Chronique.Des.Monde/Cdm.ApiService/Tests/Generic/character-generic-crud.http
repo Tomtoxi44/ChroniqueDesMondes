@@ -1,0 +1,173 @@
+### Tests pour l'API Character - Endpoints Génériques CRUD
+### Importe la configuration depuis character-config.http
+
+### ====================================
+### GET - Récupération de personnages
+### ====================================
+
+### 1. GET - Récupérer tous les personnages d'un utilisateur
+GET {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### 2. GET - Récupérer un personnage spécifique par ID
+GET {{baseUrl}}/character/{{characterId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### ====================================
+### POST - Création de personnage (générique)
+### ====================================
+
+### 3. POST - Créer un personnage avec l'API générique
+POST {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Lyralei la Sage",
+  "leveling": 5,
+  "life": 35,
+  "picture": "mage.jpg",
+  "background": "Ermite",
+  "competences": {
+    "Class": "Magicien",
+    "ClassArmor": 12,
+    "Strong": 8,
+    "Dexterity": 14,
+    "Constitution": 12,
+    "Intelligence": 18,
+    "Wisdoms": 15,
+    "Charism": 13
+  },
+  "stats": {}
+}
+
+### 4. POST - Créer un personnage minimaliste
+POST {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Personnage Simple",
+  "leveling": 1,
+  "life": 10,
+  "competences": {
+    "Class": "Novice",
+    "Strong": 10,
+    "Dexterity": 10,
+    "Constitution": 10,
+    "Intelligence": 10,
+    "Wisdoms": 10,
+    "Charism": 10
+  },
+  "stats": {}
+}
+
+### ====================================
+### PUT - Mise à jour de personnage (générique)
+### ====================================
+
+### 5. PUT - Mettre à jour un personnage (générique)
+PUT {{baseUrl}}/character/{{characterId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Lyralei la Grande Sage",
+  "leveling": 6,
+  "life": 40,
+  "picture": "mage_updated.jpg",
+  "background": "Archimage",
+  "competences": {
+    "Class": "Archimage",
+    "ClassArmor": 13,
+    "Strong": 8,
+    "Dexterity": 15,
+    "Constitution": 13,
+    "Intelligence": 20,
+    "Wisdoms": 16,
+    "Charism": 14
+  },
+  "stats": {}
+}
+
+### 6. PUT - Mise à jour partielle
+PUT {{baseUrl}}/character/{{characterId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Nom Modifié",
+  "leveling": 7,
+  "life": 45,
+  "competences": {
+    "Intelligence": 22
+  },
+  "stats": {}
+}
+
+### ====================================
+### DELETE - Suppression de personnage
+### ====================================
+
+### 7. DELETE - Supprimer un personnage
+DELETE {{baseUrl}}/character/{{characterId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+
+### ====================================
+### Tests d'erreurs génériques
+### ====================================
+
+### 8. GET - Personnage inexistant
+GET {{baseUrl}}/character/99999
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+
+### 9. PUT - Mise à jour d'un personnage inexistant
+PUT {{baseUrl}}/character/99999
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Personnage Inexistant",
+  "leveling": 1,
+  "life": 10,
+  "competences": {},
+  "stats": {}
+}
+
+### 10. DELETE - Suppression d'un personnage inexistant
+DELETE {{baseUrl}}/character/99999
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+
+### 11. POST - Création avec données invalides
+POST {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "",
+  "leveling": -1,
+  "life": -5,
+  "competences": {},
+  "stats": {}
+}
+
+### 12. PUT - Mise à jour avec JSON null
+PUT {{baseUrl}}/character/{{characterId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+null

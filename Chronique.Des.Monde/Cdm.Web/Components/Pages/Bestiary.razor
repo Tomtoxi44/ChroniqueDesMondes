@@ -1,0 +1,131 @@
+﻿@page "/bestiary"
+
+<PageTitle>Bestiaire - Chronique des Mondes</PageTitle>
+
+<div class="bestiary-container">
+    <div class="page-header">
+        <h1 class="page-title">🐉 Bestiaire des Créatures</h1>
+        <p class="page-subtitle">Découvrez les créatures mystiques et dangereuses qui peuplent les mondes</p>
+        
+        <div class="search-filters">
+            <input type="text" @bind="searchTerm" @bind:event="oninput" class="form-control search-input" placeholder="Rechercher une créature..." />
+            <select @bind="selectedType" class="form-control filter-select">
+                <option value="">Tous les types</option>
+                <option value="Dragon">Dragons</option>
+                <option value="Mort-vivant">Morts-vivants</option>
+                <option value="Démon">Démons</option>
+                <option value="Bête">Bêtes</option>
+                <option value="Élémentaire">Élémentaires</option>
+                <option value="Géant">Géants</option>
+                <option value="Fée">Fées</option>
+            </select>
+            <select @bind="selectedChallenge" class="form-control filter-select">
+                <option value="">Tous les niveaux</option>
+                <option value="1-5">Débutant (1-5)</option>
+                <option value="6-10">Intermédiaire (6-10)</option>
+                <option value="11-15">Avancé (11-15)</option>
+                <option value="16-20">Expert (16-20)</option>
+                <option value="21+">Légendaire (21+)</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="bestiary-grid">
+        @foreach (var creature in filteredCreatures)
+        {
+            <div class="creature-card @GetChallengeClass(creature.Challenge)">
+                <div class="creature-header">
+                    <div class="creature-icon">@creature.Icon</div>
+                    <div class="creature-challenge">ID @creature.Challenge</div>
+                </div>
+                
+                <h3 class="creature-name">@creature.Name</h3>
+                <p class="creature-type">@creature.Type • @creature.Size</p>
+                
+                <div class="creature-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">CA:</span>
+                        <span class="stat-value">@creature.ArmorClass</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">PV:</span>
+                        <span class="stat-value">@creature.HitPoints</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Vitesse:</span>
+                        <span class="stat-value">@creature.Speed</span>
+                    </div>
+                </div>
+                
+                <div class="abilities-grid">
+                    <div class="ability">
+                        <span class="ability-name">FOR</span>
+                        <span class="ability-value">@creature.Strength</span>
+                    </div>
+                    <div class="ability">
+                        <span class="ability-name">DEX</span>
+                        <span class="ability-value">@creature.Dexterity</span>
+                    </div>
+                    <div class="ability">
+                        <span class="ability-name">CON</span>
+                        <span class="ability-value">@creature.Constitution</span>
+                    </div>
+                    <div class="ability">
+                        <span class="ability-name">INT</span>
+                        <span class="ability-value">@creature.Intelligence</span>
+                    </div>
+                    <div class="ability">
+                        <span class="ability-name">SAG</span>
+                        <span class="ability-value">@creature.Wisdom</span>
+                    </div>
+                    <div class="ability">
+                        <span class="ability-name">CHA</span>
+                        <span class="ability-value">@creature.Charisma</span>
+                    </div>
+                </div>
+                
+                <p class="creature-description">@creature.Description</p>
+                
+                @if (creature.SpecialAbilities.Any())
+                {
+                    <div class="special-abilities">
+                        <h4>Capacités Spéciales:</h4>
+                        <ul>
+                            @foreach (var ability in creature.SpecialAbilities)
+                            {
+                                <li>@ability</li>
+                            }
+                        </ul>
+                    </div>
+                }
+                
+                @if (creature.Actions.Any())
+                {
+                    <div class="creature-actions">
+                        <h4>Actions:</h4>
+                        <ul>
+                            @foreach (var action in creature.Actions)
+                            {
+                                <li>@action</li>
+                            }
+                        </ul>
+                    </div>
+                }
+                
+                <div class="creature-card-actions">
+                    <button class="btn btn-primary btn-sm">Utiliser</button>
+                    <button class="btn btn-secondary btn-sm">Détails</button>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!filteredCreatures.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3>Aucune créature trouvée</h3>
+            <p>Essayez de modifier vos critères de recherche</p>
+        </div>
+    }
+</div>

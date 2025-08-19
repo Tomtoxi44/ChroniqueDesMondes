@@ -1,0 +1,139 @@
+### Fichier de test pour les endpoints Character API
+### Base URL de l'API
+@baseUrl = https://localhost:7428
+@baseUrlHttp = http://localhost:5597
+
+### Variables communes
+@userId = 1
+@gameType = dnd
+@characterId = 1
+@authToken = Bearer your-jwt-token-here
+
+### ====================================
+### TESTS D'AUTHENTIFICATION
+### ====================================
+
+### 1. Test de récupération de tous les personnages d'un utilisateur (HTTPS)
+GET {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### 2. Test de récupération de tous les personnages d'un utilisateur (HTTP)
+GET {{baseUrlHttp}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### 3. Test de récupération d'un personnage spécifique par ID
+GET {{baseUrl}}/character/characterId?characterId={{characterId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### ====================================
+### TESTS DE CRÉATION DE PERSONNAGE
+### ====================================
+
+### 4. Test de création d'un personnage D&D (méthode spécifique)
+POST {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Gorthak le Brave",
+  "leveling": 3,
+  "life": 45,
+  "picture": "warrior.jpg",
+  "background": "Soldat",
+  "class": "Guerrier",
+  "classArmor": 18,
+  "strong": 16,
+  "dexterity": 12,
+  "constitution": 15,
+  "intelligence": 10,
+  "wisdoms": 13,
+  "charism": 8
+}
+
+### 5. Test de création d'un personnage avec l'API générique
+POST {{baseUrl}}/character/generic?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Lyralei la Sage",
+  "leveling": 5,
+  "life": 35,
+  "picture": "mage.jpg",
+  "background": "Ermite",
+  "competences": {
+    "Class": "Magicien",
+    "ClassArmor": 12,
+    "Strong": 8,
+    "Dexterity": 14,
+    "Constitution": 12,
+    "Intelligence": 18,
+    "Wisdoms": 15,
+    "Charism": 13
+  },
+  "stats": {}
+}
+
+### ====================================
+### TESTS SANS AUTHENTIFICATION (pour vérifier les erreurs)
+### ====================================
+
+### 6. Test sans token d'authentification (doit retourner 401)
+GET {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Content-Type: application/json
+
+### ====================================
+### TESTS AVEC DIFFÉRENTS TYPES DE JEU
+### ====================================
+
+### 7. Test avec un autre type de jeu (si supporté)
+GET {{baseUrl}}/character?userId={{userId}}
+X-GameType: pathfinder
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### ====================================
+### TESTS D'ERREURS
+### ====================================
+
+### 8. Test avec userId invalide
+GET {{baseUrl}}/character?userId=-1
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### 9. Test sans header X-GameType
+GET {{baseUrl}}/character?userId={{userId}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### 10. Test avec characterId inexistant
+GET {{baseUrl}}/character/characterId?characterId=99999
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### ====================================
+### NOTES D'UTILISATION
+### ====================================
+
+# Pour utiliser ce fichier :
+# 1. Remplacez "your-jwt-token-here" par un vrai token JWT
+# 2. Ajustez les userId et characterId selon vos données de test
+# 3. Assurez-vous que l'API est en cours d'exécution sur les ports spécifiés
+# 4. Les endpoints nécessitent une authentification (RequireAuthorization)
+# 5. Le header X-GameType est requis pour spécifier le type de jeu (ex: "dnd")
+
+### Variables alternatives pour tests
+# @userId = 2
+# @gameType = pathfinder
+# @characterId = 5
