@@ -2,12 +2,12 @@
 
 ## 🎯 Objectif de l'application
 
-L'objectif de l'application est de créer une plateforme JDR où un utilisateur peut être joueur ou maître du jeu (MJ).  
+L'objectif de l'application est de créer une plateforme JDR où un utilisateur peut être **joueur** ou **maître du jeu (MJ)** - et même les deux à la fois dans différentes campagnes !
 Le socle est générique, puis des logiques métiers spécifiques à chaque jeu (ex : D&D) viennent compléter les fonctionnalités de base.
 
 - **Création de personnage** : Par défaut, un personnage possède un nom, prénom, points de vie. Si un jeu est précisé (ex : D&D), des champs supplémentaires sont requis (caractéristiques, compétences, etc.).
 - **Routage métier** : Les endpoints API sont tagués pour diriger les requêtes vers la logique métier appropriée selon le jeu.
-- **Gestion de campagnes** : Création, gestion, et suivi de campagnes de jeu de rôle, incluant la gestion des combats.
+- **Gestion de campagnes** : Création, gestion, et suivi de campagnes de jeu de rôle, incluant la gestion des combats par chapitres.
 
 ## 🏗️ Architecture Technique
 
@@ -23,11 +23,16 @@ Le socle est générique, puis des logiques métiers spécifiques à chaque jeu 
 Cdm.ApiService/
 ├── Endpoints/              # Définition des endpoints REST
 │   ├── CharacterEndpoint.cs      # API personnages
+│   ├── CampaignEndpoint.cs        # API campagnes et chapitres
+│   ├── CombatEndpoint.cs          # API gestion des combats
+│   ├── NpcEndpoint.cs             # API PNJ et monstres
 │   ├── UserEndpoints.cs           # API utilisateurs/auth
 │   └── WeatherEndpoints.cs        # API exemple météo
 ├── Services/               # Services métier
 │   ├── JwtService.cs              # Gestion des tokens JWT
-│   └── PasswordService.cs         # Chiffrement mots de passe
+│   ├── PasswordService.cs         # Chiffrement mots de passe
+│   ├── CombatService.cs           # Logique de combat
+│   └── CampaignService.cs         # Logique de campagne
 ├── Extensions/             # Extensions et configuration
 │   ├── ServiceCollectionExtensions.cs
 │   └── EndpointMappingExtensions.cs
@@ -39,14 +44,60 @@ Cdm.ApiService/
 │   ├── Security/                  # Tests sécurité
 │   └── Scenarios/                 # Tests end-to-end
 └── Documentation/          # Documentation technique
-    └── README.md                  # Ce fichier
+    ├── README.md                  # Ce fichier
+    └── UseCases.md                # Cas d'utilisation détaillés
 ```
 
 ## 🧑‍🤝‍🧑 Gestion des utilisateurs et des campagnes
 
+### Rôles Multiples
+- **Un utilisateur peut être MJ d'une campagne ET joueur dans une autre** simultanément
+- Chaque campagne a un seul MJ (créateur de la campagne)
+- Un utilisateur peut participer en tant que joueur à plusieurs campagnes
+
+### Gestion des Campagnes
 - Un utilisateur peut créer une campagne et devient alors MJ.
 - Il peut inviter des joueurs à rejoindre sa campagne.
 - Il peut rendre sa campagne publique pour permettre à d'autres joueurs de la rejoindre, ou la rendre accessible à d'autres MJ qui souhaitent la dupliquer et jouer avec leur propre groupe.
+
+## 🏰 Création et Structure des Campagnes
+
+### Tags de Système de Jeu
+- **Création initiale** : Une campagne peut être taguée avec un jeu supporté (D&D, Skyrim à venir) ou rester générique
+- **Tag ajouté ultérieurement** : Possibilité d'ajouter un tag plus tard pour débloquer les PNJ/monstres préconfigurés
+- **Avantages du tag** : Accès à des bibliothèques de PNJ et monstres spécifiques au système de jeu
+
+### Structure par Chapitres
+Une campagne est organisée en **chapitres** successifs :
+
+#### Création d'un Chapitre
+- **Navigation** : Flèches haut/bas pour naviguer entre chapitres
+- **Contenu narratif** : Blocs de texte pour décrire les événements du chapitre
+- **Onglets** : PNJ et Monstres disponibles pour ce chapitre
+
+#### Liaison des PNJ aux Événements
+- **Référencement** : Possibilité de lier un PNJ à un bloc de texte
+- **Contextualisation** : Backgrounds comportementaux selon l'attitude des joueurs
+  - 🟢 **Comportement amical** : Encadré vert avec dialogue/attitude cordiale
+  - 🟡 **Comportement neutre** : Encadré jaune avec attitude standard
+  - 🔴 **Comportement hostile** : Encadré rouge avec attitude agressive
+
+### Gestion des PNJ et Monstres par Campagne
+
+#### Types de Création
+1. **PNJ Générique** : Nom, prénom, description (obligatoire) - pour usage ponctuel
+2. **PNJ/Monstre Spécialisé** : Avec stats du système de jeu (ex: D&D) pour les combats
+
+#### Exemple de Workflow
+```
+Campagne D&D "Les Terres Oubliées" (tag: dnd)
+├── Chapitre 1: "L'Arrivée au Village"
+│   ├── PNJ: Aubergiste Brom (générique - nom, description)
+│   └── Monstre: Gobelins (D&D - stats complètes pour combat)
+├── Chapitre 2: "La Forêt Hantée"
+│   ├── PNJ: Ermite Sage (générique)
+│   └── Monstre: Loup-garou (D&D - CA, PV, attaques)
+```
 
 ## 🧙‍♂️ Création de personnages
 
@@ -74,6 +125,12 @@ Content-Type: application/json
 
 ## ⚔️ Gestion des combats
 
+### Interface MJ de Combat
+- **Vue par chapitre** : Le MJ visualise son chapitre avec onglets PNJ/Monstres
+- **Sélection d'adversaires** : Choix des PNJ/monstres à inclure dans le combat
+- **Déclenchement** : Lance le système de combat avec les participants sélectionnés
+
+### Système de Combat Automatisé
 - Le MJ peut déclencher un combat dans une campagne.
 - L'application permet de lancer des dés, d'ajouter des modificateurs selon le système de jeu, et de suivre l'état du combat.
 - Pour D&D, le calcul des attaques, dégâts, et comparaisons avec la CA ennemie sont automatisés.
@@ -98,64 +155,45 @@ Content-Type: application/json
 | `PUT` | `/character/dnd/{id}` | Modification D&D | `Authorization`, `X-GameType: dnd` |
 | `DELETE` | `/character/{id}` | Suppression | `Authorization: Bearer {token}` |
 
+### Campagnes
+| Méthode | Endpoint | Description | Headers Requis |
+|---------|----------|-------------|----------------|
+| `GET` | `/campaign?userId={id}` | Campagnes de l'utilisateur | `Authorization: Bearer {token}` |
+| `GET` | `/campaign/{id}` | Détails d'une campagne | `Authorization: Bearer {token}` |
+| `POST` | `/campaign?userId={id}` | Création de campagne | `Authorization`, `X-GameType: {type}` |
+| `PUT` | `/campaign/{id}` | Modification de campagne | `Authorization: Bearer {token}` |
+| `DELETE` | `/campaign/{id}` | Suppression de campagne | `Authorization: Bearer {token}` |
+
+### Chapitres
+| Méthode | Endpoint | Description | Headers Requis |
+|---------|----------|-------------|----------------|
+| `GET` | `/campaign/{id}/chapters` | Chapitres d'une campagne | `Authorization: Bearer {token}` |
+| `GET` | `/chapter/{id}` | Détails d'un chapitre | `Authorization: Bearer {token}` |
+| `POST` | `/campaign/{id}/chapter` | Création de chapitre | `Authorization: Bearer {token}` |
+| `PUT` | `/chapter/{id}` | Modification de chapitre | `Authorization: Bearer {token}` |
+| `DELETE` | `/chapter/{id}` | Suppression de chapitre | `Authorization: Bearer {token}` |
+
+### PNJ/Monstres
+| Méthode | Endpoint | Description | Headers Requis |
+|---------|----------|-------------|----------------|
+| `GET` | `/chapter/{id}/npcs` | PNJ d'un chapitre | `Authorization: Bearer {token}` |
+| `GET` | `/npc/{id}` | Détails d'un PNJ | `Authorization: Bearer {token}` |
+| `POST` | `/chapter/{id}/npc` | Création PNJ/Monstre | `Authorization`, `X-GameType: {type}` |
+| `PUT` | `/npc/{id}` | Modification PNJ/Monstre | `Authorization`, `X-GameType: {type}` |
+| `DELETE` | `/npc/{id}` | Suppression PNJ/Monstre | `Authorization: Bearer {token}` |
+
+### Combats
+| Méthode | Endpoint | Description | Headers Requis |
+|---------|----------|-------------|----------------|
+| `POST` | `/chapter/{id}/combat/start` | Démarrer un combat | `Authorization: Bearer {token}` |
+| `GET` | `/combat/{id}` | État du combat | `Authorization: Bearer {token}` |
+| `POST` | `/combat/{id}/action` | Action de combat | `Authorization: Bearer {token}` |
+| `PUT` | `/combat/{id}/end` | Terminer le combat | `Authorization: Bearer {token}` |
+
 ### Météo (Exemple)
 | Méthode | Endpoint | Description |
 |---------|----------|-------------|
 | `GET` | `/weatherforecast` | Prévisions météo test |
-
-## 📝 Cas d'utilisation
-
-### Cas d'utilisation 1 : Combat dans une campagne D&D
-
-- **Contexte** : Chapitre 3 d'une campagne D&D, un combat est prévu.
-- **Préparation** : Le MJ a préconfiguré le combat avec les PNJ/monstres à affronter, ou les ajoute à la volée.
-- **Déroulement** :
-    - Au lancement du combat, un jet d'initiative est effectué pour tous les participants.
-    - Les joueurs reçoivent une notification quand c'est leur tour.
-    - Un joueur peut lancer une attaque, choisir une cible, et lancer les dés nécessaires.
-    - L'application calcule automatiquement le résultat (prise en compte de l'arme, modificateurs, CA ennemie, etc.).
-    - Si l'attaque réussit, le joueur lance les dés de dégâts, et les points de vie de la cible sont mis à jour.
-- **Pour les systèmes non pris en charge** : Les calculs sont manuels, mais l'interface permet au MJ de modifier les valeurs à la main.
-
-### Cas d'utilisation 2 : Création de personnage multi-système
-
-```http
-# 1. Création d'un personnage D&D
-POST /character/dnd?userId=1 HTTP/1.1
-X-GameType: dnd
-Authorization: Bearer {jwt_token}
-Content-Type: application/json
-
-{
-  "name": "Gorthak",
-  "class": "Guerrier",
-  "race": "Nain",
-  "level": 1,
-  "strength": 16,
-  "dexterity": 10,
-  "constitution": 15,
-  "intelligence": 11,
-  "wisdom": 13,
-  "charisma": 8,
-  "hitPoints": 12,
-  "armorClass": 16
-}
-
-# 2. Duplication pour un autre système
-POST /character?userId=1 HTTP/1.1
-X-GameType: generic
-Authorization: Bearer {jwt_token}
-Content-Type: application/json
-
-{
-  "name": "Gorthak (Skyrim)",
-  "customFields": {
-    "stamina": 100,
-    "magicka": 50,
-    "skill_onehanded": 75
-  }
-}
-```
 
 ## 🛡️ Sécurité
 
@@ -171,7 +209,8 @@ Content-Type: application/json
 ### Validation des Données
 - Validation automatique des modèles
 - Sanitisation des entrées utilisateur
-- Contrôle d'accès par utilisateur (un utilisateur ne peut voir que ses personnages)
+- Contrôle d'accès par utilisateur (un utilisateur ne peut voir que ses personnages/campagnes)
+- Contrôle d'accès MJ (seul le MJ peut modifier sa campagne)
 
 ## 🔧 Configuration
 
@@ -236,6 +275,7 @@ dotnet run
 3. **Ajouter les endpoints** dans `Endpoints/{GameType}Endpoint.cs`
 4. **Configurer le routage** par header `X-GameType`
 5. **Ajouter les tests** dans `Tests/{GameType}/`
+6. **Ajouter les PNJ/monstres** prédéfinis en base
 
 ### Structure des Données
 ```csharp
@@ -259,16 +299,56 @@ public class CharacterDnd : Character
     public int Dexterity { get; set; }
     // ... autres stats D&D
 }
+
+// Modèles Campagne
+public class Campaign
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public int GameMasterId { get; set; }
+    public string GameType { get; set; }
+    public List<Chapter> Chapters { get; set; }
+    public List<Player> Players { get; set; }
+}
+
+public class Chapter
+{
+    public int Id { get; set; }
+    public int CampaignId { get; set; }
+    public int ChapterNumber { get; set; }
+    public string Title { get; set; }
+    public List<NarrativeBlock> NarrativeBlocks { get; set; }
+    public List<Npc> Npcs { get; set; }
+}
+
+public class Npc
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public string Type { get; set; } // "npc" ou "monster"
+    public string GameType { get; set; }
+    public Dictionary<string, object> Stats { get; set; }
+    public List<BehaviorContext> Behaviors { get; set; }
+}
+
+public class BehaviorContext
+{
+    public string PlayerAttitude { get; set; } // "friendly", "neutral", "hostile"
+    public string NpcResponse { get; set; }
+    public string BackgroundColor { get; set; } // "green", "yellow", "red"
+}
 ```
 
 ## 📋 Prochaines Étapes
 
 ### Fonctionnalités à Implémenter
-- **Campagnes** - CRUD et gestion des participants
-- **Combats** - Système d'initiative et tours de jeu
-- **Sorts et Équipements** - Bibliothèques d'objets magiques
-- **Invitations** - Système de notifications pour rejoindre campagnes
+- **Interface IA** - Assistance pour création de chapitres, lieux, PNJ et monstres
+- **Bibliothèques pré-configurées** - PNJ et monstres D&D en base de données
+- **Système d'invitations** - Notifications pour rejoindre campagnes
 - **Chat en temps réel** - Communication entre joueurs via SignalR
+- **Gestion des tours** - Interface temps réel pour les combats
 
 ### Améliorations Techniques
 - **Cache** - Redis pour les données fréquemment consultées
@@ -276,6 +356,11 @@ public class CharacterDnd : Character
 - **Monitoring** - Métriques et logs centralisés
 - **Documentation OpenAPI** - Spécifications API complètes
 - **Tests d'intégration** - Validation des workflows complets
+
+## 📖 Documentation Détaillée
+
+Pour des cas d'utilisation complets et des exemples détaillés, consultez :
+- **[Cas d'utilisation détaillés](./UseCases.md)** - Scénarios complets avec exemples API
 
 ---
 

@@ -50,6 +50,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cdm.MigrationsManager", "Cd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cdm.Migrations", "Cdm.Migrations\Cdm.Migrations.csproj", "{AD1A51C5-8A3D-4F02-9A0F-DCF8F42A601B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{110D40F6-C6EE-4C8B-9B93-ED07A2919E12}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -137,6 +142,7 @@ Global
 		{CEC2D6D9-78A3-416D-8BE6-E250E0C7F817} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{E4AAE577-536A-8516-D2BC-D709BAB31C6C} = {CEC2D6D9-78A3-416D-8BE6-E250E0C7F817}
 		{AD1A51C5-8A3D-4F02-9A0F-DCF8F42A601B} = {CEC2D6D9-78A3-416D-8BE6-E250E0C7F817}
+		{110D40F6-C6EE-4C8B-9B93-ED07A2919E12} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1447205F-E63C-4637-876A-F5462110F983}
