@@ -1,32 +1,93 @@
 ﻿# Cas d'Utilisation - Sorts et Équipements
 
-Ce document présente des scénarios détaillés pour les systèmes de sorts et d'équipements, incluant la gestion des modificateurs D&D et les interfaces utilisateur.
+Ce document présente des scénarios détaillés pour les systèmes de sorts et d'équipements, incluant la distinction entre contenus officiels (injection admin) et privés (utilisateurs), ainsi que les mécaniques d'échange **d'équipements uniquement**.
 
 ## 🪄 Cas d'Utilisation Sorts
 
-### Cas 1 : Création d'un Sort D&D par un Utilisateur
+**Important** : Les sorts ne peuvent **PAS** être échangés entre joueurs. Chaque joueur doit apprendre ses sorts individuellement (officiels ou créer ses propres sorts privés).
+
+### Cas 1 : Consultation des Sorts Disponibles (Officiels + Privés)
 
 #### Contexte
-Thomas (MJ) veut créer un sort personnalisé "Flèche Spectrale" pour sa campagne D&D.
+Lisa (Mage D&D) consulte tous les sorts disponibles pour son personnage.
 
-#### Workflow Complet
+#### Workflow de Consultation Bi-Source
 
-##### 1. Accès à la page de création de sorts
+##### 1. Vue globale : Sorts officiels + privés utilisateur
 ```http
-GET /spells?gameType=dnd&userId=2 HTTP/1.1
-Authorization: Bearer {jwt_token_thomas}
+GET /spells?gameType=dnd&userId=3 HTTP/1.1
+Authorization: Bearer {jwt_token_lisa}
 
 Response: 200 OK
 {
-  "spells": [
-    // Liste des sorts D&D existants
+  "officialSpells": [
+    {
+      "id": 1,
+      "name": "Boule de Feu",
+      "level": 3,
+      "school": "Évocation",
+      "source": "official",
+      "isPublic": true,
+      "createdByUserId": 0,
+      "description": "Une explosion de flammes dévastatrice",
+      "dndProperties": {
+        "damageFormula": "8d6",
+        "savingThrow": "Dextérité",
+        "castingTime": "1 action"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Projectile Magique",
+      "level": 1,
+      "school": "Évocation", 
+      "source": "official",
+      "isPublic": true,
+      "createdByUserId": 0
+    }
   ],
-  "canCreateCustom": true,
-  "userGameTypes": ["dnd", "generic"]
+  "userPrivateSpells": [
+    {
+      "id": 157,
+      "name": "Flèche Spectrale Personnalisée",
+      "level": 2,
+      "school": "Évocation",
+      "source": "private",
+      "isPublic": false,
+      "createdByUserId": 3,
+      "description": "Version modifiée par Lisa pour sa campagne"
+    }
+  ],
+  "totalAvailable": 25,
+  "userCanCreate": true,
+  "exchangeNotice": "❌ Les sorts ne peuvent pas être échangés entre joueurs"
 }
 ```
 
-##### 2. Création du sort personnalisé avec tag D&D
+##### 2. Vue filtrée : Sorts officiels uniquement
+```http
+GET /spells/official?gameType=dnd HTTP/1.1
+Authorization: Bearer {jwt_token_lisa}
+
+Response: 200 OK
+{
+  "officialSpells": [
+    // Seulement les sorts injectés par l'admin (CreatedByUserId = 0)
+  ],
+  "source": "administrative_injection",
+  "lastUpdated": "2024-01-15T00:00:00Z",
+  "totalCount": 23
+}
+```
+
+### Cas 2 : Création d'un Sort Privé par un Utilisateur
+
+#### Contexte
+Thomas (MJ) veut créer un sort D&D personnalisé **privé** pour sa campagne.
+
+#### Workflow de Création Privée
+
+##### 1. Création du sort privé avec tag D&D
 ```http
 POST /spell?userId=2 HTTP/1.1
 X-GameType: dnd
@@ -34,367 +95,615 @@ Authorization: Bearer {jwt_token_thomas}
 Content-Type: application/json
 
 {
-  "name": "Flèche Spectrale",
-  "description": "Une flèche d'énergie pure qui traverse les armures physiques",
-  "imageUrl": "custom_spectral_arrow.jpg",
+  "name": "Lame Spectrale de Thomas",
+  "description": "Sort unique créé pour la campagne 'Les Terres Oubliées'",
+  "imageUrl": "custom_spectral_blade.jpg",
   "gameType": "dnd",
-  "isPublic": false,
-  "tags": ["évocation", "force", "attaque", "magique"],
+  "isPublic": false,  // OBLIGATOIRE : Les sorts utilisateurs sont toujours privés
+  "tags": ["évocation", "force", "attaque"],
   "dndProperties": {
     "level": 2,
     "school": "Évocation",
     "castingTime": "1 action",
-    "range": "36 mètres",
-    "duration": "Instantané",
+    "range": "Contact",
+    "duration": "1 minute",
     "components": ["V", "S"],
-    "damageFormula": "2d6 + modificateur",
+    "damageFormula": "2d8 + modificateur",
     "requiresAttackRoll": true,
-    "requiresSavingThrow": false,
-    "damageType": "Force"
+    "requiresSavingThrow": false
   }
 }
 
 Response: 201 Created
 {
-  "id": 157,
-  "name": "Flèche Spectrale",
+  "id": 158,
+  "name": "Lame Spectrale de Thomas",
+  "source": "private",
   "createdByUserId": 2,
-  "spellAttackFormula": "1d20 + modificateur Intelligence + bonus maîtrise",
-  "calculatedForMage": {
-    "level5Mage": "+7 pour toucher, 2d6+4 dégâts"
-  }
-}
-```
-
-### Cas 2 : Personnage Apprend un Sort avec Calculs Automatiques
-
-#### Contexte
-Lisa (Mage niveau 5, Intelligence 18) veut apprendre le sort "Flèche Spectrale" de Thomas.
-
-#### Workflow avec Calculs Automatiques
-
-##### 1. Consultation des sorts disponibles depuis l'interface personnage
-```http
-GET /character/16/available-spells HTTP/1.1
-Authorization: Bearer {jwt_token_lisa}
-
-Response: 200 OK
-{
-  "characterInfo": {
-    "id": 16,
-    "name": "Lyralei l'Archimage",
-    "class": "Magicien",
-    "level": 5,
-    "spellcastingAbility": "intelligence",
-    "intelligenceScore": 18,
-    "proficiencyBonus": 3,
-    "calculatedBonuses": {
-      "spellAttackBonus": 7,  // (18-10)/2 + 3 = 4+3 = 7
-      "spellSaveDC": 15       // 8 + 4 + 3 = 15
-    }
+  "isPublic": false,
+  "visibility": "PRIVÉ - Visible uniquement par Thomas",
+  "calculatedProperties": {
+    "spellAttackFormula": "1d20 + modificateur Intelligence + bonus maîtrise",
+    "averageDamage": "13 + modificateur Intelligence"
   },
-  "availableSpells": [
-    {
-      "id": 157,
-      "name": "Flèche Spectrale",
-      "level": 2,
-      "school": "Évocation",
-      "createdBy": "Thomas",
-      "previewCalculation": {
-        "attackBonus": "+7 pour toucher",
-        "damage": "2d6+4 dégâts de force",
-        "slotRequired": "Emplacement niveau 2"
-      },
-      "canLearn": true,
-      "alreadyKnown": false
-    }
+  "restrictions": [
+    "❌ Ne peut pas être partagé avec d'autres utilisateurs",
+    "❌ Ne peut pas être échangé entre joueurs",
+    "✅ Peut être appris par tous les personnages de Thomas",
+    "✅ Modifiable uniquement par Thomas"
   ]
 }
 ```
 
-##### 2. Apprentissage du sort
+### Cas 3 : Tentative d'Accès à un Sort Privé d'Autrui
+
+#### Contexte
+Lisa essaie d'apprendre le sort privé de Thomas.
+
+#### Workflow de Restriction d'Accès
+
+```http
+GET /spell/158 HTTP/1.1
+Authorization: Bearer {jwt_token_lisa}
+
+Response: 403 Forbidden
+{
+  "error": "PRIVATE_SPELL_ACCESS_DENIED",
+  "message": "Ce sort est privé et appartient à un autre utilisateur",
+  "spellInfo": {
+    "name": "Lame Spectrale de Thomas",
+    "owner": "Thomas",
+    "source": "private"
+  },
+  "suggestions": [
+    {
+      "action": "create_similar",
+      "description": "Créer votre propre version de ce type de sort",
+      "endpoint": "POST /spell"
+    },
+    {
+      "action": "use_official_alternative",
+      "description": "Utiliser un sort officiel similaire",
+      "alternatives": [
+        {
+          "id": 45,
+          "name": "Lame Enflammée",
+          "level": 2,
+          "school": "Évocation"
+        }
+      ]
+    }
+  ],
+  "exchangeNotice": "❌ Les sorts ne peuvent jamais être échangés entre utilisateurs"
+}
+```
+
+### Cas 4 : Apprentissage Mixte (Sorts Officiels + Privés)
+
+#### Contexte
+Lisa apprend des sorts de différentes sources pour son personnage.
+
+#### Workflow d'Apprentissage Multi-Source
+
+##### 1. Apprentissage d'un sort officiel
+```http
+POST /character/16/spells/1 HTTP/1.1
+Authorization: Bearer {jwt_token_lisa}
+
+Response: 201 Created
+{
+  "success": true,
+  "spellLearned": {
+    "spellId": 1,
+    "name": "Boule de Feu",
+    "source": "official",
+    "learnedDate": "2024-01-15T14:30:00Z",
+    "calculatedForCharacter": {
+      "attackBonus": "N/A - Sort de sauvegarde",
+      "saveDC": 15,
+      "damage": "8d6 feu"
+    }
+  }
+}
+```
+
+##### 2. Apprentissage d'un sort privé personnel
 ```http
 POST /character/16/spells/157 HTTP/1.1
 Authorization: Bearer {jwt_token_lisa}
-Content-Type: application/json
-
-{
-  "learnMethod": "study",
-  "notes": "Sort appris pendant le repos long au chapitre 3"
-}
 
 Response: 201 Created
 {
   "success": true,
   "spellLearned": {
     "spellId": 157,
-    "characterId": 16,
-    "learnedDate": "2024-01-15T14:30:00Z",
-    "isPrepared": true
-  },
-  "updatedCharacterSpells": {
-    "knownSpellsCount": 8,
-    "preparedSpellsCount": 9,
-    "maxPreparedSpells": 9 // niveau 5 + modificateur Int = 5+4 = 9
-  }
-}
-```
-
-### Cas 3 : Restriction de Compatibilité Système
-
-#### Contexte
-Paul (Personnage Skyrim) essaie d'apprendre un sort D&D.
-
-#### Workflow de Validation
-
-```http
-POST /character/25/spells/157 HTTP/1.1
-Authorization: Bearer {jwt_token_paul}
-
-Response: 400 Bad Request
-{
-  "error": "SYSTEM_INCOMPATIBILITY",
-  "message": "Un personnage Skyrim ne peut pas apprendre des sorts D&D",
-  "characterGameType": "skyrim",
-  "spellGameType": "dnd",
-  "suggestions": [
-    {
-      "action": "duplicate_character",
-      "description": "Dupliquer le personnage en version D&D",
-      "endpoint": "POST /character/duplicate"
-    },
-    {
-      "action": "find_equivalent",
-      "description": "Rechercher un sort équivalent pour Skyrim",
-      "endpoint": "GET /spells?gameType=skyrim&similar=157"
+    "name": "Flèche Spectrale Personnalisée",
+    "source": "private",
+    "createdBy": "Lisa",
+    "learnedDate": "2024-01-15T14:35:00Z",
+    "calculatedForCharacter": {
+      "attackBonus": "+7 pour toucher",
+      "damage": "2d6+4 force"
     }
-  ]
+  },
+  "characterSpellSummary": {
+    "officialSpells": 4,
+    "privateSpells": 2,
+    "totalKnown": 6
+  }
 }
 ```
 
 ## ⚔️ Cas d'Utilisation Équipements
 
-### Cas 4 : Création d'Équipement avec Bonus D&D
+**Important** : Contrairement aux sorts, les équipements peuvent être échangés entre joueurs selon les règles définies.
+
+### Cas 5 : Consultation d'Équipements Officiels vs Privés
 
 #### Contexte
-Thomas crée une épée magique personnalisée pour sa campagne.
+Gorthak (Guerrier D&D) cherche une nouvelle épée.
 
-#### Workflow de Création
+#### Workflow de Consultation
+
+##### 1. Vue des équipements disponibles
+```http
+GET /equipment?gameType=dnd&userId=2&type=weapon HTTP/1.1
+Authorization: Bearer {jwt_token_thomas}
+
+Response: 200 OK
+{
+  "officialEquipment": [
+    {
+      "id": 10,
+      "name": "Épée Longue",
+      "source": "official",
+      "rarity": "Commun",
+      "createdByUserId": 0,
+      "dndProperties": {
+        "weaponCategory": "Martial",
+        "damageFormula": "1d8 + modificateur Force",
+        "damageType": "Tranchant",
+        "properties": ["Versatile (1d10)"]
+      }
+    },
+    {
+      "id": 11,
+      "name": "Épée Longue +1",
+      "source": "official",
+      "rarity": "Peu Commun",
+      "createdByUserId": 0
+    }
+  ],
+  "userPrivateEquipment": [
+    {
+      "id": 248,
+      "name": "Lame de Vérité de Thomas",
+      "source": "private",
+      "rarity": "Rare",
+      "createdByUserId": 2,
+      "description": "Épée personnalisée pour ma campagne",
+      "visibility": "Privée - Créée par Thomas"
+    }
+  ],
+  "exchangeNotice": "✅ Les équipements peuvent être échangés entre joueurs"
+}
+```
+
+### Cas 6 : Création d'Équipement Générique (Campagne Non-D&D)
+
+#### Contexte
+Sophie (MJ campagne générique) crée un objet pour sa campagne steampunk.
+
+#### Workflow Création Générique
 
 ```http
-POST /equipment?userId=2 HTTP/1.1
-X-GameType: dnd
+POST /equipment?userId=5 HTTP/1.1
+X-GameType: generic
+Authorization: Bearer {jwt_token_sophie}
+Content-Type: application/json
+
+{
+  "name": "Pistolet à Vapeur Artisanal",
+  "description": "Arme steampunk fonctionnant à la vapeur compressée",
+  "imageUrl": "steampunk_gun.jpg",
+  "gameType": "generic",
+  "isPublic": false,
+  "tags": ["steampunk", "arme", "vapeur", "distance"],
+  "genericProperties": {
+    "weight": 2.5,
+    "value": 150,
+    "attackBonusAbility": null,  // Pas de bonus automatique
+    "damageFormula": null        // Pas de formule automatique
+  }
+}
+
+Response: 201 Created
+{
+  "id": 325,
+  "name": "Pistolet à Vapeur Artisanal",
+  "source": "private",
+  "gameType": "generic",
+  "automaticCalculations": false,
+  "usage": {
+    "combatAssistance": "❌ Aucune - Gestion manuelle par le MJ",
+    "rules": "Sophie définit elle-même les règles d'utilisation selon son système JDR"
+  },
+  "visibility": "Privé - Visible uniquement par Sophie",
+  "exchangeCapability": "✅ Peut être proposé aux joueurs de ses campagnes"
+}
+```
+
+## 🔄 Cas d'Utilisation Échanges d'Équipements
+
+### Cas 7 : MJ Propose un Équipement à un Joueur
+
+#### Contexte
+Thomas (MJ) veut donner l'épée "Lame de Vérité" qu'il a créée à Lisa (joueur de sa campagne).
+
+#### Workflow Proposition MJ → Joueur
+
+##### 1. Thomas propose l'équipement à Lisa
+```http
+POST /campaign/42/equipment/offer HTTP/1.1
 Authorization: Bearer {jwt_token_thomas}
 Content-Type: application/json
 
 {
-  "name": "Lame de Vérité",
-  "description": "Une épée longue qui brille d'une lumière dorée et révèle les mensonges",
-  "imageUrl": "truth_blade.jpg",
-  "gameType": "dnd",
-  "isPublic": false,
-  "tags": ["épée", "magique", "détection", "radiant"],
-  "genericProperties": {
-    "weight": 1.5,
-    "value": 5000
-  },
-  "dndProperties": {
-    "equipmentType": "Weapon",
-    "weaponCategory": "Martial",
-    "damageFormula": "1d8 + modificateur Force + 1",
-    "damageType": "Tranchant",
-    "properties": ["Versatile", "Finesse"],
-    "rarity": "Rare",
-    "requiresAttunement": true,
-    "magicalProperties": [
-      {
-        "name": "Détection des Mensonges",
-        "description": "La lame rougeoie quand une créature à 3m dit un mensonge"
-      },
-      {
-        "name": "Dégâts Radiants",
-        "description": "+1d4 dégâts radiants contre les créatures maléfiques"
-      }
-    ]
-  }
+  "targetPlayerId": 3,
+  "equipmentId": 248,  // Lame de Vérité
+  "quantity": 1,
+  "message": "Cette épée magique sera parfaite pour ton personnage mage/guerrier !"
 }
 
 Response: 201 Created
 {
-  "id": 248,
-  "name": "Lame de Vérité",
-  "equipmentSlot": "MainHand",
-  "calculatedStats": {
-    "averageDamage": "6.5 + Mod.Force",
-    "criticalRange": "19-20",
-    "versatileDamage": "1d10 + Mod.Force + 1"
+  "offerId": 1001,
+  "campaignId": 42,
+  "gameMasterId": 2,
+  "targetPlayerId": 3,
+  "equipmentInfo": {
+    "name": "Lame de Vérité",
+    "rarity": "Rare",
+    "description": "Épée longue magique avec détection des mensonges"
+  },
+  "quantity": 1,
+  "status": "Pending",
+  "createdAt": "2024-01-15T16:00:00Z",
+  "notification": {
+    "message": "Proposition envoyée à Lisa",
+    "playerNotified": true
   }
 }
 ```
 
-### Cas 5 : Ajout d'Équipement à l'Inventaire avec Calculs
-
-#### Contexte
-Lisa ajoute la "Lame de Vérité" à son inventaire et l'équipe.
-
-#### Workflow avec Calculs Automatiques
-
-##### 1. Ajout à l'inventaire
+##### 2. Lisa consulte ses propositions en attente
 ```http
-POST /character/16/inventory/248 HTTP/1.1
+GET /campaign/42/equipment/offers?playerId=3 HTTP/1.1
 Authorization: Bearer {jwt_token_lisa}
-Content-Type: application/json
 
+Response: 200 OK
 {
-  "quantity": 1,
-  "autoEquip": true,
-  "notes": "Trouvée dans le trésor du chapitre 4"
-}
-
-Response: 201 Created
-{
-  "success": true,
-  "inventoryItem": {
-    "equipmentId": 248,
-    "quantity": 1,
-    "isEquipped": true,
-    "equipmentSlot": "MainHand"
-  },
-  "characterUpdates": {
-    "previousMainHand": {
-      "name": "Dague Simple",
-      "action": "moved_to_inventory"
-    },
-    "recalculatedStats": {
-      "armorClass": 12, // Inchangé
-      "attackBonuses": {
-        "lameDeTruth": {
-          "attackBonus": "+7", // Dex 14 (+2) + Prof 3 + Finesse = +5... Wait!
-          "damageBonus": "1d8+3", // Dex +2 + bonus magique +1
-          "specialDamage": "1d4 radiant vs maléfiques"
+  "pendingOffers": [
+    {
+      "offerId": 1001,
+      "fromGameMaster": "Thomas",
+      "equipment": {
+        "name": "Lame de Vérité",
+        "rarity": "Rare",
+        "image": "truth_blade.jpg",
+        "description": "Une épée longue qui brille d'une lumière dorée",
+        "dndProperties": {
+          "damageFormula": "1d8 + modificateur Force + 1",
+          "properties": ["Versatile", "Finesse", "Détection Mensonges"]
         }
       },
-      "carriedWeight": "15.2 kg",
-      "encumbrance": "Light"
+      "quantity": 1,
+      "message": "Cette épée magique sera parfaite pour ton personnage mage/guerrier !",
+      "receivedAt": "2024-01-15T16:00:00Z",
+      "canAccept": true,
+      "compatibilityCheck": {
+        "characterGameType": "dnd",
+        "equipmentGameType": "dnd",
+        "compatible": true
+      }
     }
-  },
-  "attunementRequired": {
-    "message": "Cette arme nécessite un lien. Procéder au rituel d'attunement ?",
-    "duration": "1 heure de repos court",
-    "currentAttunements": "1/3"
-  }
+  ]
 }
 ```
 
-##### 2. Processus d'attunement
+##### 3. Lisa accepte la proposition
 ```http
-POST /character/16/attunement/248 HTTP/1.1
+PUT /campaign/42/equipment/offer/1001 HTTP/1.1
 Authorization: Bearer {jwt_token_lisa}
 Content-Type: application/json
 
 {
-  "method": "short_rest",
-  "duration": "1_hour"
+  "response": "accepted",
+  "characterId": 16,  // Lyralei l'Archimage
+  "message": "Merci Thomas ! Cette épée sera parfaite pour Lyralei."
 }
 
 Response: 200 OK
 {
-  "attunementSuccessful": true,
-  "attunedItem": {
+  "success": true,
+  "offerStatus": "Accepted",
+  "equipmentAdded": {
+    "characterId": 16,
+    "equipmentId": 248,
     "name": "Lame de Vérité",
-    "attunedAt": "2024-01-15T16:00:00Z",
-    "fullBenefits": true
+    "quantity": 1,
+    "addedToInventory": true
   },
-  "updatedAbilities": {
-    "passiveDetection": {
-      "name": "Détection des Mensonges",
-      "range": "3 mètres",
-      "trigger": "Automatically when lies are spoken"
-    }
+  "gmInventoryStatus": {
+    "equipmentStillAvailable": true,
+    "message": "L'équipement reste disponible chez le MJ pour d'autres propositions"
   },
-  "attunementSlots": "2/3 utilisés"
+  "characterUpdates": {
+    "inventoryCount": 12,
+    "canEquip": true,
+    "slot": "MainHand"
+  }
 }
 ```
 
-### Cas 6 : Gestion Multi-Quantités d'Équipements
+### Cas 8 : Échange Direct entre Joueurs
 
 #### Contexte
-Gorthak (Guerrier) collecte plusieurs potions de soins.
+Lisa veut donner une potion de soins à Paul (autre joueur de la campagne) en échange de rien.
 
-#### Workflow de Gestion d'Inventaire
+#### Workflow Échange Joueur → Joueur
 
-##### 1. Ajout de potions multiples
+##### 1. Lisa propose l'échange à Paul
 ```http
-POST /character/15/inventory/89 HTTP/1.1
-Authorization: Bearer {jwt_token_thomas}
+POST /campaign/42/equipment/trade HTTP/1.1
+Authorization: Bearer {jwt_token_lisa}
 Content-Type: application/json
 
 {
-  "equipmentId": 89, // Potion de Soins
-  "quantity": 5,
-  "source": "purchased_at_shop",
-  "unitPrice": 50
+  "toPlayerId": 4,  // Paul
+  "fromCharacterId": 16,  // Lyralei
+  "toCharacterId": 22,    // Personnage de Paul
+  "equipmentId": 89,      // Potion de Soins
+  "quantity": 2,
+  "message": "Tu en auras plus besoin que moi pour le prochain combat !"
 }
 
 Response: 201 Created
 {
-  "inventoryUpdated": {
-    "equipmentName": "Potion de Soins",
-    "previousQuantity": 2,
-    "newQuantity": 7,
-    "totalValue": 350, // 7 × 50
-    "stackable": true
+  "tradeId": 2001,
+  "campaignId": 42,
+  "fromPlayer": "Lisa",
+  "toPlayer": "Paul",
+  "equipment": {
+    "name": "Potion de Soins",
+    "quantity": 2
   },
-  "characterInventory": {
-    "totalItems": 23,
-    "totalWeight": "67.5 kg",
-    "totalValue": "2,847 po",
-    "encumbranceStatus": "Medium Load"
-  }
+  "status": "Proposed",
+  "validationChecks": {
+    "senderHasQuantity": true,
+    "gameTypeCompatible": true,
+    "playersInSameCampaign": true,
+    "canProceed": true
+  },
+  "createdAt": "2024-01-15T17:30:00Z"
 }
 ```
 
-##### 2. Utilisation d'une potion en combat
+##### 2. Paul consulte ses demandes d'échange
 ```http
-PUT /character/15/inventory/89 HTTP/1.1
-Authorization: Bearer {jwt_token_thomas}
+GET /campaign/42/equipment/trade-requests?playerId=4 HTTP/1.1
+Authorization: Bearer {jwt_token_paul}
+
+Response: 200 OK
+{
+  "pendingTrades": [
+    {
+      "tradeId": 2001,
+      "fromPlayer": "Lisa",
+      "fromCharacter": "Lyralei l'Archimage",
+      "toCharacter": "Gareth l'Épéiste",
+      "equipment": {
+        "name": "Potion de Soins",
+        "quantity": 2,
+        "description": "Récupère 2d4+2 points de vie",
+        "value": 100  // 2 × 50po
+      },
+      "message": "Tu en auras plus besoin que moi pour le prochain combat !",
+      "proposedAt": "2024-01-15T17:30:00Z",
+      "canAccept": true
+    }
+  ]
+}
+```
+
+##### 3. Paul accepte l'échange
+```http
+PUT /campaign/42/equipment/trade/2001 HTTP/1.1
+Authorization: Bearer {jwt_token_paul}
 Content-Type: application/json
 
 {
-  "action": "use_item",
-  "quantity": 1,
-  "context": "combat",
-  "targetSelf": true
+  "response": "accepted",
+  "message": "Merci beaucoup Lisa ! Ça va m'aider énormément."
 }
 
 Response: 200 OK
 {
-  "itemUsed": {
-    "name": "Potion de Soins",
-    "effect": "Récupère 2d4+2 points de vie",
-    "diceRoll": [3, 2], // Résultat 3+2+2 = 7 PV
-    "healingAmount": 7
+  "success": true,
+  "tradeCompleted": {
+    "tradeId": 2001,
+    "status": "Completed",
+    "completedAt": "2024-01-15T17:35:00Z"
   },
-  "characterUpdates": {
-    "hitPoints": {
-      "before": 45,
-      "healed": 7,
-      "after": 52,
-      "maximum": 68
+  "inventoryChanges": {
+    "fromPlayer": {
+      "playerId": 3,
+      "characterId": 16,
+      "removed": {
+        "equipmentName": "Potion de Soins",
+        "quantity": 2
+      },
+      "newQuantity": 4  // Il lui en reste 4
     },
-    "inventory": {
-      "potionsRemaining": 6
+    "toPlayer": {
+      "playerId": 4,
+      "characterId": 22,
+      "added": {
+        "equipmentName": "Potion de Soins",
+        "quantity": 2
+      },
+      "newQuantity": 2  // Il en a maintenant 2
     }
+  },
+  "notifications": {
+    "fromPlayerNotified": true,
+    "toPlayerNotified": true,
+    "gmNotified": true  // Le MJ est informé de l'échange
   }
 }
 ```
 
-## 🎯 Cas d'Utilisation Interface Personnage
-
-### Cas 7 : Vue Unifiée Personnage avec Sorts et Équipements
+### Cas 9 : Refus d'Échange et Gestion d'Erreurs
 
 #### Contexte
-Interface complète d'un personnage D&D avec calculs en temps réel.
+Paul refuse un autre échange et cas d'erreur avec quantité insuffisante.
+
+#### Workflow de Refus et Validation
+
+##### 1. Paul refuse une proposition d'échange
+```http
+PUT /campaign/42/equipment/trade/2002 HTTP/1.1
+Authorization: Bearer {jwt_token_paul}
+Content-Type: application/json
+
+{
+  "response": "declined",
+  "message": "Désolé, j'ai besoin de garder cet équipement pour l'instant."
+}
+
+Response: 200 OK
+{
+  "success": true,
+  "tradeStatus": "Declined",
+  "fromPlayerNotified": true,
+  "message": "Échange refusé. Le proposeur a été notifié."
+}
+```
+
+##### 2. Tentative d'échange avec quantité insuffisante
+```http
+POST /campaign/42/equipment/trade HTTP/1.1
+Authorization: Bearer {jwt_token_lisa}
+Content-Type: application/json
+
+{
+  "toPlayerId": 4,
+  "fromCharacterId": 16,
+  "toCharacterId": 22,
+  "equipmentId": 89,
+  "quantity": 10,  // Lisa n'en a que 4
+  "message": "Je te donne toutes mes potions !"
+}
+
+Response: 400 Bad Request
+{
+  "error": "INSUFFICIENT_QUANTITY",
+  "message": "Quantité insuffisante pour effectuer cet échange",
+  "details": {
+    "requested": 10,
+    "available": 4,
+    "equipmentName": "Potion de Soins"
+  },
+  "suggestions": [
+    {
+      "action": "adjust_quantity",
+      "description": "Réduire la quantité à 4 ou moins",
+      "maxAvailable": 4
+    }
+  ]
+}
+```
+
+## 🎯 Cas d'Utilisation Interface Administrative
+
+### Cas 10 : Injection de Sorts Officiels (Script Admin)
+
+#### Contexte
+L'équipe de développement ajoute les sorts officiels Skyrim.
+
+#### Workflow d'Injection Administrative
+
+##### 1. Script d'injection SQL (exécuté par l'admin)
+```sql
+-- Injection administrative des sorts Skyrim (dans 6 semaines)
+INSERT INTO Spells (Name, Description, GameType, IsPublic, CreatedByUserId, SkyrimProperties)
+VALUES 
+(
+  'Flammes',
+  'Jet de flammes continu qui brûle les ennemis proches',
+  'skyrim',
+  true,
+  0,  -- 0 = Administrateur
+  '{"school":"Destruction","magickaCost":5,"baseDamage":8,"skillLevel":"Novice"}'
+),
+(
+  'Soin',
+  'Restaure instantanément la santé du lanceur',
+  'skyrim', 
+  true,
+  0,
+  '{"school":"Restoration","magickaCost":25,"healAmount":"25","skillLevel":"Novice"}'
+),
+(
+  'Boule de Glace',
+  'Projectile de glace qui ralentit et endommage',
+  'skyrim',
+  true, 
+  0,
+  '{"school":"Destruction","magickaCost":30,"baseDamage":25,"effect":"slow","skillLevel":"Apprentice"}'
+);
+
+-- Vérification post-injection
+SELECT COUNT(*) as 'Sorts Skyrim Officiels' 
+FROM Spells 
+WHERE GameType = 'skyrim' AND CreatedByUserId = 0;
+```
+
+##### 2. Résultat pour les utilisateurs après injection
+```http
+GET /spells/official?gameType=skyrim HTTP/1.1
+Authorization: Bearer {jwt_token_any_user}
+
+Response: 200 OK
+{
+  "officialSpells": [
+    {
+      "id": 501,
+      "name": "Flammes",
+      "source": "official",
+      "gameType": "skyrim",
+      "createdByUserId": 0,
+      "skyrimProperties": {
+        "school": "Destruction",
+        "magickaCost": 5,
+        "baseDamage": 8
+      }
+    }
+    // ... autres sorts Skyrim
+  ],
+  "injectionInfo": {
+    "addedBy": "Administrator",
+    "injectionDate": "2024-03-01T00:00:00Z",
+    "totalSkyrimSpells": 45
+  },
+  "availableForAllUsers": true
+}
+```
+
+### Cas 11 : Interface Personnage Multi-Source avec Échanges
+
+#### Contexte
+Interface complète montrant la distinction entre sources et les échanges en cours.
 
 #### État de l'Interface
 
@@ -407,141 +716,213 @@ Response: 200 OK
   "character": {
     "id": 16,
     "name": "Lyralei l'Archimage",
-    "class": "Magicien",
-    "race": "Elfe",
-    "level": 5,
-    "baseStats": {
-      "strength": 8,
-      "dexterity": 14,
-      "constitution": 13,
-      "intelligence": 18,
-      "wisdom": 15,
-      "charisma": 12
-    },
-    "calculatedStats": {
-      "armorClass": 13, // 10 + Dex(+2) + Armure de Mage(+1)
-      "hitPoints": { "current": 35, "maximum": 35 },
-      "proficiencyBonus": 3,
-      "spellcasting": {
-        "ability": "intelligence",
-        "attackBonus": 7,
-        "saveDC": 15,
-        "modifierBonus": 4
-      }
-    }
+    "gameType": "dnd"
   },
   "spells": {
     "knownSpells": [
       {
-        "id": 157,
-        "name": "Flèche Spectrale",
-        "level": 2,
-        "isPrepared": true,
-        "calculatedDamage": "2d6+4 force",
-        "attackRoll": "1d20+7"
+        "id": 1,
+        "name": "Boule de Feu",
+        "source": "official",
+        "icon": "🌟",
+        "modifiable": false,
+        "shareStatus": "Disponible pour tous les joueurs D&D",
+        "canExchange": false,
+        "exchangeNotice": "❌ Les sorts ne peuvent jamais être échangés"
       },
-      // ... autres sorts
+      {
+        "id": 157,
+        "name": "Flèche Spectrale Personnalisée",
+        "source": "private",
+        "icon": "👤",
+        "modifiable": true,
+        "shareStatus": "Privé - Visible uniquement par vous",
+        "canExchange": false,
+        "exchangeNotice": "❌ Les sorts ne peuvent jamais être échangés"
+      }
     ],
-    "spellSlots": {
-      "level1": { "max": 4, "used": 1 },
-      "level2": { "max": 3, "used": 0 },
-      "level3": { "max": 2, "used": 1 }
+    "availableToLearn": {
+      "officialCount": 23,
+      "privateCount": 3,
+      "restrictedCount": 5  // Sorts privés d'autres utilisateurs
     }
   },
   "equipment": {
-    "equipped": [
+    "inventory": [
       {
-        "slot": "MainHand",
-        "item": {
-          "id": 248,
-          "name": "Lame de Vérité",
-          "isAttuned": true,
-          "attackBonus": "+5", // Dex +2 + Prof +3
-          "damageRoll": "1d8+3",
-          "specialEffects": ["Détection Mensonges", "+1d4 vs Maléfiques"]
-        }
+        "id": 10,
+        "name": "Épée Longue",
+        "source": "official",
+        "icon": "🌟",
+        "modifiable": false,
+        "quantity": 1,
+        "canTrade": true,
+        "exchangeNotice": "✅ Peut être échangé avec d'autres joueurs"
       },
       {
-        "slot": "Armor",
-        "item": {
-          "id": 112,
-          "name": "Robe de Mage",
-          "armorClass": "+1",
-          "magicalProperties": ["Résistance sorts niveau 1"]
-        }
-      }
-    ],
-    "inventory": [
+        "id": 248,
+        "name": "Lame de Vérité",
+        "source": "private", 
+        "icon": "👤",
+        "modifiable": false,  // Créée par le MJ
+        "quantity": 1,
+        "canTrade": true,
+        "receivedFrom": "Thomas (MJ)",
+        "exchangeNotice": "✅ Peut être échangé avec d'autres joueurs"
+      },
       {
         "id": 89,
         "name": "Potion de Soins",
-        "quantity": 6,
-        "quickUse": true
+        "source": "official",
+        "icon": "🌟",
+        "quantity": 4,
+        "canTrade": true,
+        "exchangeNotice": "✅ Peut être échangé avec d'autres joueurs"
       }
-      // ... autres objets
-    ],
-    "attunement": {
-      "slotsUsed": 2,
-      "slotsMax": 3,
-      "attunedItems": ["Lame de Vérité", "Amulette de Protection"]
-    }
+    ]
   },
-  "availableActions": {
-    "canLearnNewSpells": true,
-    "canEquipItems": ["Bouclier", "Arme à une main", "Armure légère"],
-    "canAttuneItems": 1,
-    "canCreateCustomSpells": true,
-    "canCreateCustomEquipment": true
+  "exchanges": {
+    "pendingOffers": [
+      {
+        "type": "gm_offer",
+        "fromGM": "Thomas",
+        "equipment": "Anneau de Protection",
+        "quantity": 1,
+        "receivedAt": "2024-01-15T18:00:00Z"
+      }
+    ],
+    "pendingTrades": [
+      {
+        "type": "player_trade",
+        "fromPlayer": "Sophie",
+        "equipment": "Épée Courte +1",
+        "quantity": 1,
+        "proposedAt": "2024-01-15T17:45:00Z"
+      }
+    ],
+    "recentActivity": [
+      {
+        "type": "trade_completed",
+        "with": "Paul",
+        "equipment": "Potion de Soins",
+        "quantity": 2,
+        "direction": "given",
+        "completedAt": "2024-01-15T17:35:00Z"
+      }
+    ]
+  },
+  "creationRights": {
+    "canCreateSpells": true,
+    "canCreateEquipment": true,
+    "canTradeEquipment": true,
+    "restrictions": [
+      "❌ Vos créations de sorts seront privées et non échangeables",
+      "❌ Pas de partage de sorts avec autres utilisateurs",
+      "✅ Vos équipements peuvent être proposés aux joueurs de vos campagnes",
+      "✅ Échanges d'équipements possibles entre joueurs de même campagne"
+    ]
   }
 }
 ```
 
-### Cas 8 : Restriction et Suggestions Intelligentes
+## 🔒 Cas d'Utilisation Sécurité et Permissions
+
+### Cas 12 : Validation des Permissions de Modification et d'Échange
 
 #### Contexte
-Un personnage non-magique tente d'utiliser des sorts.
+Thomas essaie de modifier différents types de contenus et d'effectuer des échanges non autorisés.
 
-#### Workflow de Validation et Suggestions
+#### Workflow de Validation
 
+##### 1. Tentative de modification d'un sort officiel (INTERDIT)
 ```http
-GET /character/22/available-spells HTTP/1.1
-Authorization: Bearer {jwt_token_fighter}
+PUT /spell/1 HTTP/1.1
+Authorization: Bearer {jwt_token_thomas}
+Content-Type: application/json
+
+{
+  "name": "Boule de Feu Modifiée"
+}
+
+Response: 403 Forbidden
+{
+  "error": "OFFICIAL_CONTENT_MODIFICATION_DENIED",
+  "message": "Les sorts officiels ne peuvent pas être modifiés par les utilisateurs",
+  "spellInfo": {
+    "name": "Boule de Feu",
+    "source": "official",
+    "createdByUserId": 0
+  },
+  "alternatives": [
+    {
+      "action": "duplicate_as_private",
+      "description": "Créer une version privée basée sur ce sort",
+      "endpoint": "POST /spell/duplicate/1"
+    }
+  ]
+}
+```
+
+##### 2. Tentative d'échange avec joueur d'une autre campagne (INTERDIT)
+```http
+POST /campaign/42/equipment/trade HTTP/1.1
+Authorization: Bearer {jwt_token_thomas}
+Content-Type: application/json
+
+{
+  "toPlayerId": 8,  // Joueur d'une autre campagne
+  "fromCharacterId": 15,
+  "toCharacterId": 25,
+  "equipmentId": 248,
+  "quantity": 1
+}
+
+Response: 403 Forbidden
+{
+  "error": "CROSS_CAMPAIGN_TRADE_DENIED",
+  "message": "Les échanges ne sont possibles qu'entre joueurs de la même campagne",
+  "details": {
+    "yourCampaign": 42,
+    "targetPlayerCampaigns": [35, 47],  // Autres campagnes du joueur cible
+    "sharedCampaigns": []
+  },
+  "suggestions": [
+    {
+      "action": "invite_to_campaign",
+      "description": "Inviter le joueur à rejoindre votre campagne",
+      "endpoint": "POST /campaign/42/invite"
+    }
+  ]
+}
+```
+
+##### 3. Modification d'un sort privé personnel (AUTORISÉ)
+```http
+PUT /spell/158 HTTP/1.1
+Authorization: Bearer {jwt_token_thomas}
+Content-Type: application/json
+
+{
+  "description": "Description mise à jour pour ma campagne"
+}
 
 Response: 200 OK
 {
-  "characterInfo": {
-    "id": 22,
-    "name": "Gareth l'Épéiste",
-    "class": "Guerrier",
-    "isSpellcaster": false
-  },
-  "availableSpells": [],
-  "restrictions": {
-    "noSpellcasting": {
-      "message": "Les Guerriers ne peuvent pas lancer de sorts",
-      "suggestions": [
-        {
-          "type": "multiclass",
-          "description": "Prendre un niveau dans une classe de lanceur de sorts",
-          "requirements": ["Intelligence ou Sagesse ou Charisme ≥ 13"]
-        },
-        {
-          "type": "magic_items",
-          "description": "Utiliser des objets magiques à usage limité",
-          "examples": ["Parchemins", "Baguettes avec charges", "Objets à mot de commande"]
-        },
-        {
-          "type": "feat_magic_initiate",
-          "description": "Prendre le don 'Initié à la Magie' au niveau 4",
-          "benefits": ["2 sorts mineurs + 1 sort niveau 1 par jour"]
-        }
-      ]
-    }
+  "success": true,
+  "message": "Sort privé modifié avec succès",
+  "updatedSpell": {
+    "id": 158,
+    "name": "Lame Spectrale de Thomas",
+    "source": "private",
+    "lastModified": "2024-01-15T16:00:00Z"
   }
 }
 ```
 
-Ces cas d'utilisation montrent la richesse et la complexité du système, tout en maintenant une expérience utilisateur fluide grâce aux calculs automatiques et aux suggestions intelligentes.
+Ces cas d'utilisation montrent clairement :
+- **Sorts** : Pas d'échange possible, apprentissage individuel uniquement
+- **Équipements** : Échanges riches et sécurisés entre MJ et joueurs
+- **Sécurité** : Validation stricte des permissions et des règles métier
 
 ---
 

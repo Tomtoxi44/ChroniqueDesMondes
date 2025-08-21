@@ -1,468 +1,181 @@
 ﻿# Chronique des Mondes - Backend API
 
-## 🎯 Objectif de l'application
+## 🎯 Vue d'ensemble
 
-L'objectif de l'application est de créer une plateforme JDR où un utilisateur peut être **joueur** ou **maître du jeu (MJ)** - et même les deux à la fois dans différentes campagnes !
-Le socle est générique, puis des logiques métiers spécifiques à chaque jeu (ex : D&D) viennent compléter les fonctionnalités de base.
+**Chronique des Mondes** est une plateforme JDR où un utilisateur peut être **joueur** ou **maître du jeu (MJ)** - et même les deux à la fois dans différentes campagnes !
 
-- **Création de personnage** : Par défaut, un personnage possède un nom, prénom, points de vie. Si un jeu est précisé (ex : D&D), des champs supplémentaires sont requis (caractéristiques, compétences, etc.).
-- **Routage métier** : Les endpoints API sont tagués pour diriger les requêtes vers la logique métier appropriée selon le jeu.
-- **Gestion de campagnes** : Création, gestion, et suivi de campagnes de jeu de rôle, incluant la gestion des combats par chapitres.
-- **Système de sorts et équipements** : Gestion complète avec calculs automatiques selon le système de jeu.
+### Principe Architectural
+Le socle est **générique**, puis des logiques métiers spécifiques à chaque jeu (ex : D&D) viennent compléter les fonctionnalités de base.
 
-## 🏗️ Architecture Technique
+- **Création de personnage** : Générique par défaut, spécialisé selon le jeu choisi
+- **Routage métier** : Headers `X-GameType` pour diriger vers la logique appropriée
+- **Gestion de campagnes** : Structure par chapitres avec PNJ et combats
+- **Système de sorts et équipements** : Architecture bi-niveau (officiels + privés)
 
-### Stack Technologique
+## 🏗️ Stack Technique
+
 - **.NET 9** - Framework principal
 - **ASP.NET Core Minimal APIs** - Endpoints REST
 - **Entity Framework Core** - ORM pour base de données
 - **JWT Authentication** - Sécurité et authentification
 - **Aspire** - Orchestration et configuration
 
-### Structure du Projet
-```
-Cdm.ApiService/
-├── Endpoints/              # Définition des endpoints REST
-│   ├── CharacterEndpoint.cs      # API personnages
-│   ├── CampaignEndpoint.cs        # API campagnes et chapitres
-│   ├── CombatEndpoint.cs          # API gestion des combats
-│   ├── SpellEndpoint.cs           # API sorts et magie ✨ NOUVEAU
-│   ├── EquipmentEndpoint.cs       # API équipements et inventaires ⚔️ NOUVEAU
-│   ├── NpcEndpoint.cs             # API PNJ et monstres
-│   ├── UserEndpoints.cs           # API utilisateurs/auth
-│   └── WeatherEndpoints.cs        # API exemple météo
-├── Services/               # Services métier
-│   ├── JwtService.cs              # Gestion des tokens JWT
-│   ├── PasswordService.cs         # Chiffrement mots de passe
-│   ├── CombatService.cs           # Logique de combat
-│   ├── CampaignService.cs         # Logique de campagne
-│   ├── SpellcastingService.cs     # 🧙‍♂️ Calculs modificateurs D&D ✨ NOUVEAU
-│   └── EquipmentService.cs        # ⚔️ Gestion inventaires et bonus ✨ NOUVEAU
-├── Extensions/             # Extensions et configuration
-│   ├── ServiceCollectionExtensions.cs
-│   └── EndpointMappingExtensions.cs
-├── Tests/                  # Tests API et documentation
-│   ├── README.md                  # Guide des tests
-│   ├── character-config.http      # Configuration test
-│   ├── Generic/                   # Tests CRUD génériques
-│   ├── Dnd/                       # Tests spécifiques D&D
-│   ├── Spells/                    # 🪄 Tests sorts ✨ NOUVEAU
-│   ├── Equipment/                 # ⚔️ Tests équipements ✨ NOUVEAU
-│   ├── Security/                  # Tests sécurité
-│   └── Scenarios/                 # Tests end-to-end
-└── Documentation/          # Documentation technique
-    ├── README.md                  # Ce fichier
-    ├── UseCases.md                # Cas d'utilisation détaillés
-    ├── SpellsAndEquipment.md      # 📚 Spécifications sorts/équipements ✨ NOUVEAU
-    └── SpellsEquipmentUseCases.md # 🎮 Cas d'usage sorts/équipements ✨ NOUVEAU
-```
+## 🧑‍🤝‍🧑 Rôles et Permissions
 
-## 🧑‍🤝‍🧑 Gestion des utilisateurs et des campagnes
-
-### Rôles Multiples
-- **Un utilisateur peut être MJ d'une campagne ET joueur dans une autre** simultanément
-- Chaque campagne a un seul MJ (créateur de la campagne)
-- Un utilisateur peut participer en tant que joueur à plusieurs campagnes
+### Utilisateurs Multi-Rôles
+- **Un utilisateur peut être MJ d'une campagne ET joueur dans une autre**
+- Chaque campagne a un seul MJ (créateur)
+- Un utilisateur peut participer à plusieurs campagnes
 
 ### Gestion des Campagnes
-- Un utilisateur peut créer une campagne et devient alors MJ.
-- Il peut inviter des joueurs à rejoindre sa campagne.
-- Il peut rendre sa campagne publique pour permettre à d'autres joueurs de la rejoindre, ou la rendre accessible à d'autres MJ qui souhaitent la dupliquer et jouer avec leur propre groupe.
+- Création et invitation de joueurs
+- Campagnes publiques ou privées
+- Duplication possible entre MJ
 
-## 🏰 Création et Structure des Campagnes
+## 🏰 Structure des Campagnes
 
 ### Tags de Système de Jeu
-- **Création initiale** : Une campagne peut être taguée avec un jeu supporté (D&D, Skyrim à venir) ou rester générique
-- **Tag ajouté ultérieurement** : Possibilité d'ajouter un tag plus tard pour débloquer les PNJ/monstres préconfigurés
-- **Avantages du tag** : Accès à des bibliothèques de PNJ et monstres spécifiques au système de jeu
+- **Générique** : Pas de tag, gestion manuelle complète
+- **Spécialisé** : Tag D&D, Skyrim, etc. pour débloquer les fonctionnalités automatiques
+- **Évolutif** : Ajout de tag possible ultérieurement
 
-### Structure par Chapitres
-Une campagne est organisée en **chapitres** successifs :
+### Organisation par Chapitres
+- **Navigation** séquentielle entre chapitres
+- **Contenu narratif** avec blocs de texte
+- **PNJ et Monstres** par chapitre
+- **Gestion comportementale** : 🟢 Amical | 🟡 Neutre | 🔴 Hostile
 
-#### Création d'un Chapitre
-- **Navigation** : Flèches haut/bas pour naviguer entre chapitres
-- **Contenu narratif** : Blocs de texte pour décrire les événements du chapitre
-- **Onglets** : PNJ et Monstres disponibles pour ce chapitre
+## 🧙‍♂️ Système de Personnages
 
-#### Liaison des PNJ aux Événements
-- **Référencement** : Possibilité de lier un PNJ à un bloc de texte
-- **Contextualisation** : Backgrounds comportementaux selon l'attitude des joueurs
-  - 🟢 **Comportement amical** : Encadré vert avec dialogue/attitude cordiale
-  - 🟡 **Comportement neutre** : Encadré jaune avec attitude standard
-  - 🔴 **Comportement hostile** : Encadré rouge avec attitude agressive
+### Logique Générique vs Spécialisée
+- **Générique** : Nom, points de vie, champs personnalisés
+- **D&D** : Stats complètes, classes, races, compétences
+- **Compatibilité** : Un personnage D&D ne peut rejoindre qu'une campagne D&D
+- **Duplication** : Changement de système possible
 
-### Gestion des PNJ et Monstres par Campagne
-
-#### Types de Création
-1. **PNJ Générique** : Nom, prénom, description (obligatoire) - pour usage ponctuel
-2. **PNJ/Monstre Spécialisé** : Avec stats du système de jeu (ex: D&D) pour les combats
-
-#### Exemple de Workflow
-```
-Campagne D&D "Les Terres Oubliées" (tag: dnd)
-├── Chapitre 1: "L'Arrivée au Village"
-│   ├── PNJ: Aubergiste Brom (générique - nom, description)
-│   └── Monstre: Gobelins (D&D - stats complètes pour combat)
-├── Chapitre 2: "La Forêt Hantée"
-│   ├── PNJ: Ermite Sage (générique)
-│   └── Monstre: Loup-garou (D&D - CA, PV, attaques)
-```
-
-## 🧙‍♂️ Création de personnages
-
-### Logique Métier Générique vs Spécialisée
-- Un utilisateur peut créer un personnage générique ou spécifique à un jeu (ex : D&D).
-- Un personnage D&D ne peut rejoindre qu'une campagne D&D (idem pour d'autres jeux).
-- Une option de duplication permet de changer le système de jeu d'un personnage ou de le rendre générique.
-- Le mode générique permet d'ajouter manuellement des champs personnalisés pour s'adapter à des systèmes non pris en charge.
-
-### Routage par Header X-GameType
+### Routage API
 ```http
-POST /character/dnd HTTP/1.1
-X-GameType: dnd
-Content-Type: application/json
-
-{
-  "name": "Thorek",
-  "class": "Guerrier",
-  "race": "Nain",
-  "strength": 16,
-  "dexterity": 10,
-  // ... autres stats D&D
-}
+POST /character?userId={id} HTTP/1.1
+X-GameType: dnd  # ou generic, skyrim, etc.
+Authorization: Bearer {token}
 ```
 
-## 🪄 Système de Sorts ✨ NOUVEAU
+## 🪄 Système de Sorts
 
-### Architecture Multi-Système
-- **Sorts génériques** : Titre, description, image - privés à l'utilisateur
-- **Sorts avec tags spécialisés** : D&D (dégâts, jets d'attaque, coûts), Skyrim (à venir)
-- **Compatibilité système** : Un personnage D&D ne peut pas apprendre un sort Skyrim
-- **Unicité** : Un personnage ne peut connaître qu'une seule fois chaque sort
+### Architecture Bi-Niveau
 
-### Gestion des Modificateurs D&D (Priorité Haute)
+#### **Sorts Officiels 🌟**
+- **Injection administrative** par scripts SQL
+- **Publics pour tous** les utilisateurs
+- **Exemples** : D&D (disponible), Skyrim (à venir)
+
+#### **Sorts Privés 👤**  
+- **Créés par les utilisateurs** individuellement
+- **Privés uniquement** à leur créateur
+- **Pas d'échange possible** entre utilisateurs
+
+### Types de Sorts
+- **Génériques** : Titre, description (gestion manuelle)
+- **Spécialisés D&D** : Calculs automatiques des modificateurs
+- **Compatibilité** : Validation stricte par gameType
+
+### Calculs D&D Automatiques
 ```csharp
-// Calculs automatiques selon la classe
-Magicien    → Intelligence (Mod.Int + Bonus Maîtrise)
-Clerc       → Sagesse      (Mod.Sag + Bonus Maîtrise)  
-Paladin     → Charisme     (Mod.Cha + Bonus Maîtrise)
-Ensorceleur → Charisme     (Mod.Cha + Bonus Maîtrise)
+Magicien    → Intelligence + Bonus Maîtrise
+Clerc       → Sagesse + Bonus Maîtrise  
+Paladin     → Charisme + Bonus Maîtrise
 ```
 
-### Interface Utilisateur
-- **Page globale** `/spells` : Filtre par système, recherche, ajout à personnage
-- **Interface personnage** : Sorts connus, calculs automatiques des bonus d'attaque et DD
-- **Création personnalisée** : Directement depuis l'interface personnage avec tags automatiques
+## ⚔️ Système d'Équipements
 
-## ⚔️ Système d'Équipements ✨ NOUVEAU
+### Architecture Bi-Niveau avec Échanges
 
-### Architecture Multi-Instances
-- **Accumulation** : Un personnage peut avoir plusieurs exemplaires du même objet
-- **Gestion des quantités** : Système d'inventaire avec stacks
-- **Équipement** : Objets portés vs stockés avec calculs automatiques
+#### **Équipements Officiels 🌟**
+- **Injection administrative** par scripts SQL
+- **Publics pour tous**
 
-### Types d'Équipements
-- **Génériques** : Titre, description, image, tags de recherche
-- **Avec bonus** : Bonus de toucher (Dex), dégâts (1d8 + Mod.Force), propriétés spéciales
-- **D&D spécialisés** : CA, bonus/malus, pré-requis, attunement, raretés
+#### **Équipements Privés 👤**
+- **Créés par les utilisateurs**
+- **Multi-instances** possibles
 
-### Interface Utilisateur
-- **Page globale** `/equipment` : Filtre par type/rareté, recherche
-- **Interface personnage** : Inventaire, équipement porté, calculs de CA/bonus automatiques
-- **Ajout direct** : Depuis l'interface personnage avec compatibilité automatique
+### **Système d'Échange 🔄**
 
-## ⚔️ Gestion des combats
+#### **MJ → Joueur**
+- **Proposition** d'équipements aux joueurs de sa campagne
+- **Copie** : L'équipement reste chez le MJ après acceptation
+- **Re-proposable** à d'autres joueurs
 
-### Interface MJ de Combat
-- **Vue par chapitre** : Le MJ visualise son chapitre avec onglets PNJ/Monstres
-- **Sélection d'adversaires** : Choix des PNJ/monstres à inclure dans le combat
-- **Déclenchement** : Lance le système de combat avec les participants sélectionnés
+#### **Joueur → Joueur**
+- **Échange direct** entre joueurs de la même campagne
+- **Transfert** : L'équipement change de propriétaire
+- **Validation** : Quantités, compatibilité, permissions
 
-### Système de Combat Automatisé
-- Le MJ peut déclencher un combat dans une campagne.
-- L'application permet de lancer des dés, d'ajouter des modificateurs selon le système de jeu, et de suivre l'état du combat.
-- Pour D&D, le calcul des attaques, dégâts, et comparaisons avec la CA ennemie sont automatisés.
-- Pour les systèmes non pris en charge, le suivi est manuel, mais le MJ garde la main sur les points de vie et les caractéristiques.
+## ⚔️ Gestion des Combats
 
-## 📡 Endpoints API
+### Interface MJ
+- **Vue par chapitre** avec sélection PNJ/Monstres
+- **Déclenchement combat** avec participants choisis
+- **Calculs automatiques** pour D&D (CA, dégâts, modificateurs)
+- **Gestion manuelle** pour systèmes non supportés
+
+## 📡 Endpoints Principaux
 
 ### Authentification
-| Méthode | Endpoint | Description | Corps |
-|---------|----------|-------------|--------|
-| `POST` | `/login` | Connexion utilisateur | `{ email, password }` |
-| `POST` | `/register` | Inscription nouveau compte | `{ userName, userEmail, password }` |
+- `POST /login` - Connexion
+- `POST /register` - Inscription
 
 ### Personnages
-| Méthode | Endpoint | Description | Headers Requis |
-|---------|----------|-------------|----------------|
-| `GET` | `/character?userId={id}` | Liste des personnages | `Authorization: Bearer {token}` |
-| `GET` | `/character/{id}` | Détails d'un personnage | `Authorization: Bearer {token}` |
-| `POST` | `/character?userId={id}` | Création générique | `Authorization`, `X-GameType: generic` |
-| `POST` | `/character/dnd?userId={id}` | Création D&D | `Authorization`, `X-GameType: dnd` |
-| `PUT` | `/character/{id}` | Modification générique | `Authorization`, `X-GameType: generic` |
-| `PUT` | `/character/dnd/{id}` | Modification D&D | `Authorization`, `X-GameType: dnd` |
-| `DELETE` | `/character/{id}` | Suppression | `Authorization: Bearer {token}` |
+- `GET /character?userId={id}` - Liste personnages
+- `POST /character?userId={id}` - Création (+ header X-GameType)
+- `PUT /character/{id}` - Modification
+- `DELETE /character/{id}` - Suppression
 
-### 🪄 Sorts ✨ NOUVEAU
-| Méthode | Endpoint | Description | Headers Requis |
-|---------|----------|-------------|----------------|
-| `GET` | `/spells?gameType={type}&userId={id}` | Liste des sorts disponibles | `Authorization: Bearer {token}` |
-| `GET` | `/spell/{id}` | Détails d'un sort | `Authorization: Bearer {token}` |
-| `POST` | `/spell?userId={id}` | Création de sort personnalisé | `Authorization`, `X-GameType: {type}` |
-| `GET` | `/character/{id}/spells` | Sorts connus du personnage | `Authorization: Bearer {token}` |
-| `POST` | `/character/{id}/spells/{spellId}` | Apprendre un sort | `Authorization: Bearer {token}` |
-| `DELETE` | `/character/{id}/spells/{spellId}` | Oublier un sort | `Authorization: Bearer {token}` |
+### Sorts
+- `GET /spells?gameType={type}&userId={id}` - Sorts disponibles
+- `GET /spells/official?gameType={type}` - Sorts officiels uniquement
+- `POST /spell?userId={id}` - Création sort privé
+- `POST /character/{id}/spells/{spellId}` - Apprendre sort
 
-### ⚔️ Équipements ✨ NOUVEAU
-| Méthode | Endpoint | Description | Headers Requis |
-|---------|----------|-------------|----------------|
-| `GET` | `/equipment?gameType={type}&userId={id}` | Liste des équipements disponibles | `Authorization: Bearer {token}` |
-| `GET` | `/equipment/{id}` | Détails d'un équipement | `Authorization: Bearer {token}` |
-| `POST` | `/equipment?userId={id}` | Création d'équipement personnalisé | `Authorization`, `X-GameType: {type}` |
-| `GET` | `/character/{id}/inventory` | Inventaire du personnage | `Authorization: Bearer {token}` |
-| `POST` | `/character/{id}/inventory/{equipmentId}` | Ajouter équipement (quantité) | `Authorization: Bearer {token}` |
-| `PUT` | `/character/{id}/inventory/{equipmentId}` | Modifier quantité équipement | `Authorization: Bearer {token}` |
+### Équipements
+- `GET /equipment?gameType={type}&userId={id}` - Équipements disponibles
+- `POST /equipment?userId={id}` - Création équipement privé
+- `GET /character/{id}/inventory` - Inventaire personnage
 
-### Campagnes
-| Méthode | Endpoint | Description | Headers Requis |
-|---------|----------|-------------|----------------|
-| `GET` | `/campaign?userId={id}` | Campagnes de l'utilisateur | `Authorization: Bearer {token}` |
-| `GET` | `/campaign/{id}` | Détails d'une campagne | `Authorization: Bearer {token}` |
-| `POST` | `/campaign?userId={id}` | Création de campagne | `Authorization`, `X-GameType: {type}` |
-| `PUT` | `/campaign/{id}` | Modification de campagne | `Authorization: Bearer {token}` |
-| `DELETE` | `/campaign/{id}` | Suppression de campagne | `Authorization: Bearer {token}` |
+### Échanges d'Équipements
+- `POST /campaign/{id}/equipment/offer` - MJ propose équipement
+- `POST /campaign/{id}/equipment/trade` - Échange joueur→joueur
+- `GET /campaign/{id}/equipment/offers?playerId={id}` - Propositions en attente
 
-### Chapitres
-| Méthode | Endpoint | Description | Headers Requis |
-|---------|----------|-------------|----------------|
-| `GET` | `/campaign/{id}/chapters` | Chapitres d'une campagne | `Authorization: Bearer {token}` |
-| `GET` | `/chapter/{id}` | Détails d'un chapitre | `Authorization: Bearer {token}` |
-| `POST` | `/campaign/{id}/chapter` | Création de chapitre | `Authorization: Bearer {token}` |
-| `PUT` | `/chapter/{id}` | Modification de chapitre | `Authorization: Bearer {token}` |
-| `DELETE` | `/chapter/{id}` | Suppression de chapitre | `Authorization: Bearer {token}` |
+## 🔒 Sécurité
 
-### PNJ/Monstres
-| Méthode | Endpoint | Description | Headers Requis |
-|---------|----------|-------------|----------------|
-| `GET` | `/chapter/{id}/npcs` | PNJ d'un chapitre | `Authorization: Bearer {token}` |
-| `GET` | `/npc/{id}` | Détails d'un PNJ | `Authorization: Bearer {token}` |
-| `POST` | `/chapter/{id}/npc` | Création PNJ/Monstre | `Authorization`, `X-GameType: {type}` |
-| `PUT` | `/npc/{id}` | Modification PNJ/Monstre | `Authorization`, `X-GameType: {type}` |
-| `DELETE` | `/npc/{id}` | Suppression PNJ/Monstre | `Authorization: Bearer {token}` |
+### Authentification & Autorisation
+- **JWT Tokens** pour toutes les requêtes
+- **Contrôle d'accès** par utilisateur/MJ
+- **Validation gameType** pour compatibilité
 
-### Combats
-| Méthode | Endpoint | Description | Headers Requis |
-|---------|----------|-------------|----------------|
-| `POST` | `/chapter/{id}/combat/start` | Démarrer un combat | `Authorization: Bearer {token}` |
-| `GET` | `/combat/{id}` | État du combat | `Authorization: Bearer {token}` |
-| `POST` | `/combat/{id}/action` | Action de combat | `Authorization: Bearer {token}` |
-| `PUT` | `/combat/{id}/end` | Terminer le combat | `Authorization: Bearer {token}` |
-
-### Météo (Exemple)
-| Méthode | Endpoint | Description |
-|---------|----------|-------------|
-| `GET` | `/weatherforecast` | Prévisions météo test |
-
-## 🛡️ Sécurité
-
-### Authentification JWT
-- Tous les endpoints personnages nécessitent un token JWT valide
-- Le token contient l'ID utilisateur pour l'autorisation
-- Expiration configurable des tokens
-
-### Headers Obligatoires
-- `Authorization: Bearer {token}` - Authentification
-- `X-GameType: {gametype}` - Routage métier (dnd, generic, skyrim, etc.)
-
-### Validation des Données
-- Validation automatique des modèles
-- Sanitisation des entrées utilisateur
-- Contrôle d'accès par utilisateur (un utilisateur ne peut voir que ses personnages/campagnes)
-- Contrôle d'accès MJ (seul le MJ peut modifier sa campagne)
-- **Compatibilité système** : Validation que sorts/équipements correspondent au gameType du personnage
-
-## 🔧 Configuration
-
-### Variables d'Environnement
-```json
-{
-  "Jwt": {
-    "SecretKey": "votre-clé-secrète-256-bits",
-    "Issuer": "ChroniqueDesMondes",
-    "Audience": "ChroniqueDesMondes-Users",
-    "ExpiryMinutes": 1440
-  },
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=ChroniqueDesMondes;Trusted_Connection=true;"
-  }
-}
-```
-
-### Services Configurés
-- **JWT Authentication** - Sécurité des endpoints
-- **Entity Framework** - Accès base de données
-- **CORS** - Autorisation cross-origin pour le frontend
-- **Swagger** - Documentation API automatique
-- **SpellcastingService** ✨ - Calculs automatiques des modificateurs D&D
-- **EquipmentService** ✨ - Gestion des bonus d'équipement et inventaires
-
-## 🧪 Tests et Documentation
-
-### Tests API Disponibles
-Le dossier `Tests/` contient une suite complète de tests HTTP :
-- **Tests CRUD génériques** - Validation des opérations de base
-- **Tests spécifiques D&D** - Validation de la logique métier D&D
-- **Tests sorts** ✨ - Validation apprentissage et calculs automatiques
-- **Tests équipements** ✨ - Validation inventaires et bonus
-- **Tests de sécurité** - Validation de l'authentification et autorisation
-- **Scénarios end-to-end** - Tests de workflows complets
-
-### Utilisation des Tests
-1. Démarrer l'API : `dotnet run`
-2. Configurer les variables dans `Tests/character-config.http`
-3. Exécuter les tests avec l'extension REST Client de VS Code
-
-## 🚀 Développement
-
-### Démarrage Rapide
-```bash
-# 1. Cloner et naviguer vers le projet
-cd Cdm.ApiService
-
-# 2. Restaurer les dépendances
-dotnet restore
-
-# 3. Mettre à jour la base de données
-dotnet ef database update
-
-# 4. Lancer l'API
-dotnet run
-
-# 5. Accéder à Swagger
-# https://localhost:7428/swagger
-```
-
-### Ajout d'un Nouveau Système de Jeu
-1. **Créer les modèles** dans `Cdm.Data.{GameType}`
-2. **Implémenter la logique** dans `Cdm.Business.{GameType}`
-3. **Ajouter les endpoints** dans `Endpoints/{GameType}Endpoint.cs`
-4. **Configurer le routage** par header `X-GameType`
-5. **Ajouter les tests** dans `Tests/{GameType}/`
-6. **Ajouter les PNJ/monstres** prédéfinis en base
-7. **Définir les règles de sorts/équipements** spécifiques au système ✨
-
-### Structure des Données
-```csharp
-// Modèle générique
-public class Character
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public int UserId { get; set; }
-    public string GameType { get; set; }
-    public Dictionary<string, object> CustomFields { get; set; }
-}
-
-// Modèle D&D spécialisé
-public class CharacterDnd : Character
-{
-    public string Class { get; set; }
-    public string Race { get; set; }
-    public int Level { get; set; }
-    public int Strength { get; set; }
-    public int Dexterity { get; set; }
-    // ... autres stats D&D
-}
-
-// Modèles Campagne
-public class Campaign
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public int GameMasterId { get; set; }
-    public string GameType { get; set; }
-    public List<Chapter> Chapters { get; set; }
-    public List<Player> Players { get; set; }
-}
-
-public class Chapter
-{
-    public int Id { get; set; }
-    public int CampaignId { get; set; }
-    public int ChapterNumber { get; set; }
-    public string Title { get; set; }
-    public List<NarrativeBlock> NarrativeBlocks { get; set; }
-    public List<Npc> Npcs { get; set; }
-}
-
-public class Npc
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public string Type { get; set; } // "npc" ou "monster"
-    public string GameType { get; set; }
-    public Dictionary<string, object> Stats { get; set; }
-    public List<BehaviorContext> Behaviors { get; set; }
-}
-
-public class BehaviorContext
-{
-    public string PlayerAttitude { get; set; } // "friendly", "neutral", "hostile"
-    public string NpcResponse { get; set; }
-    public string BackgroundColor { get; set; } // "green", "yellow", "red"
-}
-
-// Nouveaux modèles Sorts ✨
-public class Spell
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public string GameType { get; set; }
-    public int CreatedByUserId { get; set; }
-    public SpellDndProperties? DndProperties { get; set; }
-}
-
-// Nouveaux modèles Équipements ✨
-public class Equipment
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public string GameType { get; set; }
-    public int CreatedByUserId { get; set; }
-    public EquipmentDndProperties? DndProperties { get; set; }
-}
-```
-
-## 📋 Prochaines Étapes
-
-### Fonctionnalités à Implémenter
-- **Interface IA** - Assistance pour création de chapitres, lieux, PNJ et monstres
-- **Bibliothèques pré-configurées** - PNJ et monstres D&D en base de données
-- **Bibliothèques de sorts/équipements** ✨ - Sorts et objets D&D officiels
-- **Système d'invitations** - Notifications pour rejoindre campagnes
-- **Chat en temps réel** - Communication entre joueurs via SignalR
-- **Gestion des tours** - Interface temps réel pour les combats
-- **Marketplace communautaire** ✨ - Partage de sorts/équipements entre utilisateurs
-
-### Améliorations Techniques
-- **Cache** - Redis pour les données fréquemment consultées
-- **Rate Limiting** - Protection contre les abus
-- **Monitoring** - Métriques et logs centralisés
-- **Documentation OpenAPI** - Spécifications API complètes
-- **Tests d'intégration** - Validation des workflows complets
-- **Optimisation calculs** ✨ - Cache des modificateurs et bonus calculés
+### Restrictions
+- **Sorts officiels** : Non modifiables par utilisateurs
+- **Sorts privés** : Aucun partage/échange possible
+- **Équipements** : Échanges uniquement dans même campagne
+- **Permissions MJ** : Seul le MJ peut modifier sa campagne
 
 ## 📖 Documentation Détaillée
 
-Pour des informations approfondies, consultez :
+### Documents Techniques
+- **[Architecture Technique](./TechnicalArchitecture.md)** - Structure du projet, modèles de données, configuration
+- **[Schéma de Base de Données](./DatabaseSchema.md)** - Schéma complet avec état actuel et évolutions prévues
+- **[Spécifications Sorts et Équipements](./SpellsAndEquipment.md)** - Architecture bi-niveau détaillée
+- **[Cas d'usage Sorts et Équipements](./SpellsEquipmentUseCases.md)** - Exemples concrets officiels vs privés
+
+### Documents Fonctionnels
 - **[Cas d'utilisation généraux](./UseCases.md)** - Scénarios complets campagnes et combats
-- **[Spécifications Sorts et Équipements](./SpellsAndEquipment.md)** ✨ - Architecture détaillée des nouveaux systèmes
-- **[Cas d'usage Sorts et Équipements](./SpellsEquipmentUseCases.md)** ✨ - Exemples concrets avec calculs D&D
+
+### Tests et Validation
+- **[Guide des Tests](../Tests/README.md)** - Documentation complète des tests API
+- Structure de tests par domaine (Generic, Dnd, Spells, Equipment, Security, Scenarios)
 
 ---
 
-*Développé avec ❤️ pour la communauté JDR - Une API robuste et extensible pour tous vos besoins de jeu de rôle !*
+**Une API robuste et extensible pour la communauté JDR !** 🎲✨
+
+*Pour plus de détails techniques, consultez la documentation spécialisée ci-dessus*
