@@ -8,6 +8,7 @@ Le socle est générique, puis des logiques métiers spécifiques à chaque jeu 
 - **Création de personnage** : Par défaut, un personnage possède un nom, prénom, points de vie. Si un jeu est précisé (ex : D&D), des champs supplémentaires sont requis (caractéristiques, compétences, etc.).
 - **Routage métier** : Les endpoints API sont tagués pour diriger les requêtes vers la logique métier appropriée selon le jeu.
 - **Gestion de campagnes** : Création, gestion, et suivi de campagnes de jeu de rôle, incluant la gestion des combats par chapitres.
+- **Système de sorts et équipements** : Gestion complète avec calculs automatiques selon le système de jeu.
 
 ## 🏗️ Architecture Technique
 
@@ -25,6 +26,8 @@ Cdm.ApiService/
 │   ├── CharacterEndpoint.cs      # API personnages
 │   ├── CampaignEndpoint.cs        # API campagnes et chapitres
 │   ├── CombatEndpoint.cs          # API gestion des combats
+│   ├── SpellEndpoint.cs           # API sorts et magie ✨ NOUVEAU
+│   ├── EquipmentEndpoint.cs       # API équipements et inventaires ⚔️ NOUVEAU
 │   ├── NpcEndpoint.cs             # API PNJ et monstres
 │   ├── UserEndpoints.cs           # API utilisateurs/auth
 │   └── WeatherEndpoints.cs        # API exemple météo
@@ -32,7 +35,9 @@ Cdm.ApiService/
 │   ├── JwtService.cs              # Gestion des tokens JWT
 │   ├── PasswordService.cs         # Chiffrement mots de passe
 │   ├── CombatService.cs           # Logique de combat
-│   └── CampaignService.cs         # Logique de campagne
+│   ├── CampaignService.cs         # Logique de campagne
+│   ├── SpellcastingService.cs     # 🧙‍♂️ Calculs modificateurs D&D ✨ NOUVEAU
+│   └── EquipmentService.cs        # ⚔️ Gestion inventaires et bonus ✨ NOUVEAU
 ├── Extensions/             # Extensions et configuration
 │   ├── ServiceCollectionExtensions.cs
 │   └── EndpointMappingExtensions.cs
@@ -41,11 +46,15 @@ Cdm.ApiService/
 │   ├── character-config.http      # Configuration test
 │   ├── Generic/                   # Tests CRUD génériques
 │   ├── Dnd/                       # Tests spécifiques D&D
+│   ├── Spells/                    # 🪄 Tests sorts ✨ NOUVEAU
+│   ├── Equipment/                 # ⚔️ Tests équipements ✨ NOUVEAU
 │   ├── Security/                  # Tests sécurité
 │   └── Scenarios/                 # Tests end-to-end
 └── Documentation/          # Documentation technique
     ├── README.md                  # Ce fichier
-    └── UseCases.md                # Cas d'utilisation détaillés
+    ├── UseCases.md                # Cas d'utilisation détaillés
+    ├── SpellsAndEquipment.md      # 📚 Spécifications sorts/équipements ✨ NOUVEAU
+    └── SpellsEquipmentUseCases.md # 🎮 Cas d'usage sorts/équipements ✨ NOUVEAU
 ```
 
 ## 🧑‍🤝‍🧑 Gestion des utilisateurs et des campagnes
@@ -123,6 +132,45 @@ Content-Type: application/json
 }
 ```
 
+## 🪄 Système de Sorts ✨ NOUVEAU
+
+### Architecture Multi-Système
+- **Sorts génériques** : Titre, description, image - privés à l'utilisateur
+- **Sorts avec tags spécialisés** : D&D (dégâts, jets d'attaque, coûts), Skyrim (à venir)
+- **Compatibilité système** : Un personnage D&D ne peut pas apprendre un sort Skyrim
+- **Unicité** : Un personnage ne peut connaître qu'une seule fois chaque sort
+
+### Gestion des Modificateurs D&D (Priorité Haute)
+```csharp
+// Calculs automatiques selon la classe
+Magicien    → Intelligence (Mod.Int + Bonus Maîtrise)
+Clerc       → Sagesse      (Mod.Sag + Bonus Maîtrise)  
+Paladin     → Charisme     (Mod.Cha + Bonus Maîtrise)
+Ensorceleur → Charisme     (Mod.Cha + Bonus Maîtrise)
+```
+
+### Interface Utilisateur
+- **Page globale** `/spells` : Filtre par système, recherche, ajout à personnage
+- **Interface personnage** : Sorts connus, calculs automatiques des bonus d'attaque et DD
+- **Création personnalisée** : Directement depuis l'interface personnage avec tags automatiques
+
+## ⚔️ Système d'Équipements ✨ NOUVEAU
+
+### Architecture Multi-Instances
+- **Accumulation** : Un personnage peut avoir plusieurs exemplaires du même objet
+- **Gestion des quantités** : Système d'inventaire avec stacks
+- **Équipement** : Objets portés vs stockés avec calculs automatiques
+
+### Types d'Équipements
+- **Génériques** : Titre, description, image, tags de recherche
+- **Avec bonus** : Bonus de toucher (Dex), dégâts (1d8 + Mod.Force), propriétés spéciales
+- **D&D spécialisés** : CA, bonus/malus, pré-requis, attunement, raretés
+
+### Interface Utilisateur
+- **Page globale** `/equipment` : Filtre par type/rareté, recherche
+- **Interface personnage** : Inventaire, équipement porté, calculs de CA/bonus automatiques
+- **Ajout direct** : Depuis l'interface personnage avec compatibilité automatique
+
 ## ⚔️ Gestion des combats
 
 ### Interface MJ de Combat
@@ -154,6 +202,26 @@ Content-Type: application/json
 | `PUT` | `/character/{id}` | Modification générique | `Authorization`, `X-GameType: generic` |
 | `PUT` | `/character/dnd/{id}` | Modification D&D | `Authorization`, `X-GameType: dnd` |
 | `DELETE` | `/character/{id}` | Suppression | `Authorization: Bearer {token}` |
+
+### 🪄 Sorts ✨ NOUVEAU
+| Méthode | Endpoint | Description | Headers Requis |
+|---------|----------|-------------|----------------|
+| `GET` | `/spells?gameType={type}&userId={id}` | Liste des sorts disponibles | `Authorization: Bearer {token}` |
+| `GET` | `/spell/{id}` | Détails d'un sort | `Authorization: Bearer {token}` |
+| `POST` | `/spell?userId={id}` | Création de sort personnalisé | `Authorization`, `X-GameType: {type}` |
+| `GET` | `/character/{id}/spells` | Sorts connus du personnage | `Authorization: Bearer {token}` |
+| `POST` | `/character/{id}/spells/{spellId}` | Apprendre un sort | `Authorization: Bearer {token}` |
+| `DELETE` | `/character/{id}/spells/{spellId}` | Oublier un sort | `Authorization: Bearer {token}` |
+
+### ⚔️ Équipements ✨ NOUVEAU
+| Méthode | Endpoint | Description | Headers Requis |
+|---------|----------|-------------|----------------|
+| `GET` | `/equipment?gameType={type}&userId={id}` | Liste des équipements disponibles | `Authorization: Bearer {token}` |
+| `GET` | `/equipment/{id}` | Détails d'un équipement | `Authorization: Bearer {token}` |
+| `POST` | `/equipment?userId={id}` | Création d'équipement personnalisé | `Authorization`, `X-GameType: {type}` |
+| `GET` | `/character/{id}/inventory` | Inventaire du personnage | `Authorization: Bearer {token}` |
+| `POST` | `/character/{id}/inventory/{equipmentId}` | Ajouter équipement (quantité) | `Authorization: Bearer {token}` |
+| `PUT` | `/character/{id}/inventory/{equipmentId}` | Modifier quantité équipement | `Authorization: Bearer {token}` |
 
 ### Campagnes
 | Méthode | Endpoint | Description | Headers Requis |
@@ -211,6 +279,7 @@ Content-Type: application/json
 - Sanitisation des entrées utilisateur
 - Contrôle d'accès par utilisateur (un utilisateur ne peut voir que ses personnages/campagnes)
 - Contrôle d'accès MJ (seul le MJ peut modifier sa campagne)
+- **Compatibilité système** : Validation que sorts/équipements correspondent au gameType du personnage
 
 ## 🔧 Configuration
 
@@ -234,6 +303,8 @@ Content-Type: application/json
 - **Entity Framework** - Accès base de données
 - **CORS** - Autorisation cross-origin pour le frontend
 - **Swagger** - Documentation API automatique
+- **SpellcastingService** ✨ - Calculs automatiques des modificateurs D&D
+- **EquipmentService** ✨ - Gestion des bonus d'équipement et inventaires
 
 ## 🧪 Tests et Documentation
 
@@ -241,6 +312,8 @@ Content-Type: application/json
 Le dossier `Tests/` contient une suite complète de tests HTTP :
 - **Tests CRUD génériques** - Validation des opérations de base
 - **Tests spécifiques D&D** - Validation de la logique métier D&D
+- **Tests sorts** ✨ - Validation apprentissage et calculs automatiques
+- **Tests équipements** ✨ - Validation inventaires et bonus
 - **Tests de sécurité** - Validation de l'authentification et autorisation
 - **Scénarios end-to-end** - Tests de workflows complets
 
@@ -276,6 +349,7 @@ dotnet run
 4. **Configurer le routage** par header `X-GameType`
 5. **Ajouter les tests** dans `Tests/{GameType}/`
 6. **Ajouter les PNJ/monstres** prédéfinis en base
+7. **Définir les règles de sorts/équipements** spécifiques au système ✨
 
 ### Structure des Données
 ```csharp
@@ -339,6 +413,28 @@ public class BehaviorContext
     public string NpcResponse { get; set; }
     public string BackgroundColor { get; set; } // "green", "yellow", "red"
 }
+
+// Nouveaux modèles Sorts ✨
+public class Spell
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public string GameType { get; set; }
+    public int CreatedByUserId { get; set; }
+    public SpellDndProperties? DndProperties { get; set; }
+}
+
+// Nouveaux modèles Équipements ✨
+public class Equipment
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public string GameType { get; set; }
+    public int CreatedByUserId { get; set; }
+    public EquipmentDndProperties? DndProperties { get; set; }
+}
 ```
 
 ## 📋 Prochaines Étapes
@@ -346,9 +442,11 @@ public class BehaviorContext
 ### Fonctionnalités à Implémenter
 - **Interface IA** - Assistance pour création de chapitres, lieux, PNJ et monstres
 - **Bibliothèques pré-configurées** - PNJ et monstres D&D en base de données
+- **Bibliothèques de sorts/équipements** ✨ - Sorts et objets D&D officiels
 - **Système d'invitations** - Notifications pour rejoindre campagnes
 - **Chat en temps réel** - Communication entre joueurs via SignalR
 - **Gestion des tours** - Interface temps réel pour les combats
+- **Marketplace communautaire** ✨ - Partage de sorts/équipements entre utilisateurs
 
 ### Améliorations Techniques
 - **Cache** - Redis pour les données fréquemment consultées
@@ -356,11 +454,14 @@ public class BehaviorContext
 - **Monitoring** - Métriques et logs centralisés
 - **Documentation OpenAPI** - Spécifications API complètes
 - **Tests d'intégration** - Validation des workflows complets
+- **Optimisation calculs** ✨ - Cache des modificateurs et bonus calculés
 
 ## 📖 Documentation Détaillée
 
-Pour des cas d'utilisation complets et des exemples détaillés, consultez :
-- **[Cas d'utilisation détaillés](./UseCases.md)** - Scénarios complets avec exemples API
+Pour des informations approfondies, consultez :
+- **[Cas d'utilisation généraux](./UseCases.md)** - Scénarios complets campagnes et combats
+- **[Spécifications Sorts et Équipements](./SpellsAndEquipment.md)** ✨ - Architecture détaillée des nouveaux systèmes
+- **[Cas d'usage Sorts et Équipements](./SpellsEquipmentUseCases.md)** ✨ - Exemples concrets avec calculs D&D
 
 ---
 
