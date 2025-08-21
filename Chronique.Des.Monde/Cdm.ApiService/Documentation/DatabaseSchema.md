@@ -950,271 +950,627 @@ CREATE TABLE PlayerReports (
 CREATE INDEX IX_PlayerReports_User_Period ON PlayerReports (UserId, ReportType, StartDate DESC);
 ```
 
-## 🔄 Migrations Prévues
+## 🔗 **Schéma Relationnel Complet**
 
-### Migration 1 : Tables de Base
-```bash
-dotnet ef migrations add CreateSpellsAndEquipmentTables
+### Diagramme des Relations Entre Tables
+
+```mermaid
+erDiagram
+    %% ========================================
+    %% TABLES PRINCIPALES ET LEURS RELATIONS
+    %% ========================================
+    
+    Users {
+        int Id PK
+        string UserName
+        string UserEmail
+        string Password
+    }
+    
+    CharactersDnd {
+        int Id PK
+        int UserId FK
+        string Name
+        string Picture
+        string Background
+        int Life
+        int Leveling
+        string Class
+        int ClassArmor
+        int Strong
+        int AdditionalStrong
+        int Dexterity
+        int AdditionalDexterity
+        int Constitution
+        int AdditionalConstitution
+        int Intelligence
+        int AdditionalIntelligence
+        int Wisdoms
+        int AdditionalWisdoms
+        int Charism
+        int AdditionalCharism
+    }
+    
+    Spells {
+        int Id PK
+        string Name
+        string Description
+        string ImageUrl
+        string GameType
+        int CreatedByUserId FK
+        bool IsPublic
+        json Tags
+        json DndProperties
+        json SkyrimProperties
+        json GenericProperties
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+    
+    Equipment {
+        int Id PK
+        string Name
+        string Description
+        string ImageUrl
+        string GameType
+        int CreatedByUserId FK
+        bool IsPublic
+        json Tags
+        json DndProperties
+        json GenericProperties
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+    
+    Campaigns {
+        int Id PK
+        string Name
+        string Description
+        string GameType
+        int GameMasterId FK
+        bool IsPublic
+        int CurrentChapterId FK
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+    
+    Chapters {
+        int Id PK
+        int CampaignId FK
+        int ChapterNumber
+        string Title
+        string Content
+        int OrderIndex
+        string Status
+        datetime CreatedAt
+        datetime UpdatedAt
+    }
+    
+    NPCs {
+        int Id PK
+        int ChapterId FK
+        string Name
+        string Description
+        string GameType
+        json DndProperties
+        json GenericProperties
+        datetime CreatedAt
+    }
+    
+    CampaignPlayers {
+        int CampaignId FK
+        int UserId FK
+        string Status
+        datetime JoinedAt
+        datetime InvitedAt
+        bool IsActive
+    }
+    
+    Sessions {
+        string SessionId PK
+        int CampaignId FK
+        int GameMasterId FK
+        string Status
+        datetime StartedAt
+        datetime EndedAt
+        int CurrentChapterId FK
+        json SessionSettings
+        datetime LastSavedAt
+    }
+    
+    SessionParticipants {
+        string SessionId FK
+        int UserId FK
+        int CharacterId FK
+        string Status
+        datetime JoinedAt
+        datetime LastSeenAt
+        bool IsOnline
+    }
+    
+    Combats {
+        int Id PK
+        string SessionId FK
+        int ChapterId FK
+        string Status
+        int CurrentTurn
+        json TurnOrder
+        datetime StartedAt
+        datetime EndedAt
+    }
+    
+    CombatParticipants {
+        int CombatId FK
+        int ParticipantId
+        string ParticipantType
+        int CharacterId FK
+        int NpcId FK
+        int Initiative
+        int CurrentHitPoints
+        json StatusEffects
+        bool IsActive
+    }
+    
+    CharacterSpells {
+        int CharacterId FK
+        int SpellId FK
+        datetime LearnedDate
+        bool IsPrepared
+        string Notes
+    }
+    
+    CharacterEquipment {
+        int CharacterId FK
+        int EquipmentId FK
+        int Quantity
+        bool IsEquipped
+        json CustomProperties
+        datetime AcquiredDate
+    }
+    
+    EquipmentOffers {
+        int Id PK
+        int CampaignId FK
+        int GameMasterId FK
+        int TargetPlayerId FK
+        int EquipmentId FK
+        int Quantity
+        string Message
+        string Status
+        datetime CreatedAt
+        datetime RespondedAt
+    }
+    
+    EquipmentTrades {
+        int Id PK
+        int CampaignId FK
+        int FromPlayerId FK
+        int ToPlayerId FK
+        int EquipmentId FK
+        int Quantity
+        string Message
+        string Status
+        datetime CreatedAt
+        datetime CompletedAt
+    }
+    
+    CampaignInvitations {
+        int Id PK
+        int CampaignId FK
+        int InviterId FK
+        string InviteeEmail
+        int InviteeUserId FK
+        string Status
+        string Message
+        datetime CreatedAt
+        datetime ExpiresAt
+        datetime RespondedAt
+    }
+    
+    CampaignProgress {
+        int CampaignId FK
+        int UserId FK
+        int CurrentChapterId FK
+        int CompletedChapters
+        int TotalChapters
+        decimal ProgressPercentage
+        datetime LastUpdated
+    }
+    
+    SessionSaves {
+        int Id PK
+        string SessionId FK
+        int SaveSlot
+        json GameState
+        int ChapterId FK
+        string Description
+        datetime CreatedAt
+    }
+    
+    Notifications {
+        int Id PK
+        int UserId FK
+        string Type
+        string Title
+        string Message
+        json Data
+        bool IsRead
+        string DeliveryMethod
+        datetime CreatedAt
+        datetime ReadAt
+        datetime ExpiresAt
+    }
+    
+    PasswordResets {
+        int Id PK
+        int UserId FK
+        string ResetToken
+        datetime CreatedAt
+        datetime ExpiresAt
+        bool IsUsed
+        datetime UsedAt
+    }
+    
+    PlayerStatistics {
+        int Id PK
+        int UserId FK
+        string StatType
+        string StatCategory
+        decimal StatValue
+        json AdditionalData
+        string SessionId FK
+        int CharacterId FK
+        int CampaignId FK
+        datetime RecordedAt
+    }
+    
+    DiceRolls {
+        int Id PK
+        int UserId FK
+        string SessionId FK
+        int CharacterId FK
+        string DiceType
+        int Result
+        string Context
+        int TargetDC
+        bool IsSuccess
+        bool IsCritical
+        int AdditionalModifiers
+        datetime RolledAt
+    }
+    
+    Achievements {
+        string Id PK
+        string Name
+        string Description
+        string Icon
+        string Category
+        string Rarity
+        int RequiredValue
+        json RequiredData
+        bool IsActive
+        datetime CreatedAt
+    }
+    
+    PlayerAchievements {
+        int UserId FK
+        string AchievementId FK
+        decimal Progress
+        int CurrentValue
+        bool IsUnlocked
+        datetime UnlockedAt
+        int UnlockedWithCharacterId FK
+        json UnlockContext
+    }
+    
+    CombatActions {
+        int Id PK
+        int CombatId FK
+        int UserId FK
+        int CharacterId FK
+        string ActionType
+        string TargetType
+        int TargetId
+        int DamageDealt
+        int DamageTaken
+        bool IsHit
+        bool IsCritical
+        int SpellId FK
+        int EquipmentId FK
+        int RoundNumber
+        int ActionOrder
+        json ActionData
+        datetime ExecutedAt
+    }
+    
+    SessionActivities {
+        int Id PK
+        string SessionId FK
+        int UserId FK
+        string ActivityType
+        json ActivityData
+        int ExperienceGained
+        json ItemsGained
+        datetime ActivityTime
+    }
+    
+    PlayerReports {
+        int Id PK
+        int UserId FK
+        string ReportType
+        string ReportPeriod
+        datetime StartDate
+        datetime EndDate
+        json ReportData
+        datetime GeneratedAt
+    }
+    
+    %% ========================================
+    %% RELATIONS ENTRE LES TABLES
+    %% ========================================
+    
+    %% Relations Utilisateurs
+    Users ||--o{ CharactersDnd : "possède"
+    Users ||--o{ Spells : "crée"
+    Users ||--o{ Equipment : "crée"
+    Users ||--o{ Campaigns : "maîtrise"
+    Users ||--o{ CampaignPlayers : "participe"
+    Users ||--o{ Sessions : "organise"
+    Users ||--o{ SessionParticipants : "rejoint"
+    Users ||--o{ CampaignInvitations : "invite"
+    Users ||--o{ CampaignInvitations : "est_invité"
+    Users ||--o{ Notifications : "reçoit"
+    Users ||--o{ PasswordResets : "demande"
+    Users ||--o{ PlayerStatistics : "génère"
+    Users ||--o{ DiceRolls : "lance"
+    Users ||--o{ PlayerAchievements : "débloque"
+    Users ||--o{ CombatActions : "exécute"
+    Users ||--o{ SessionActivities : "réalise"
+    Users ||--o{ PlayerReports : "reçoit"
+    Users ||--o{ EquipmentOffers : "propose_ou_reçoit"
+    Users ||--o{ EquipmentTrades : "échange_avec"
+    Users ||--o{ CampaignProgress : "progresse"
+    
+    %% Relations Campagnes
+    Campaigns ||--o{ Chapters : "contient"
+    Campaigns ||--o{ CampaignPlayers : "accueille"
+    Campaigns ||--o{ EquipmentOffers : "facilite"
+    Campaigns ||--o{ EquipmentTrades : "permet"
+    Campaigns ||--o{ Sessions : "héberge"
+    Campaigns ||--o{ CampaignInvitations : "concerne"
+    Campaigns ||--o{ CampaignProgress : "suit_progression"
+    Campaigns ||--o{ PlayerStatistics : "contexte"
+    Campaigns }o--|| Chapters : "chapitre_actuel"
+    
+    %% Relations Chapitres
+    Chapters ||--o{ NPCs : "contient"
+    Chapters ||--o{ Combats : "propose"
+    Chapters ||--o{ SessionSaves : "sauvegarde_état"
+    Chapters ||--o{ CampaignProgress : "progression_chapitre"
+    
+    %% Relations Sessions
+    Sessions ||--o{ SessionParticipants : "inclut"
+    Sessions ||--o{ SessionSaves : "sauvegarde"
+    Sessions ||--o{ Combats : "gère_combats"
+    Sessions ||--o{ DiceRolls : "enregistre"
+    Sessions ||--o{ PlayerStatistics : "génère"
+    Sessions ||--o{ SessionActivities : "contient"
+    Sessions }o--|| Campaigns : "session_de"
+    Sessions }o--|| Chapters : "chapitre_actuel"
+    
+    %% Relations Combats
+    Combats ||--o{ CombatParticipants : "implique"
+    Combats ||--o{ CombatActions : "enregistre"
+    
+    %% Relations Personnages
+    CharactersDnd ||--o{ CharacterSpells : "connaît"
+    CharactersDnd ||--o{ CharacterEquipment : "possède"
+    CharactersDnd ||--o{ SessionParticipants : "joue"
+    CharactersDnd ||--o{ CombatParticipants : "combat"
+    CharactersDnd ||--o{ DiceRolls : "lance_pour"
+    CharactersDnd ||--o{ PlayerStatistics : "stat_pour"
+    CharactersDnd ||--o{ CombatActions : "exécute_avec"
+    CharactersDnd ||--o{ PlayerAchievements : "débloque_avec"
+    
+    %% Relations Sorts et Équipements
+    Spells ||--o{ CharacterSpells : "appris_par"
+    Spells ||--o{ CombatActions : "utilisé_dans"
+    
+    Equipment ||--o{ CharacterEquipment : "possédé_par"
+    Equipment ||--o{ EquipmentOffers : "proposé"
+    Equipment ||--o{ EquipmentTrades : "échangé"
+    Equipment ||--o{ CombatActions : "utilisé_avec"
+    
+    %% Relations Succès
+    Achievements ||--o{ PlayerAchievements : "déblocage"
+    
+    %% Relations PNJ
+    NPCs ||--o{ CombatParticipants : "participe_combat"
 ```
-- Création des tables `Spells` et `Equipment`
-- Index pour optimisation des requêtes
 
-### Migration 2 : Système d'Apprentissage
-```bash
-dotnet ef migrations add CreateCharacterSpellsRelation
-```
-- Création de la table `CharacterSpells`
-- Relations avec validation
+### 📊 **Matrice des Relations par Domaine**
 
-### Migration 3 : Système d'Inventaire
-```bash
-dotnet ef migrations add CreateCharacterEquipmentRelation
-```
-- Création de la table `CharacterEquipment`
-- Support des quantités multiples
+#### **🧑‍🤝‍🧑 Domaine Utilisateur**
+| Table Source | Table Cible | Type Relation | Cardinalité | Clé Étrangère |
+|--------------|-------------|---------------|-------------|---------------|
+| Users | CharactersDnd | One-to-Many | 1:N | UserId |
+| Users | Campaigns | One-to-Many | 1:N | GameMasterId |
+| Users | Spells | One-to-Many | 1:N | CreatedByUserId |
+| Users | Equipment | One-to-Many | 1:N | CreatedByUserId |
+| Users | Notifications | One-to-Many | 1:N | UserId |
+| Users | PasswordResets | One-to-Many | 1:N | UserId |
 
-### Migration 4 : Système d'Échanges
-```bash
-dotnet ef migrations add CreateEquipmentExchangeSystem
-```
-- Création des tables `EquipmentOffers` et `EquipmentTrades`
-- Contraintes de validation des échanges
+#### **🏰 Domaine Campagne**
+| Table Source | Table Cible | Type Relation | Cardinalité | Clé Étrangère |
+|--------------|-------------|---------------|-------------|---------------|
+| Campaigns | Chapters | One-to-Many | 1:N | CampaignId |
+| Campaigns | CampaignPlayers | One-to-Many | 1:N | CampaignId |
+| Campaigns | Sessions | One-to-Many | 1:N | CampaignId |
+| Campaigns | CampaignInvitations | One-to-Many | 1:N | CampaignId |
+| Campaigns | CampaignProgress | One-to-Many | 1:N | CampaignId |
+| Campaigns | Chapters | Many-to-One | N:1 | CurrentChapterId |
 
-### Migration 5 : Campagnes et Chapitres
-```bash
-dotnet ef migrations add CreateCampaignsAndChapters
-```
-- Système complet de gestion des campagnes
-- Tables `Campaigns`, `Chapters`, `NPCs`, `CampaignPlayers`
+#### **📖 Domaine Chapitre**
+| Table Source | Table Cible | Type Relation | Cardinalité | Clé Étrangère |
+|--------------|-------------|---------------|-------------|---------------|
+| Chapters | NPCs | One-to-Many | 1:N | ChapterId |
+| Chapters | Combats | One-to-Many | 1:N | ChapterId |
+| Chapters | SessionSaves | One-to-Many | 1:N | ChapterId |
 
-### Migration 6 : Système de Sessions ✨ NOUVEAU
-```bash
-dotnet ef migrations add CreateSessionsSystem
-```
-- Création des tables `Sessions` et `SessionParticipants`
-- Support du lancement et gestion des sessions temps réel
+#### **🎮 Domaine Session**
+| Table Source | Table Cible | Type Relation | Cardinalité | Clé Étrangère |
+|--------------|-------------|---------------|-------------|---------------|
+| Sessions | SessionParticipants | One-to-Many | 1:N | SessionId |
+| Sessions | SessionSaves | One-to-Many | 1:N | SessionId |
+| Sessions | Combats | One-to-Many | 1:N | SessionId |
+| Sessions | PlayerStatistics | One-to-Many | 1:N | SessionId |
+| Sessions | DiceRolls | One-to-Many | 1:N | SessionId |
+| Sessions | SessionActivities | One-to-Many | 1:N | SessionId |
 
-### Migration 7 : Système de Notifications
-```bash
-dotnet ef migrations add CreateNotificationsSystem  
-```
-- Création de la table `Notifications`
-- Support WebSocket et email pour alertes en temps réel
+#### **⚔️ Domaine Combat**
+| Table Source | Table Cible | Type Relation | Cardinalité | Clé Étrangère |
+|--------------|-------------|---------------|-------------|---------------|
+| Combats | CombatParticipants | One-to-Many | 1:N | CombatId |
+| Combats | CombatActions | One-to-Many | 1:N | CombatId |
 
-### Migration 8 : Invitations et Progression
-```bash
-dotnet ef migrations add CreateInvitationsAndProgress
-```
-- Création des tables `CampaignInvitations` et `CampaignProgress`
-- Système complet d'invitations et suivi de progression
+#### **🧙‍♂️ Domaine Personnage**
+| Table Source | Table Cible | Type Relation | Cardinalité | Clé Étrangère |
+|--------------|-------------|---------------|-------------|---------------|
+| CharactersDnd | CharacterSpells | One-to-Many | 1:N | CharacterId |
+| CharactersDnd | CharacterEquipment | One-to-Many | 1:N | CharacterId |
+| CharactersDnd | SessionParticipants | One-to-Many | 1:N | CharacterId |
+| CharactersDnd | CombatParticipants | One-to-Many | 1:N | CharacterId |
+| CharactersDnd | DiceRolls | One-to-Many | 1:N | CharacterId |
+| CharactersDnd | CombatActions | One-to-Many | 1:N | CharacterId |
 
-### Migration 9 : Combat Temps Réel
-```bash
-dotnet ef migrations add CreateRealTimeCombat
-```
-- Création des tables `Combats` et `CombatParticipants`
-- Support des combats synchronisés avec invitations dynamiques
+#### **🪄 Domaine Sorts & Équipements**
+| Table Source | Table Cible | Type Relation | Cardinalité | Clé Étrangère |
+|--------------|-------------|---------------|-------------|---------------|
+| Spells | CharacterSpells | One-to-Many | 1:N | SpellId |
+| Equipment | CharacterEquipment | One-to-Many | 1:N | EquipmentId |
+| Equipment | EquipmentOffers | One-to-Many | 1:N | EquipmentId |
+| Equipment | EquipmentTrades | One-to-Many | 1:N | EquipmentId |
 
-### Migration 10 : Authentification Avancée
-```bash
-dotnet ef migrations add CreatePasswordResets
-```
-- Création de la table `PasswordResets`
-- Système complet de réinitialisation de mots de passe
+#### **🔄 Domaine Échanges**
+| Table Source | Table Cible | Type Relation | Cardinalité | Clé Étrangère |
+|--------------|-------------|---------------|-------------|---------------|
+| Users | EquipmentOffers | One-to-Many | 1:N | GameMasterId |
+| Users | EquipmentOffers | One-to-Many | 1:N | TargetPlayerId |
+| Users | EquipmentTrades | One-to-Many | 1:N | FromPlayerId |
+| Users | EquipmentTrades | One-to-Many | 1:N | ToPlayerId |
 
-### Migration 11 : Système de Statistiques ✨ NOUVEAU
-```bash
-dotnet ef migrations add CreatePlayerStatistics
-```
-- Création des tables `PlayerStatistics` et `DiceRolls`
-- Collecte automatique des métriques de performance
+#### **📊 Domaine Statistiques**
+| Table Source | Table Cible | Type Relation | Cardinalité | Clé Étrangère |
+|--------------|-------------|---------------|-------------|---------------|
+| Achievements | PlayerAchievements | One-to-Many | 1:N | AchievementId |
+| Users | PlayerStatistics | One-to-Many | 1:N | UserId |
+| Users | PlayerAchievements | One-to-Many | 1:N | UserId |
+| Users | PlayerReports | One-to-Many | 1:N | UserId |
 
-### Migration 12 : Système de Succès
-```bash
-dotnet ef migrations add CreateAchievementsSystem
-```
-- Création des tables `Achievements` et `PlayerAchievements`
-- Framework complet de déblocage de succès
+### 🔐 **Contraintes d'Intégrité Importantes**
 
-### Migration 13 : Actions de Combat Détaillées
-```bash
-dotnet ef migrations add CreateCombatActions
-```
-- Création de la table `CombatActions`
-- Enregistrement détaillé de toutes les actions de combat
-
-### Migration 14 : Activités et Rapports
-```bash
-dotnet ef migrations add CreateActivitiesAndReports
-```
-- Création des tables `SessionActivities` et `PlayerReports`
-- Système complet de suivi et d'analyse
-
-## 📈 Données de Test
-
-### Scripts d'Injection Administrative
-
-#### **Sorts D&D Officiels**
+#### **Contraintes de Cohérence GameType**
 ```sql
--- Sorts de niveau 1
-INSERT INTO Spells (Name, Description, GameType, CreatedByUserId, IsPublic, DndProperties)
-VALUES 
-('Projectile Magique', 'Trois projectiles d''énergie pure frappent automatiquement leurs cibles.', 'dnd', 0, 1, 
- '{"level":1,"school":"Évocation","castingTime":"1 action","range":"36 mètres","duration":"Instantané","components":["V","S"],"damageFormula":"1d4+1","requiresAttackRoll":true}'),
+-- Validation que les personnages correspondent au type de campagne
+ALTER TABLE CampaignPlayers 
+ADD CONSTRAINT CK_CampaignPlayers_GameTypeMatch 
+CHECK (
+    NOT EXISTS (
+        SELECT 1 FROM Campaigns c, CharactersDnd ch 
+        WHERE c.Id = CampaignId 
+        AND ch.UserId = CampaignPlayers.UserId 
+        AND c.GameType = 'dnd' 
+        AND ch.Id NOT IN (SELECT Id FROM CharactersDnd)
+    )
+);
 
-('Soin', 'Restaure instantanément les points de vie de la cible.', 'dnd', 0, 1,
- '{"level":1,"school":"Évocation","castingTime":"1 action","range":"Contact","duration":"Instantané","components":["V","S"],"damageFormula":"1d8+mod","requiresAttackRoll":false}');
-
--- Sorts de niveau 3
-INSERT INTO Spells (Name, Description, GameType, CreatedByUserId, IsPublic, DndProperties)
-VALUES 
-('Boule de Feu', 'Une explosion de flammes dévastatrice dans une zone de 6 mètres de rayon.', 'dnd', 0, 1,
- '{"level":3,"school":"Évocation","castingTime":"1 action","range":"45 mètres","duration":"Instantané","components":["V","S","M"],"damageFormula":"8d6","requiresSavingThrow":true,"savingThrowAbility":"Dextérité"}');
+-- Validation que les sorts correspondent au GameType
+ALTER TABLE CharacterSpells
+ADD CONSTRAINT CK_CharacterSpells_GameTypeMatch
+CHECK (
+    NOT EXISTS (
+        SELECT 1 FROM Spells s, CharactersDnd c
+        WHERE s.Id = SpellId AND c.Id = CharacterId
+        AND s.GameType != 'generic' AND s.GameType != 'dnd'
+    )
+);
 ```
 
-#### **Équipements D&D Officiels**
+#### **Contraintes de Logique Métier**
 ```sql
--- Armes
-INSERT INTO Equipment (Name, Description, GameType, CreatedByUserId, IsPublic, DndProperties)
-VALUES 
-('Épée Longue', 'Arme martiale polyvalente à une main.', 'dnd', 0, 1,
- '{"equipmentType":"Weapon","weaponCategory":"Martial","damageFormula":"1d8","damageType":"Tranchant","properties":["Versatile (1d10)"],"rarity":"Commun"}'),
+-- Un utilisateur ne peut pas s'échanger avec lui-même
+ALTER TABLE EquipmentTrades
+ADD CONSTRAINT CK_EquipmentTrades_DifferentUsers
+CHECK (FromPlayerId != ToPlayerId);
 
-('Dague', 'Arme simple légère et précise.', 'dnd', 0, 1,
- '{"equipmentType":"Weapon","weaponCategory":"Simple","damageFormula":"1d4","damageType":"Perforant","properties":["Finesse","Light","Thrown (6/18)"],"rarity":"Commun"}');
+-- Une campagne ne peut avoir qu'un seul MJ
+ALTER TABLE Campaigns
+ADD CONSTRAINT UQ_Campaigns_SingleGM_Per_Campaign
+UNIQUE (Id, GameMasterId);
 
--- Armures
-INSERT INTO Equipment (Name, Description, GameType, CreatedByUserId, IsPublic, DndProperties)
-VALUES 
-('Armure de Cuir', 'Armure légère flexible et silencieuse.', 'dnd', 0, 1,
- '{"equipmentType":"Armor","armorCategory":"Light","armorClassBase":11,"armorClassDexBonus":10,"rarity":"Commun"}'),
+-- Un personnage ne peut être dans qu'une session active à la fois
+CREATE UNIQUE INDEX UQ_SessionParticipants_ActiveCharacter
+ON SessionParticipants (CharacterId) 
+WHERE Status = 'joined';
 
-('Cotte de Mailles', 'Armure intermédiaire offrant une bonne protection.', 'dnd', 0, 1,
- '{"equipmentType":"Armor","armorCategory":"Medium","armorClassBase":13,"armorClassDexBonus":2,"rarity":"Commun"}');
+-- Validation des pourcentages de progression
+ALTER TABLE CampaignProgress
+ADD CONSTRAINT CK_CampaignProgress_ValidPercentage
+CHECK (ProgressPercentage >= 0 AND ProgressPercentage <= 100);
 
--- Consommables
-INSERT INTO Equipment (Name, Description, GameType, CreatedByUserId, IsPublic, DndProperties)
-VALUES 
-('Potion de Soins', 'Récupère des points de vie instantanément.', 'dnd', 0, 1,
- '{"equipmentType":"Consumable","properties":["Healing 2d4+2"],"rarity":"Commun"}');
+-- Validation des slots de sauvegarde
+ALTER TABLE SessionSaves
+ADD CONSTRAINT CK_SessionSaves_ValidSlot
+CHECK (SaveSlot >= 1 AND SaveSlot <= 10);
 ```
 
-#### **Campagnes et Chapitres Initiaux**
+#### **Contraintes de Dates**
 ```sql
--- Campagne Test
-INSERT INTO Campaigns (Name, Description, GameType, GameMasterId, IsPublic, CreatedAt, UpdatedAt)
-VALUES 
-('Campagne de Test', 'Une campagne passionnante pour tester les fonctionnalités.', 'dnd', 1, 1, GETDATE(), GETDATE());
+-- Les sessions ne peuvent pas se terminer avant d'avoir commencé
+ALTER TABLE Sessions
+ADD CONSTRAINT CK_Sessions_ValidDates
+CHECK (EndedAt IS NULL OR EndedAt >= StartedAt);
 
--- Récupérer l''Id de la campagne créée
-DECLARE @CampaignId int = SCOPE_IDENTITY();
+-- Les invitations ne peuvent pas expirer dans le passé
+ALTER TABLE CampaignInvitations
+ADD CONSTRAINT CK_CampaignInvitations_ValidExpiry
+CHECK (ExpiresAt > CreatedAt);
 
--- Chapitre 1
-INSERT INTO Chapters (CampaignId, ChapterNumber, Title, Content, OrderIndex, Status, CreatedAt, UpdatedAt)
-VALUES 
-(@CampaignId, 1, 'Chapitre d''Introduction', 'Contenu du chapitre d''introduction...', 1, 'Active', GETDATE(), GETDATE());
-
--- Chapitre 2
-INSERT INTO Chapters (CampaignId, ChapterNumber, Title, Content, OrderIndex, Status, CreatedAt, UpdatedAt)
-VALUES 
-(@CampaignId, 2, 'Chapitre de Développement', 'Contenu du chapitre de développement...', 2, 'Pending', GETDATE(), GETDATE());
+-- Les réinitialisations de mot de passe expirent après création
+ALTER TABLE PasswordResets
+ADD CONSTRAINT CK_PasswordResets_ValidExpiry
+CHECK (ExpiresAt > CreatedAt);
 ```
 
-#### **Initialisation des Succès par Défaut**
+### 🔄 **Relations Circulaires et Résolution**
+
+#### **Campaigns ↔ Chapters (CurrentChapterId)**
+Cette relation circulaire est résolue par :
+1. **Création campagne** : `CurrentChapterId = NULL`
+2. **Création chapitres** : Référence `CampaignId`
+3. **Mise à jour campagne** : `CurrentChapterId` pointé vers un chapitre existant
+
+#### **Sessions ↔ Chapters (CurrentChapterId)**
+Similaire à la relation Campaigns-Chapters :
+1. **Session créée** : `CurrentChapterId` peut être NULL (en attente)
+2. **Progression session** : `CurrentChapterId` mis à jour selon avancement
+
+### 📈 **Index de Performance Recommandés**
 
 ```sql
--- Script d'injection des succès de base
-INSERT INTO Achievements (Id, Name, Description, Icon, Category, Rarity, RequiredValue, RequiredData) VALUES
+-- Index composites pour requêtes fréquentes
+CREATE INDEX IX_CharacterSpells_Character_Prepared ON CharacterSpells (CharacterId, IsPrepared);
+CREATE INDEX IX_CharacterEquipment_Character_Equipped ON CharacterEquipment (CharacterId, IsEquipped);
+CREATE INDEX IX_Sessions_Campaign_Status ON Sessions (CampaignId, Status);
+CREATE INDEX IX_Notifications_User_Unread ON Notifications (UserId, IsRead, CreatedAt);
+CREATE INDEX IX_PlayerStatistics_User_Category_Date ON PlayerStatistics (UserId, StatCategory, RecordedAt);
+CREATE INDEX IX_DiceRolls_Character_Context_Date ON DiceRolls (CharacterId, Context, RolledAt);
+CREATE INDEX IX_CombatActions_Combat_Round ON CombatActions (CombatId, RoundNumber, ActionOrder);
 
--- SUCCÈS DE COMBAT ⚔️
-('first_blood', 'Premier Sang', 'Remporter votre premier combat', '🗡️', 'combat', 'common', 1, '{"combatType": "any"}'),
-('critical_master', 'Maître du Critique', 'Obtenir 10 coups critiques consécutifs', '🎯', 'combat', 'rare', 10, '{"consecutive": true, "rollType": "attack"}'),
-('untouchable', 'Intouchable', 'Terminer 5 combats sans subir de dégâts', '🛡️', 'combat', 'epic', 5, '{"condition": "no_damage_taken"}'),
-('dragon_slayer', 'Tueur de Dragons', 'Vaincre un dragon ancien', '🐲', 'combat', 'legendary', 1, '{"enemyType": "ancient_dragon"}'),
-('damage_dealer', 'Machine de Guerre', 'Infliger 10 000 points de dégâts au total', '💥', 'combat', 'rare', 10000, '{"cumulative": true}'),
-('last_stand', 'Dernier Rempart', 'Vaincre un boss avec moins de 5 HP', '🛡️', 'combat', 'epic', 1, '{"condition": "low_hp_boss_kill", "hpThreshold": 5}'),
-('berserker', 'Berserker', 'Infliger plus de 100 dégâts en un seul round', '🪓', 'combat', 'rare', 100, '{"timeframe": "single_round"}'),
-
--- SUCCÈS D'EXPLORATION 🗺️
-('cartographer', 'Cartographe', 'Découvrir 50 lieux secrets', '🗺️', 'exploration', 'uncommon', 50, '{"locationType": "secret"}'),
-('treasure_hunter', 'Chasseur de Trésors', 'Trouver 25 trésors légendaires', '💎', 'exploration', 'epic', 25, '{"rarity": "legendary"}'),
-('dungeon_master', 'Maître des Donjons', 'Compléter 10 donjons différents', '🏰', 'exploration', 'rare', 10, '{"unique": true}'),
-('pathfinder', 'Éclaireur', 'Être le premier à entrer dans 20 lieux', '🧭', 'exploration', 'uncommon', 20, '{"condition": "first_entry"}'),
-('completionist', 'Perfectionniste', 'Compléter une campagne à 100%', '📜', 'exploration', 'epic', 1, '{"completion": 100}'),
-
--- SUCCÈS SOCIAUX 👥
-('team_player', 'Esprit d\'Équipe', 'Participer à 100 sessions multijoueurs', '🤝', 'social', 'common', 100, '{"sessionType": "multiplayer"}'),
-('mentor', 'Mentor', 'Aider 5 nouveaux joueurs', '👨‍🏫', 'social', 'rare', 5, '{"action": "help_new_player"}'),
-('diplomat', 'Diplomate', 'Résoudre 10 conflits sans violence', '🕊️', 'social', 'uncommon', 10, '{"method": "peaceful"}'),
-('generous_soul', 'Âme Généreuse', 'Donner 100 objets à d\'autres joueurs', '🎁', 'social', 'uncommon', 100, '{"action": "give_item"}'),
-('party_leader', 'Chef de Groupe', 'Diriger 25 sessions avec succès', '👑', 'social', 'rare', 25, '{"role": "leader", "outcome": "success"}'),
-
--- SUCCÈS DE MAÎTRISE 🎭
-('gm_apprentice', 'Apprenti MJ', 'Créer votre première campagne', '📚', 'mastery', 'common', 1, '{"action": "create_campaign"}'),
-('storyteller', 'Conteur', 'Mener 10 campagnes à leur terme', '📖', 'mastery', 'epic', 10, '{"completion": true}'),
-('world_builder', 'Créateur de Mondes', 'Créer 50 PNJ personnalisés', '🌍', 'mastery', 'rare', 50, '{"content": "npc"}'),
-('rule_master', 'Maître des Règles', 'Gérer 100 combats sans erreur', '⚖️', 'mastery', 'rare', 100, '{"accuracy": "perfect"}'),
-('crowd_pleaser', 'Meneur de Foule', 'Avoir 50+ joueurs dans vos campagnes', '🎪', 'mastery', 'epic', 50, '{"metric": "total_players"}'),
-
--- SUCCÈS DE COLLECTION 💎
-('spell_collector', 'Collectionneur de Sorts', 'Apprendre 100 sorts différents', '📜', 'collection', 'rare', 100, '{"content": "spells", "unique": true}'),
-('equipment_hoarder', 'Accumulateur', 'Posséder 500 objets au total', '📦', 'collection', 'uncommon', 500, '{"content": "equipment"}'),
-('legendary_collector', 'Collectionneur Légendaire', 'Posséder 10 objets légendaires simultanément', '⭐', 'collection', 'legendary', 10, '{"rarity": "legendary", "simultaneous": true}'),
-('library_owner', 'Propriétaire de Bibliothèque', 'Connaître des sorts de toutes les écoles', '📚', 'collection', 'epic', 8, '{"content": "spell_schools", "complete": true}'),
-
--- SUCCÈS DE CHANCE 🎲
-('natural_20', 'Coup du Destin', 'Obtenir un 20 naturel', '🎯', 'luck', 'common', 1, '{"dice": "d20", "result": 20}'),
-('streak_master', 'Série Chanceuse', 'Obtenir 5 jets de 15+ consécutifs', '🔥', 'luck', 'rare', 5, '{"consecutive": true, "threshold": 15}'),
-('unlikely_hero', 'Héros Improbable', 'Gagner avec moins de 5% de chance', '🍀', 'luck', 'legendary', 1, '{"probability": 0.05}'),
-('lucky_month', 'Mois Béni', 'Avoir une moyenne de dés > 15 sur un mois', '🌟', 'luck', 'epic', 15, '{"timeframe": "month", "average": true}'),
-('miracle_save', 'Sauvegarde Miraculeuse', 'Réussir une sauvegarde de mort avec un 20', '💫', 'luck', 'rare', 1, '{"saveType": "death", "roll": 20}'),
-
--- SUCCÈS DE PROGRESSION ⚡
-('level_up', 'Montée en Puissance', 'Atteindre le niveau 5', '⚡', 'progression', 'common', 5, '{"metric": "character_level"}'),
-('veteran', 'Vétéran', 'Survivre à 200 combats', '🏆', 'progression', 'rare', 200, '{"metric": "combats_survived"}'),
-('experience_master', 'Maître de l\'Expérience', 'Gagner 50 000 XP au total', '🎯', 'progression', 'epic', 50000, '{"metric": "total_experience"}'),
-('skill_master', 'Maître des Compétences', 'Maximiser 5 compétences', '📈', 'progression', 'rare', 5, '{"metric": "maxed_skills"}'),
-('multi_class', 'Polyvalent', 'Jouer 3 classes différentes', '🎭', 'progression', 'uncommon', 3, '{"metric": "different_classes"}');
-
--- Vérification des succès créés
-SELECT Category, COUNT(*) as Count, 
-       STRING_AGG(Rarity, ', ') as Rarities
-FROM Achievements 
-GROUP BY Category 
-ORDER BY Category;
+-- Index pour les recherches par GameType
+CREATE INDEX IX_Spells_GameType_Public ON Spells (GameType, IsPublic) INCLUDE (Name, CreatedByUserId);
+CREATE INDEX IX_Equipment_GameType_Public ON Equipment (GameType, IsPublic) INCLUDE (Name, CreatedByUserId);
+CREATE INDEX IX_Campaigns_GameType_Public ON Campaigns (GameType, IsPublic) INCLUDE (Name, GameMasterId);
 ```
 
-### Structure JSON des RequiredData
-
-Les différents types de conditions pour les succès :
-
-```json
-// Succès simple avec compteur
-{
-  "cumulative": true,
-  "resetOnDeath": false
-}
-
-// Succès avec condition temporelle
-{
-  "timeframe": "month",
-  "consecutive": false,
-  "resetPeriod": "monthly"
-}
-
-// Succès avec conditions multiples
-{
-  "conditions": [
-    {"type": "enemy_type", "value": "dragon"},
-    {"type": "damage_threshold", "value": 100},
-    {"type": "team_size", "max": 4}
-  ],
-  "requireAll": true
-}
-
-// Succès avec probabilité
-{
-  "probability_calculation": true,
-  "success_threshold": 0.05,
-  "context_aware": true
-}
+Cette architecture relationnelle complexe mais bien structurée permet de gérer tous les aspects d'une plateforme JDR moderne avec intégrité des données, performance optimisée et évolutivité future ! 🏗️✨

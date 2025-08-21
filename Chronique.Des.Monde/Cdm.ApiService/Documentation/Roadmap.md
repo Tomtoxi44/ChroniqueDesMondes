@@ -1,190 +1,267 @@
-﻿# Roadmap - Chronique des Mondes
+﻿# Roadmap Priorisée - Chronique des Mondes
 
-Cette roadmap présente l'évolution prévue du projet par phases de développement.
+Cette roadmap redéfinie présente l'évolution du projet avec une priorité logique basée sur l'analyse de l'état actuel et des dépendances techniques.
 
-## 🎯 Phase 1 : Fondations (Actuel - Terminé ✅)
+## 📊 **Analyse de l'État Actuel**
 
-### Authentification et Base
-- ✅ **Authentification JWT** - Système de connexion/inscription sécurisé
-- ✅ **Personnages génériques** - Création, modification, suppression
-- ✅ **Personnages D&D** - Extension avec stats complètes D&D
-- ✅ **Architecture modulaire** - Séparation des logiques métier par jeu
-- ✅ **API REST** - Endpoints avec validation et gestion d'erreurs
-- ✅ **Tests automatisés** - Suite de tests HTTP pour validation
+### ✅ **Fondations Terminées (Phase 1)**
+- Authentification JWT avec modèle `User`
+- Personnages D&D avec `CharacterDnd` héritant de `ACharacter`
+- Architecture modulaire avec projets séparés (Common, Dnd, Business, Data)
+- Entity Framework avec contextes séparés (`AppDbContext`, `DndDbContext`) 
+- API REST avec Minimal APIs .NET 9
+- Tests automatisés et DataSeeder opérationnel
+- Interface Blazor avec page de statistiques
 
-### Infrastructure
-- ✅ **Entity Framework Core** - ORM avec migrations automatisées
-- ✅ **Minimal APIs .NET 9** - Endpoints performants et modernes
-- ✅ **Aspire** - Orchestration et configuration des services
-- ✅ **Blazor Server** - Interface utilisateur moderne
+### 🔍 **État Technique Détecté**
+- **Base de données** : Uniquement `Users` et `CharacterDnd` implémentés
+- **Contextes EF** : Structure prête mais tables Spells/Equipment non créées
+- **Migrations** : Infrastructure en place via `Cdm.Migrations`
+- **Business Logic** : Séparation Common/Dnd fonctionnelle
+- **Documentation** : Très complète avec spécifications détaillées
 
-## 🚀 Phase 2 : Sorts et Équipements (En cours 🔄)
+## 🎯 **Priorité Logique Recommandée**
 
-### Système de Sorts
-- 🔄 **Architecture bi-niveau** - Sorts officiels vs privés utilisateurs
-- 🔄 **Injection administrative** - Scripts SQL pour sorts officiels D&D
-- 🔄 **Calculs automatiques D&D** - Modificateurs selon les classes
-- 🔄 **Apprentissage de sorts** - Système de liaison personnage-sort
-- 🔄 **Validation compatibilité** - Sorts D&D uniquement pour personnages D&D
+### **PRIORITÉ 1 : Base de Données et Modèles (IMMÉDIAT)**
+*Fondations techniques obligatoires*
 
-### Système d'Équipements
-- 🔄 **Inventaires multi-instances** - Quantités d'objets par personnage
-- 🔄 **Équipements officiels** - Base de données d'objets D&D standard
-- 🔄 **Création personnalisée** - Équipements privés utilisateurs
-- 🔄 **Calculs automatiques** - CA, bonus d'attaque, modificateurs
+**Justification** : Impossible d'implémenter les fonctionnalités sans les modèles de données correspondants.
 
-### Système d'Échanges
-- 🔄 **Propositions MJ → Joueur** - Distribution d'équipements en campagne
-- 🔄 **Échanges Joueur → Joueur** - Trade entre personnages
-- 🔄 **Validation sécurisée** - Vérification quantités et permissions
-- 🔄 **Interface d'échange** - UX intuitive pour proposer/accepter
+**Actions :**
+1. **Création des modèles Entity Framework**
+   - `Spell`, `Equipment`, `Campaign`, `Chapter`, `NPC`
+   - Tables de liaison : `CharacterSpells`, `CharacterEquipment`
+   - Relations et contraintes de validation
 
-### Interfaces Utilisateur
-- 🔄 **Pages Sorts** - Consultation, création, apprentissage
-- 🔄 **Pages Équipements** - Inventaire, échanges, gestion
-- 🔄 **Interface MJ** - Distribution d'équipements aux joueurs
+2. **Migrations de base de données**
+   - Migration 2 : `CreateSpellsAndEquipmentTables`
+   - Migration 3 : `CreateCampaignSystem`
+   - Migration 4 : `CreateCharacterRelations`
 
-## 📅 Phase 3 : Sessions et Notifications (Prévu) ✨ NOUVEAU
+3. **Configuration des DbContext**
+   - Mise à jour `AppDbContext` et `DndDbContext`
+   - Configuration des relations et index
 
-### Système de Sessions
-- 📅 **Lancement de sessions** - Transformation créateur en MJ actif
-- 📅 **Multi-sources** - Sessions depuis campagnes créées ou rejointes
-- 📅 **Invitations pré-session** - Invitation joueurs avant lancement
-- 📅 **Notifications multi-canal** - WebSocket + email pour absents
-
-### Progression et Sauvegarde
-- 📅 **Progression par chapitres** - Avancement avec sauvegarde automatique
-- 📅 **Barre de progression** - Visualisation chapitre actuel vs total
-- 📅 **Historique de sessions** - Restauration d'états précédents
-- 📅 **Points de sauvegarde** - Sauvegarde aux moments critiques
-
-### Combat Temps Réel
-- 📅 **Invitations dynamiques** - Ajout joueurs en cours de combat
-- 📅 **Notifications de tour** - Alertes visuelles "À votre tour !"
-- 📅 **Interface synchronisée** - État temps réel pour tous participants
-- 📅 **Gestion des déconnexions** - Reconnexion avec rattrapage d'état
-
-### Système de Notifications
-- 📅 **WebSocket temps réel** - Notifications instantanées pour connectés
-- 📅 **Emails automatiques** - Notifications pour joueurs hors ligne
-- 📅 **Types d'alertes** - Sessions, tours, invitations, échanges
-- 📅 **Préférences utilisateur** - Configuration méthodes de notification
-
-### Authentification Avancée
-- 📅 **Reset mot de passe** - Système complet avec emails sécurisés
-- 📅 **Tokens temporaires** - Gestion expiration et sécurité
-- 📅 **Notifications sécurité** - Alertes connexions et modifications
-
-## 📊 Phase 4 : Statistiques et Succès (Prévu) ✨ NOUVEAU
-
-### Collecte et Analyse de Données
-- 📅 **Métriques de sessions** - Fréquence, durée, participation temporelle
-- 📅 **Analyse des dés** - Moyennes, chance, distribution, patterns
-- 📅 **Performance combat** - Dégâts, précision, efficacité par personnage
-- 📅 **Progression personnages** - Évolution niveaux, équipements, expérience
-
-### Système de Succès Gamifié
-- 📅 **Framework achievements** - 5 niveaux de rareté, 7 catégories
-- 📅 **Déblocage contextuel** - Succès liés aux actions spécifiques
-- 📅 **Célébrations visuelles** - Animations, confettis, partage social
-- 📅 **Progression visible** - Suivi temps réel vers prochains objectifs
-
-### Analyses Comportementales
-- 📅 **Patterns de jeu** - Heures préférées, style, habitudes
-- 📅 **Comparaisons sociales** - Classements amis, communauté
-- 📅 **Tendances temporelles** - Évolution performance dans le temps
-- 📅 **Prédictions IA** - Suggestions personnalisées d'amélioration
-
-### Rapports et Visualisations
-- 📅 **Dashboard personnel** - Widget configurables, métriques clés
-- 📅 **Rapports automatiques** - Analyses mensuelles/annuelles
-- 📅 **Graphiques interactifs** - Évolution, comparaisons, tendances
-- 📅 **Export données** - Partage, backup, analyses externes
-
-## 🌟 Phase 5 : Campagnes Avancées (Futur)
-
-### Structure de Campagnes
-- 📅 **Système de chapitres** - Organisation narrative par chapitres
-- 📅 **PNJ par chapitre** - Création et gestion des personnages non-joueurs
-- 📅 **Contextes comportementaux** - Réactions selon l'attitude des joueurs
-- 📅 **Liaison narrative** - Référencement PNJ dans les événements
-
-### Gestion Multi-Joueurs
-- 📅 **Campagnes publiques** - Découverte et rejointe de campagnes ouvertes
-- 📅 **Duplication campagnes** - Clonage pour autres groupes de joueurs
-- 📅 **Permissions avancées** - Gestion fine des droits par rôle
-
-### Intelligence Artificielle
-- 📅 **Génération de contenu** - IA pour PNJ, lieux, événements
-- 📅 **Assistance narration** - Suggestions contextuelles pour MJ
-- 📅 **Création automatique** - Monstres et défis équilibrés
-
-## 🔮 Phase 6 : Extensions et Optimisations (Vision)
-
-### Nouveaux Systèmes de Jeu
-- 📅 **Skyrim** - Sorts, objets et règles spécifiques
-- 📅 **Pathfinder** - Extension du système D&D
-- 📅 **Warhammer** - Nouveau système complet
-- 📅 **Système générique étendu** - Framework pour ajouts communautaires
-
-### Fonctionnalités Avancées
-- 📅 **Intelligence Artificielle** - Assistance création PNJ, événements, lieux
-- 📅 **Chat temps réel** - Communication entre joueurs avec SignalR
-- 📅 **Notifications push** - Alertes échanges, invitations, tours de combat
-- 📅 **Système de sauvegarde** - Snapshots d'état de campagne
-
-### Performance et Scalabilité
-- 📅 **Cache Redis** - Optimisation des requêtes fréquentes
-- 📅 **Rate Limiting** - Protection contre les abus
-- 📅 **Monitoring avancé** - Métriques et logs centralisés
-- 📅 **API GraphQL** - Alternative pour requêtes complexes
-
-## 📈 Métriques de Succès
-
-### Phase 2 (Sorts et Équipements)
-- **Objectif** : 100% des fonctionnalités de base implémentées
-- **Métriques** :
-  - Sorts officiels D&D injectés : 50+ sorts
-  - Équipements officiels : 100+ objets
-  - Taux d'utilisation des échanges : 70% des campagnes
-  - Performance API : <200ms pour 95% des requêtes
-
-### Phase 3 (Campagnes Avancées)
-- **Objectif** : Expérience de jeu complète et fluide
-- **Métriques** :
-  - Campagnes créées par mois : 1000+
-  - Joueurs actifs : 5000+
-  - Sessions de combat par semaine : 500+
-  - Satisfaction utilisateur : 4.5/5
-
-### Phases Futures
-- **Utilisateurs actifs mensuels** : 50,000+ (Phase 4)
-- **Systèmes de jeu supportés** : 10+ (Phase 4)
-- **Revenus mensuels récurrents** : Confidentiel (Phase 5)
-- **Partenariats éditeurs** : 3+ (Phase 5)
-
-## 🛠️ Ressources et Équipe
-
-### Compétences Requises par Phase
-
-#### Phase 2 (Actuelle)
-- **Backend .NET** - Développement API et logique métier
-- **Frontend Blazor** - Interfaces utilisateur modernes
-- **Base de données** - Conception schémas et optimisations
-- **Tests** - Validation automatisée et qualité
-
-#### Phase 3
-- **SignalR** - Communication temps réel
-- **DevOps** - Déploiement et monitoring
-- **UX/UI Design** - Expérience utilisateur avancée
-
-#### Phases Futures
-- **Intelligence Artificielle** - Intégration IA pour génération de contenu
-- **Mobile** - Applications natives iOS/Android
-- **Business Development** - Partenariats et monétisation
+**Durée estimée** : 1-2 semaines
 
 ---
 
-*Cette roadmap est évolutive et s'adapte selon les retours utilisateurs et les priorités du marché.*
+### **PRIORITÉ 2 : Système Sorts et Équipements (COURT TERME)**
+*Valeur métier immédiate*
 
-*Retour au [README principal](./README.md)*
+**Justification** : Fonctionnalités core du JDR, permet de tester l'architecture bi-niveau, fondement pour les échanges.
+
+**Phase 2A : Sorts (2-3 semaines)**
+- Implémentation des services `SpellService` et `SpellBusiness`
+- Endpoints CRUD pour sorts avec validation GameType
+- Injection des sorts D&D officiels via scripts SQL
+- Système d'apprentissage personnage-sort
+- Interface Blazor pour consultation/création de sorts
+
+**Phase 2B : Équipements (2-3 semaines)**
+- Services `EquipmentService` et `EquipmentBusiness`
+- Système d'inventaire avec quantités multiples
+- Injection équipements D&D officiels
+- Interface de gestion d'inventaire
+
+**Phase 2C : Échanges d'Équipements (1-2 semaines)**
+- Tables `EquipmentOffers` et `EquipmentTrades`
+- Services d'échange MJ→Joueur et Joueur→Joueur
+- Validation sécurisée des transactions
+- Interface d'échange intuitive
+
+**Durée totale** : 5-8 semaines
+
+---
+
+### **PRIORITÉ 3 : Système de Campagnes (MOYEN TERME)**
+*Structure de jeu essentielle*
+
+**Justification** : Nécessaire pour tester les sorts/équipements en contexte réel, prépare les sessions.
+
+**Phase 3A : Structure de Campagnes (3-4 semaines)**
+- Modèles `Campaign`, `Chapter`, `NPC`, `CampaignPlayers`
+- Services de création et gestion de campagnes
+- Système de chapitres avec contenu narratif
+- Gestion des PNJ par chapitre avec comportements
+
+**Phase 3B : Système de Combat (2-3 semaines)**
+- Tables `Combats` et `CombatParticipants`
+- Logique d'initiative et tours de jeu
+- Calculs automatiques D&D (CA, dégâts, modificateurs)
+- Interface MJ pour lancement de combats
+
+**Durée totale** : 5-7 semaines
+
+---
+
+### **PRIORITÉ 4 : Sessions et Notifications (LONG TERME)**
+*Fonctionnalités avancées*
+
+**Justification** : Nécessite toutes les fondations précédentes, apporte l'expérience temps réel.
+
+**Phase 4A : Infrastructure Sessions (3-4 semaines)**
+- Tables `Sessions`, `SessionParticipants`, `SessionSaves`
+- Services de lancement et gestion de sessions
+- Système de sauvegarde automatique
+- Progression par chapitres avec persistence
+
+**Phase 4B : Notifications Temps Réel (2-3 semaines)**
+- Tables `Notifications`, `CampaignInvitations`
+- Intégration WebSocket/SignalR
+- Système d'emails automatiques
+- Invitations pré-session et dynamiques
+
+**Phase 4C : Combat Temps Réel (2-3 semaines)**
+- Invitations dynamiques en cours de combat
+- Notifications "À votre tour" avec interface visuelle
+- Synchronisation état de combat entre participants
+- Gestion des déconnexions/reconnexions
+
+**Durée totale** : 7-10 semaines
+
+---
+
+### **PRIORITÉ 5 : Statistiques et Succès (TRÈS LONG TERME)**
+*Gamification et engagement*
+
+**Justification** : Fonctionnalités d'engagement, nécessite une base de données riche d'événements.
+
+**Phase 5A : Collecte de Données (2-3 semaines)**
+- Tables `PlayerStatistics`, `DiceRolls`, `CombatActions`
+- Services de collecte automatique d'événements
+- Intégration dans tous les systèmes existants
+
+**Phase 5B : Système de Succès (3-4 semaines)**
+- Tables `Achievements`, `PlayerAchievements`
+- Moteur de déblocage de succès
+- 55+ succès prédéfinis avec célébrations visuelles
+- Interface de progression et classements
+
+**Phase 5C : Analyses Avancées (3-4 semaines)**
+- Tables `SessionActivities`, `PlayerReports`
+- Rapports automatiques mensuels/annuels
+- Analyses prédictives et recommandations IA
+- Dashboard personnalisé avec widgets configurables
+
+**Durée totale** : 8-11 semaines
+
+---
+
+## 📋 **Plan d'Exécution Détaillé**
+
+### **Sprint 1-2 : Fondations DB (2 semaines)**
+**Objectif** : Préparer toute l'infrastructure de données
+
+**Livrables :**
+- [ ] Modèles EF pour Spells, Equipment, Campaign, Chapter, NPC
+- [ ] Migrations 2-4 créées et testées
+- [ ] DbContext configurés avec relations
+- [ ] Seed data pour sorts/équipements D&D officiels
+- [ ] Tests d'intégration base de données
+
+### **Sprint 3-6 : Sorts (4 semaines)**
+**Objectif** : Système de sorts complet et opérationnel
+
+**Livrables :**
+- [ ] Services et business logic pour sorts
+- [ ] Endpoints CRUD avec validation GameType
+- [ ] Système d'apprentissage personnage-sort
+- [ ] Interface Blazor sorts (consultation, création, apprentissage)
+- [ ] Tests HTTP complets pour sorts
+
+### **Sprint 7-10 : Équipements (4 semaines)**
+**Objectif** : Inventaires et échanges fonctionnels
+
+**Livrables :**
+- [ ] Services équipements avec quantités multiples
+- [ ] Système d'échanges MJ→Joueur et Joueur→Joueur
+- [ ] Interface inventaire et échanges
+- [ ] Validation sécurisée des transactions
+- [ ] Tests complets échanges d'équipements
+
+### **Sprint 11-16 : Campagnes et Combat (6 semaines)**
+**Objectif** : Structure de jeu et combat utilisables
+
+**Livrables :**
+- [ ] Système complet de campagnes et chapitres
+- [ ] Gestion des PNJ avec comportements
+- [ ] Combat avec initiative et calculs D&D
+- [ ] Interface MJ pour gestion de campagnes
+- [ ] Tests scénarios complets de jeu
+
+### **Sprint 17-26 : Sessions Temps Réel (10 semaines)**
+**Objectif** : Expérience de jeu synchronisée
+
+**Livrables :**
+- [ ] Lancement et gestion de sessions
+- [ ] Notifications WebSocket + email
+- [ ] Combat temps réel avec invitations dynamiques
+- [ ] Sauvegarde automatique et progression
+- [ ] Interface complète sessions temps réel
+
+### **Sprint 27-37 : Statistiques et Succès (11 semaines)**
+**Objectif** : Gamification et engagement à long terme
+
+**Livrables :**
+- [ ] Collecte automatique de toutes les métriques
+- [ ] 55+ succès avec déblocage contextuel
+- [ ] Rapports personnalisés et analyses
+- [ ] Dashboard statistiques interactif
+- [ ] Système de prédictions et recommandations
+
+## ⚡ **Critères de Priorisation Utilisés**
+
+### **1. Dépendances Techniques**
+- Les modèles de données sont prérequis à tout développement
+- Les sorts/équipements sont nécessaires pour tester les campagnes
+- Les campagnes doivent exister avant les sessions
+- Les statistiques nécessitent des données d'événements
+
+### **2. Valeur Métier**
+- Sorts et équipements = cœur du JDR, valeur immédiate
+- Campagnes = structure de jeu, fonctionnalité majeure
+- Sessions = différenciation concurrentielle importante
+- Statistiques = engagement long terme, nice-to-have
+
+### **3. Complexité d'Implémentation**
+- Base de données = complexe mais court
+- CRUD sorts/équipements = moyennement complexe
+- Sessions temps réel = très complexe techniquement
+- Statistiques = complexe analytiquement
+
+### **4. Risques et Testing**
+- Commencer par les fondations permet de tester l'architecture
+- Builds incrémentaux réduisent les risques d'intégration
+- Chaque phase peut être testée indépendamment
+
+## 🎯 **Jalons de Validation**
+
+### **Milestone 1 (Semaine 2)** : Infrastructure DB
+- Toutes les tables créées et relationnées
+- Seed data injecté avec succès
+- Tests d'intégration passent
+
+### **Milestone 2 (Semaine 10)** : Système Sorts/Équipements
+- CRUD complet avec échanges fonctionnels
+- Interface utilisateur opérationnelle
+- Architecture bi-niveau validée
+
+### **Milestone 3 (Semaine 16)** : Campagnes et Combat
+- Campagne complète créable et jouable
+- Combat D&D avec calculs automatiques
+- Interface MJ fonctionnelle
+
+### **Milestone 4 (Semaine 26)** : Sessions Temps Réel
+- Sessions multi-joueurs synchronisées
+- Notifications en temps réel opérationnelles
+- Combat collaboratif fonctionnel
+
+### **Milestone 5 (Semaine 37)** : Produit Complet
+- Système de statistiques et succès intégré
+- Expérience utilisateur complète et polished
+- Prêt pour déploiement production
+
+---
+
+**Cette roadmap priorisée permet un développement incrémental avec validation continue, minimisant les risques tout en maximisant la valeur livrée à chaque étape.** 🚀
