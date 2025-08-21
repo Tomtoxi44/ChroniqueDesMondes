@@ -173,6 +173,15 @@ Paladin     → Charisme + Bonus Maîtrise
 - `POST /auth/password/reset-request` - Demande reset mot de passe
 - `POST /auth/password/reset-confirm` - Confirmation nouveau mot de passe
 
+### Statistiques et Succès ✨ NOUVEAU
+- `GET /user/{id}/stats/sessions/frequency` - Métriques de participation
+- `GET /user/{id}/stats/dice/performance` - Analyse jets de dés et chance
+- `GET /user/{id}/stats/combat/overview` - Performance de combat globale
+- `GET /character/{id}/stats/evolution` - Évolution temporelle personnage
+- `GET /user/{id}/achievements/{category}` - Succès par catégorie
+- `POST /user/{id}/achievements/check` - Vérification déblocage succès
+- `GET /user/{id}/stats/reports/monthly` - Rapport mensuel personnalisé
+
 ## 🎮 Système de Sessions ✨ NOUVEAU
 
 ### Lancement et Gestion des Sessions
@@ -192,6 +201,32 @@ Paladin     → Charisme + Bonus Maîtrise
 - **Notifications push** : Alertes pour événements importants
 - **Gestion des déconnexions** : Reconnexion automatique avec rattrapage
 
+## 📊 Système de Statistiques et Succès ✨ NOUVEAU
+
+### Analyse de Performance
+- **Métriques de sessions** : Fréquence, durée, participation mensuelle/annuelle
+- **Statistiques de dés** : Moyennes, chance, distribution des résultats D20
+- **Performance combat** : Dégâts, précision, survivabilité par personnage
+- **Progression personnages** : Évolution niveaux, équipements, expérience
+
+### Analyse Comportementale
+- **Patterns de jeu** : Heures préférées, style de jeu, préférences
+- **Comparaisons sociales** : Classements entre amis, communauté
+- **Tendances temporelles** : Évolution performance sur le temps
+- **Rapports personnalisés** : Analyses mensuelles/annuelles détaillées
+
+### Système de Succès/Achievements
+- **5 niveaux de rareté** : Commun → Légendaire avec célébrations
+- **7 catégories** : Combat, Exploration, Social, Maîtrise, Collection, Chance, Progression
+- **Déblocage contextuel** : Succès liés aux actions spécifiques
+- **Progression visible** : Suivi temps réel vers prochains succès
+
+### Collecte Automatique
+- **Jets de dés** : Tous types, contextes, résultats avec historique
+- **Actions combat** : Attaques, sorts, dégâts, cibles détaillées  
+- **Activités session** : Quêtes, trésors, niveaux, interactions sociales
+- **Métadonnées** : Sessions, durées, participants, campagnes
+ 
 ## 🔒 Sécurité
 
 ### Authentification & Autorisation
@@ -212,10 +247,12 @@ Paladin     → Charisme + Bonus Maîtrise
 - **[Schéma de Base de Données](./DatabaseSchema.md)** - Schéma complet avec état actuel et évolutions prévues
 - **[Spécifications Sorts et Équipements](./SpellsAndEquipment.md)** - Architecture bi-niveau détaillée
 - **[Sessions et Notifications](./SessionsAndNotifications.md)** - Système complet de sessions temps réel ✨ NOUVEAU
+- **[Statistiques et Succès](./StatisticsAndAchievements.md)** - Métriques, analyses et achievements ✨ NOUVEAU
 
 ### Documents Fonctionnels
 - **[Cas d'usage Sorts et Équipements](./SpellsEquipmentUseCases.md)** - Exemples concrets officiels vs privés
 - **[Cas d'usage Sessions et Combat](./SessionsUseCases.md)** - Scénarios sessions temps réel ✨ NOUVEAU
+- **[Cas d'usage Statistiques](./StatisticsUseCases.md)** - Analyses et prédictions IA ✨ NOUVEAU
 - **[Cas d'utilisation généraux](./UseCases.md)** - Scénarios complets campagnes et combats
 - **[Roadmap](./Roadmap.md)** - Planification par phases avec métriques
 

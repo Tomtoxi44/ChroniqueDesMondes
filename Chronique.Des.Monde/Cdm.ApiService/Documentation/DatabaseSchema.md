@@ -235,48 +235,102 @@ erDiagram
     }
     
     %% ========================================
-    %% RELATIONS
+    %% TABLES STATISTIQUES ET SUCCÈS 🏆
     %% ========================================
     
-    Users ||--o{ Characters : "possède"
-    Users ||--o{ CharactersDnd : "possède"
-    Users ||--o{ Spells : "crée"
-    Users ||--o{ Equipment : "crée"
-    Users ||--o{ Campaigns : "maîtrise"
-    Users ||--o{ CampaignPlayers : "participe"
-    Users ||--o{ Sessions : "organise"
-    Users ||--o{ SessionParticipants : "participe"
-    Users ||--o{ CampaignInvitations : "invite"
-    Users ||--o{ CampaignInvitations : "invité"
-    Users ||--o{ Notifications : "reçoit"
-    Users ||--o{ PasswordResets : "demande"
+    PlayerStatistics {
+        int Id PK
+        int UserId FK
+        string StatType
+        string StatCategory
+        decimal StatValue
+        json AdditionalData
+        string SessionId FK
+        int CharacterId FK
+        int CampaignId FK
+        datetime RecordedAt
+    }
     
-    Campaigns ||--o{ Chapters : "contient"
-    Campaigns ||--o{ CampaignPlayers : "accueille"
-    Campaigns ||--o{ EquipmentOffers : "facilite"
-    Campaigns ||--o{ EquipmentTrades : "permet"
-    Campaigns ||--o{ Sessions : "héberge"
-    Campaigns ||--o{ CampaignInvitations : "concerne"
-    Campaigns ||--o{ CampaignProgress : "progresse"
+    DiceRolls {
+        int Id PK
+        int UserId FK
+        string SessionId FK
+        int CharacterId FK
+        string DiceType
+        int Result
+        string Context
+        int TargetDC
+        bool IsSuccess
+        bool IsCritical
+        int AdditionalModifiers
+        datetime RolledAt
+    }
     
-    Chapters ||--o{ NPCs : "contient"
-    Chapters ||--o{ Combats : "propose"
+    Achievements {
+        string Id PK
+        string Name
+        string Description
+        string Icon
+        string Category
+        string Rarity
+        int RequiredValue
+        json RequiredData
+        bool IsActive
+        datetime CreatedAt
+    }
     
-    Sessions ||--o{ SessionParticipants : "inclut"
-    Sessions ||--o{ SessionSaves : "sauvegarde"
-    Sessions ||--o{ Combats : "contient"
+    PlayerAchievements {
+        int UserId FK
+        string AchievementId FK
+        decimal Progress
+        int CurrentValue
+        bool IsUnlocked
+        datetime UnlockedAt
+        int UnlockedWithCharacterId FK
+        json UnlockContext
+    }
     
-    Combats ||--o{ CombatParticipants : "implique"
+    CombatActions {
+        int Id PK
+        int CombatId FK
+        int UserId FK
+        int CharacterId FK
+        string ActionType
+        string TargetType
+        int TargetId
+        int DamageDealt
+        int DamageTaken
+        bool IsHit
+        bool IsCritical
+        int SpellId FK
+        int EquipmentId FK
+        int RoundNumber
+        int ActionOrder
+        json ActionData
+        datetime ExecutedAt
+    }
     
-    Characters ||--o{ CharacterSpells : "connaît"
-    Characters ||--o{ CharacterEquipment : "possède"
-    Characters ||--o{ SessionParticipants : "joue"
-    Characters ||--o{ CombatParticipants : "combat"
+    SessionActivities {
+        int Id PK
+        string SessionId FK
+        int UserId FK
+        string ActivityType
+        json ActivityData
+        int ExperienceGained
+        json ItemsGained
+        datetime ActivityTime
+    }
     
-    Spells ||--o{ CharacterSpells : "appris par"
-    Equipment ||--o{ CharacterEquipment : "possédé par"
-    Equipment ||--o{ EquipmentOffers : "proposé"
-    Equipment ||--o{ EquipmentTrades : "échangé"
+    PlayerReports {
+        int Id PK
+        int UserId FK
+        string ReportType
+        string ReportPeriod
+        datetime StartDate
+        datetime EndDate
+        json ReportData
+        datetime GeneratedAt
+    }
 ```
 
 ## 🏗️ Détail des Tables
@@ -727,6 +781,175 @@ CREATE TABLE PasswordResets (
 CREATE INDEX IX_PasswordResets_Expiry ON PasswordResets (ExpiresAt, IsUsed);
 ```
 
+#### **PlayerStatistics (Statistiques Joueur)** ✨ NOUVEAU
+```sql
+CREATE TABLE PlayerStatistics (
+    Id int IDENTITY(1,1) PRIMARY KEY,
+    UserId int NOT NULL,
+    StatType nvarchar(50) NOT NULL,
+    StatCategory nvarchar(30) NOT NULL,
+    StatValue decimal(18,2) NOT NULL,
+    AdditionalData nvarchar(max),  -- JSON pour données contextuelles
+    SessionId nvarchar(50),
+    CharacterId int,
+    CampaignId int,
+    RecordedAt datetime2 NOT NULL DEFAULT GETDATE(),
+    
+    CONSTRAINT FK_PlayerStatistics_User FOREIGN KEY (UserId) REFERENCES Users(Id),
+    CONSTRAINT FK_PlayerStatistics_Session FOREIGN KEY (SessionId) REFERENCES Sessions(SessionId),
+    CONSTRAINT FK_PlayerStatistics_Character FOREIGN KEY (CharacterId) REFERENCES CharactersDnd(Id),
+    CONSTRAINT FK_PlayerStatistics_Campaign FOREIGN KEY (CampaignId) REFERENCES Campaigns(Id),
+    CONSTRAINT CK_PlayerStatistics_Category CHECK (StatCategory IN ('session', 'combat', 'dice', 'social', 'progression'))
+);
+
+-- Index pour requêtes de stats par utilisateur et type
+CREATE INDEX IX_PlayerStatistics_User_Type ON PlayerStatistics (UserId, StatType, RecordedAt);
+CREATE INDEX IX_PlayerStatistics_Character ON PlayerStatistics (CharacterId, StatCategory);
+```
+
+#### **DiceRolls (Historique des Jets de Dés)**
+```sql
+CREATE TABLE DiceRolls (
+    Id int IDENTITY(1,1) PRIMARY KEY,
+    UserId int NOT NULL,
+    SessionId nvarchar(50),
+    CharacterId int,
+    DiceType nvarchar(10) NOT NULL,  -- d20, d6, d8, d12, etc.
+    Result int NOT NULL,
+    Context nvarchar(50),  -- attack, save, skill, spell, etc.
+    TargetDC int,  -- Classe de difficulté visée
+    IsSuccess bit,
+    IsCritical bit NOT NULL DEFAULT 0,
+    AdditionalModifiers int DEFAULT 0,
+    RolledAt datetime2 NOT NULL DEFAULT GETDATE(),
+    
+    CONSTRAINT FK_DiceRolls_User FOREIGN KEY (UserId) REFERENCES Users(Id),
+    CONSTRAINT FK_DiceRolls_Session FOREIGN KEY (SessionId) REFERENCES Sessions(SessionId),
+    CONSTRAINT FK_DiceRolls_Character FOREIGN KEY (CharacterId) REFERENCES CharactersDnd(Id),
+    CONSTRAINT CK_DiceRolls_DiceType CHECK (DiceType IN ('d4', 'd6', 'd8', 'd10', 'd12', 'd20', 'd100')),
+    CONSTRAINT CK_DiceRolls_Context CHECK (Context IN ('attack', 'damage', 'save', 'skill', 'spell', 'initiative', 'other'))
+);
+
+-- Index pour analyse statistique des dés
+CREATE INDEX IX_DiceRolls_User_Type ON DiceRolls (UserId, DiceType, RolledAt);
+CREATE INDEX IX_DiceRolls_Character_Context ON DiceRolls (CharacterId, Context, RolledAt);
+```
+
+#### **Achievements (Système de Succès)**
+```sql
+CREATE TABLE Achievements (
+    Id nvarchar(50) PRIMARY KEY,  -- Format: dragon_slayer, critical_master
+    Name nvarchar(100) NOT NULL,
+    Description nvarchar(500) NOT NULL,
+    Icon nvarchar(10) NOT NULL,
+    Category nvarchar(30) NOT NULL,
+    Rarity nvarchar(20) NOT NULL,
+    RequiredValue int,
+    RequiredData nvarchar(max),  -- JSON critères complexes
+    IsActive bit NOT NULL DEFAULT 1,
+    CreatedAt datetime2 NOT NULL DEFAULT GETDATE(),
+    
+    CONSTRAINT CK_Achievements_Category CHECK (Category IN ('combat', 'exploration', 'social', 'mastery', 'collection', 'luck', 'progression')),
+    CONSTRAINT CK_Achievements_Rarity CHECK (Rarity IN ('common', 'uncommon', 'rare', 'epic', 'legendary'))
+);
+```
+
+#### **PlayerAchievements (Succès des Joueurs)**
+```sql
+CREATE TABLE PlayerAchievements (
+    UserId int NOT NULL,
+    AchievementId nvarchar(50) NOT NULL,
+    Progress decimal(5,2) NOT NULL DEFAULT 0.00,
+    CurrentValue int NOT NULL DEFAULT 0,
+    IsUnlocked bit NOT NULL DEFAULT 0,
+    UnlockedAt datetime2,
+    UnlockedWithCharacterId int,
+    UnlockContext nvarchar(max),  -- JSON circonstances du déblocage
+    
+    CONSTRAINT PK_PlayerAchievements PRIMARY KEY (UserId, AchievementId),
+    CONSTRAINT FK_PlayerAchievements_User FOREIGN KEY (UserId) REFERENCES Users(Id),
+    CONSTRAINT FK_PlayerAchievements_Achievement FOREIGN KEY (AchievementId) REFERENCES Achievements(Id),
+    CONSTRAINT FK_PlayerAchievements_Character FOREIGN KEY (UnlockedWithCharacterId) REFERENCES CharactersDnd(Id),
+    CONSTRAINT CK_PlayerAchievements_Progress CHECK (Progress >= 0 AND Progress <= 100)
+);
+
+-- Index pour dashboard des succès
+CREATE INDEX IX_PlayerAchievements_User_Unlocked ON PlayerAchievements (UserId, IsUnlocked, UnlockedAt);
+```
+
+#### **CombatActions (Actions de Combat)** 
+```sql
+CREATE TABLE CombatActions (
+    Id int IDENTITY(1,1) PRIMARY KEY,
+    CombatId int NOT NULL,
+    UserId int NOT NULL,
+    CharacterId int NOT NULL,
+    ActionType nvarchar(30) NOT NULL,
+    TargetType nvarchar(20),
+    TargetId int,
+    DamageDealt int DEFAULT 0,
+    DamageTaken int DEFAULT 0,
+    IsHit bit DEFAULT 1,
+    IsCritical bit DEFAULT 0,
+    SpellId int,
+    EquipmentId int,
+    RoundNumber int NOT NULL,
+    ActionOrder int NOT NULL,
+    ActionData nvarchar(max),  -- JSON données détaillées
+    ExecutedAt datetime2 NOT NULL DEFAULT GETDATE(),
+    
+    CONSTRAINT FK_CombatActions_Combat FOREIGN KEY (CombatId) REFERENCES Combats(Id),
+    CONSTRAINT FK_CombatActions_User FOREIGN KEY (UserId) REFERENCES Users(Id),
+    CONSTRAINT FK_CombatActions_Character FOREIGN KEY (CharacterId) REFERENCES CharactersDnd(Id),
+    CONSTRAINT FK_CombatActions_Spell FOREIGN KEY (SpellId) REFERENCES Spells(Id),
+    CONSTRAINT FK_CombatActions_Equipment FOREIGN KEY (EquipmentId) REFERENCES Equipment(Id),
+    CONSTRAINT CK_CombatActions_ActionType CHECK (ActionType IN ('attack', 'spell', 'move', 'dodge', 'help', 'hide', 'dash', 'ready')),
+    CONSTRAINT CK_CombatActions_TargetType CHECK (TargetType IN ('player', 'npc', 'environment', 'self', 'area'))
+);
+
+-- Index pour analyse de performance combat
+CREATE INDEX IX_CombatActions_User_Combat ON CombatActions (UserId, CombatId, RoundNumber);
+```
+
+#### **SessionActivities (Activités de Session)**
+```sql
+CREATE TABLE SessionActivities (
+    Id int IDENTITY(1,1) PRIMARY KEY,
+    SessionId nvarchar(50) NOT NULL,
+    UserId int NOT NULL,
+    ActivityType nvarchar(30) NOT NULL,
+    ActivityData nvarchar(max),  -- JSON données spécifiques
+    ExperienceGained int DEFAULT 0,
+    ItemsGained nvarchar(max),  -- JSON liste objets
+    ActivityTime datetime2 NOT NULL DEFAULT GETDATE(),
+    
+    CONSTRAINT FK_SessionActivities_Session FOREIGN KEY (SessionId) REFERENCES Sessions(SessionId),
+    CONSTRAINT FK_SessionActivities_User FOREIGN KEY (UserId) REFERENCES Users(Id),
+    CONSTRAINT CK_SessionActivities_Type CHECK (ActivityType IN ('quest_complete', 'boss_defeat', 'treasure_find', 'level_up', 'skill_use', 'social_encounter'))
+);
+```
+
+#### **PlayerReports (Rapports Personnalisés)**
+```sql
+CREATE TABLE PlayerReports (
+    Id int IDENTITY(1,1) PRIMARY KEY,
+    UserId int NOT NULL,
+    ReportType nvarchar(20) NOT NULL,
+    ReportPeriod nvarchar(20) NOT NULL,  -- monthly, yearly, custom
+    StartDate datetime2 NOT NULL,
+    EndDate datetime2 NOT NULL,
+    ReportData nvarchar(max) NOT NULL,  -- JSON rapport complet
+    GeneratedAt datetime2 NOT NULL DEFAULT GETDATE(),
+    
+    CONSTRAINT FK_PlayerReports_User FOREIGN KEY (UserId) REFERENCES Users(Id),
+    CONSTRAINT CK_PlayerReports_Type CHECK (ReportType IN ('performance', 'progression', 'social', 'achievements')),
+    CONSTRAINT CK_PlayerReports_Period CHECK (ReportPeriod IN ('weekly', 'monthly', 'yearly', 'custom'))
+);
+
+-- Index pour récupération des rapports
+CREATE INDEX IX_PlayerReports_User_Period ON PlayerReports (UserId, ReportType, StartDate DESC);
+```
+
 ## 🔄 Migrations Prévues
 
 ### Migration 1 : Tables de Base
@@ -799,6 +1022,34 @@ dotnet ef migrations add CreatePasswordResets
 - Création de la table `PasswordResets`
 - Système complet de réinitialisation de mots de passe
 
+### Migration 11 : Système de Statistiques ✨ NOUVEAU
+```bash
+dotnet ef migrations add CreatePlayerStatistics
+```
+- Création des tables `PlayerStatistics` et `DiceRolls`
+- Collecte automatique des métriques de performance
+
+### Migration 12 : Système de Succès
+```bash
+dotnet ef migrations add CreateAchievementsSystem
+```
+- Création des tables `Achievements` et `PlayerAchievements`
+- Framework complet de déblocage de succès
+
+### Migration 13 : Actions de Combat Détaillées
+```bash
+dotnet ef migrations add CreateCombatActions
+```
+- Création de la table `CombatActions`
+- Enregistrement détaillé de toutes les actions de combat
+
+### Migration 14 : Activités et Rapports
+```bash
+dotnet ef migrations add CreateActivitiesAndReports
+```
+- Création des tables `SessionActivities` et `PlayerReports`
+- Système complet de suivi et d'analyse
+
 ## 📈 Données de Test
 
 ### Scripts d'Injection Administrative
@@ -869,6 +1120,101 @@ VALUES
 (@CampaignId, 2, 'Chapitre de Développement', 'Contenu du chapitre de développement...', 2, 'Pending', GETDATE(), GETDATE());
 ```
 
----
+#### **Initialisation des Succès par Défaut**
 
-*Ce schéma évoluera au fur et à mesure du développement. Retour au [README principal](./README.md)*
+```sql
+-- Script d'injection des succès de base
+INSERT INTO Achievements (Id, Name, Description, Icon, Category, Rarity, RequiredValue, RequiredData) VALUES
+
+-- SUCCÈS DE COMBAT ⚔️
+('first_blood', 'Premier Sang', 'Remporter votre premier combat', '🗡️', 'combat', 'common', 1, '{"combatType": "any"}'),
+('critical_master', 'Maître du Critique', 'Obtenir 10 coups critiques consécutifs', '🎯', 'combat', 'rare', 10, '{"consecutive": true, "rollType": "attack"}'),
+('untouchable', 'Intouchable', 'Terminer 5 combats sans subir de dégâts', '🛡️', 'combat', 'epic', 5, '{"condition": "no_damage_taken"}'),
+('dragon_slayer', 'Tueur de Dragons', 'Vaincre un dragon ancien', '🐲', 'combat', 'legendary', 1, '{"enemyType": "ancient_dragon"}'),
+('damage_dealer', 'Machine de Guerre', 'Infliger 10 000 points de dégâts au total', '💥', 'combat', 'rare', 10000, '{"cumulative": true}'),
+('last_stand', 'Dernier Rempart', 'Vaincre un boss avec moins de 5 HP', '🛡️', 'combat', 'epic', 1, '{"condition": "low_hp_boss_kill", "hpThreshold": 5}'),
+('berserker', 'Berserker', 'Infliger plus de 100 dégâts en un seul round', '🪓', 'combat', 'rare', 100, '{"timeframe": "single_round"}'),
+
+-- SUCCÈS D'EXPLORATION 🗺️
+('cartographer', 'Cartographe', 'Découvrir 50 lieux secrets', '🗺️', 'exploration', 'uncommon', 50, '{"locationType": "secret"}'),
+('treasure_hunter', 'Chasseur de Trésors', 'Trouver 25 trésors légendaires', '💎', 'exploration', 'epic', 25, '{"rarity": "legendary"}'),
+('dungeon_master', 'Maître des Donjons', 'Compléter 10 donjons différents', '🏰', 'exploration', 'rare', 10, '{"unique": true}'),
+('pathfinder', 'Éclaireur', 'Être le premier à entrer dans 20 lieux', '🧭', 'exploration', 'uncommon', 20, '{"condition": "first_entry"}'),
+('completionist', 'Perfectionniste', 'Compléter une campagne à 100%', '📜', 'exploration', 'epic', 1, '{"completion": 100}'),
+
+-- SUCCÈS SOCIAUX 👥
+('team_player', 'Esprit d\'Équipe', 'Participer à 100 sessions multijoueurs', '🤝', 'social', 'common', 100, '{"sessionType": "multiplayer"}'),
+('mentor', 'Mentor', 'Aider 5 nouveaux joueurs', '👨‍🏫', 'social', 'rare', 5, '{"action": "help_new_player"}'),
+('diplomat', 'Diplomate', 'Résoudre 10 conflits sans violence', '🕊️', 'social', 'uncommon', 10, '{"method": "peaceful"}'),
+('generous_soul', 'Âme Généreuse', 'Donner 100 objets à d\'autres joueurs', '🎁', 'social', 'uncommon', 100, '{"action": "give_item"}'),
+('party_leader', 'Chef de Groupe', 'Diriger 25 sessions avec succès', '👑', 'social', 'rare', 25, '{"role": "leader", "outcome": "success"}'),
+
+-- SUCCÈS DE MAÎTRISE 🎭
+('gm_apprentice', 'Apprenti MJ', 'Créer votre première campagne', '📚', 'mastery', 'common', 1, '{"action": "create_campaign"}'),
+('storyteller', 'Conteur', 'Mener 10 campagnes à leur terme', '📖', 'mastery', 'epic', 10, '{"completion": true}'),
+('world_builder', 'Créateur de Mondes', 'Créer 50 PNJ personnalisés', '🌍', 'mastery', 'rare', 50, '{"content": "npc"}'),
+('rule_master', 'Maître des Règles', 'Gérer 100 combats sans erreur', '⚖️', 'mastery', 'rare', 100, '{"accuracy": "perfect"}'),
+('crowd_pleaser', 'Meneur de Foule', 'Avoir 50+ joueurs dans vos campagnes', '🎪', 'mastery', 'epic', 50, '{"metric": "total_players"}'),
+
+-- SUCCÈS DE COLLECTION 💎
+('spell_collector', 'Collectionneur de Sorts', 'Apprendre 100 sorts différents', '📜', 'collection', 'rare', 100, '{"content": "spells", "unique": true}'),
+('equipment_hoarder', 'Accumulateur', 'Posséder 500 objets au total', '📦', 'collection', 'uncommon', 500, '{"content": "equipment"}'),
+('legendary_collector', 'Collectionneur Légendaire', 'Posséder 10 objets légendaires simultanément', '⭐', 'collection', 'legendary', 10, '{"rarity": "legendary", "simultaneous": true}'),
+('library_owner', 'Propriétaire de Bibliothèque', 'Connaître des sorts de toutes les écoles', '📚', 'collection', 'epic', 8, '{"content": "spell_schools", "complete": true}'),
+
+-- SUCCÈS DE CHANCE 🎲
+('natural_20', 'Coup du Destin', 'Obtenir un 20 naturel', '🎯', 'luck', 'common', 1, '{"dice": "d20", "result": 20}'),
+('streak_master', 'Série Chanceuse', 'Obtenir 5 jets de 15+ consécutifs', '🔥', 'luck', 'rare', 5, '{"consecutive": true, "threshold": 15}'),
+('unlikely_hero', 'Héros Improbable', 'Gagner avec moins de 5% de chance', '🍀', 'luck', 'legendary', 1, '{"probability": 0.05}'),
+('lucky_month', 'Mois Béni', 'Avoir une moyenne de dés > 15 sur un mois', '🌟', 'luck', 'epic', 15, '{"timeframe": "month", "average": true}'),
+('miracle_save', 'Sauvegarde Miraculeuse', 'Réussir une sauvegarde de mort avec un 20', '💫', 'luck', 'rare', 1, '{"saveType": "death", "roll": 20}'),
+
+-- SUCCÈS DE PROGRESSION ⚡
+('level_up', 'Montée en Puissance', 'Atteindre le niveau 5', '⚡', 'progression', 'common', 5, '{"metric": "character_level"}'),
+('veteran', 'Vétéran', 'Survivre à 200 combats', '🏆', 'progression', 'rare', 200, '{"metric": "combats_survived"}'),
+('experience_master', 'Maître de l\'Expérience', 'Gagner 50 000 XP au total', '🎯', 'progression', 'epic', 50000, '{"metric": "total_experience"}'),
+('skill_master', 'Maître des Compétences', 'Maximiser 5 compétences', '📈', 'progression', 'rare', 5, '{"metric": "maxed_skills"}'),
+('multi_class', 'Polyvalent', 'Jouer 3 classes différentes', '🎭', 'progression', 'uncommon', 3, '{"metric": "different_classes"}');
+
+-- Vérification des succès créés
+SELECT Category, COUNT(*) as Count, 
+       STRING_AGG(Rarity, ', ') as Rarities
+FROM Achievements 
+GROUP BY Category 
+ORDER BY Category;
+```
+
+### Structure JSON des RequiredData
+
+Les différents types de conditions pour les succès :
+
+```json
+// Succès simple avec compteur
+{
+  "cumulative": true,
+  "resetOnDeath": false
+}
+
+// Succès avec condition temporelle
+{
+  "timeframe": "month",
+  "consecutive": false,
+  "resetPeriod": "monthly"
+}
+
+// Succès avec conditions multiples
+{
+  "conditions": [
+    {"type": "enemy_type", "value": "dragon"},
+    {"type": "damage_threshold", "value": 100},
+    {"type": "team_size", "max": 4}
+  ],
+  "requireAll": true
+}
+
+// Succès avec probabilité
+{
+  "probability_calculation": true,
+  "success_threshold": 0.05,
+  "context_aware": true
+}

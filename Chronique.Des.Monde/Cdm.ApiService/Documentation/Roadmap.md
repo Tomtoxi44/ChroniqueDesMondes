@@ -75,7 +75,33 @@ Cette roadmap présente l'évolution prévue du projet par phases de développem
 - 📅 **Tokens temporaires** - Gestion expiration et sécurité
 - 📅 **Notifications sécurité** - Alertes connexions et modifications
 
-## 🌟 Phase 4 : Campagnes Avancées (Futur)
+## 📊 Phase 4 : Statistiques et Succès (Prévu) ✨ NOUVEAU
+
+### Collecte et Analyse de Données
+- 📅 **Métriques de sessions** - Fréquence, durée, participation temporelle
+- 📅 **Analyse des dés** - Moyennes, chance, distribution, patterns
+- 📅 **Performance combat** - Dégâts, précision, efficacité par personnage
+- 📅 **Progression personnages** - Évolution niveaux, équipements, expérience
+
+### Système de Succès Gamifié
+- 📅 **Framework achievements** - 5 niveaux de rareté, 7 catégories
+- 📅 **Déblocage contextuel** - Succès liés aux actions spécifiques
+- 📅 **Célébrations visuelles** - Animations, confettis, partage social
+- 📅 **Progression visible** - Suivi temps réel vers prochains objectifs
+
+### Analyses Comportementales
+- 📅 **Patterns de jeu** - Heures préférées, style, habitudes
+- 📅 **Comparaisons sociales** - Classements amis, communauté
+- 📅 **Tendances temporelles** - Évolution performance dans le temps
+- 📅 **Prédictions IA** - Suggestions personnalisées d'amélioration
+
+### Rapports et Visualisations
+- 📅 **Dashboard personnel** - Widget configurables, métriques clés
+- 📅 **Rapports automatiques** - Analyses mensuelles/annuelles
+- 📅 **Graphiques interactifs** - Évolution, comparaisons, tendances
+- 📅 **Export données** - Partage, backup, analyses externes
+
+## 🌟 Phase 5 : Campagnes Avancées (Futur)
 
 ### Structure de Campagnes
 - 📅 **Système de chapitres** - Organisation narrative par chapitres
@@ -93,7 +119,7 @@ Cette roadmap présente l'évolution prévue du projet par phases de développem
 - 📅 **Assistance narration** - Suggestions contextuelles pour MJ
 - 📅 **Création automatique** - Monstres et défis équilibrés
 
-## 🔮 Phase 5 : Extensions et Optimisations (Vision)
+## 🔮 Phase 6 : Extensions et Optimisations (Vision)
 
 ### Nouveaux Systèmes de Jeu
 - 📅 **Skyrim** - Sorts, objets et règles spécifiques
