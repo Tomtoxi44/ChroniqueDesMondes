@@ -44,7 +44,38 @@ Cette roadmap présente l'évolution prévue du projet par phases de développem
 - 🔄 **Pages Équipements** - Inventaire, échanges, gestion
 - 🔄 **Interface MJ** - Distribution d'équipements aux joueurs
 
-## 📅 Phase 3 : Campagnes Avancées (Prévu)
+## 📅 Phase 3 : Sessions et Notifications (Prévu) ✨ NOUVEAU
+
+### Système de Sessions
+- 📅 **Lancement de sessions** - Transformation créateur en MJ actif
+- 📅 **Multi-sources** - Sessions depuis campagnes créées ou rejointes
+- 📅 **Invitations pré-session** - Invitation joueurs avant lancement
+- 📅 **Notifications multi-canal** - WebSocket + email pour absents
+
+### Progression et Sauvegarde
+- 📅 **Progression par chapitres** - Avancement avec sauvegarde automatique
+- 📅 **Barre de progression** - Visualisation chapitre actuel vs total
+- 📅 **Historique de sessions** - Restauration d'états précédents
+- 📅 **Points de sauvegarde** - Sauvegarde aux moments critiques
+
+### Combat Temps Réel
+- 📅 **Invitations dynamiques** - Ajout joueurs en cours de combat
+- 📅 **Notifications de tour** - Alertes visuelles "À votre tour !"
+- 📅 **Interface synchronisée** - État temps réel pour tous participants
+- 📅 **Gestion des déconnexions** - Reconnexion avec rattrapage d'état
+
+### Système de Notifications
+- 📅 **WebSocket temps réel** - Notifications instantanées pour connectés
+- 📅 **Emails automatiques** - Notifications pour joueurs hors ligne
+- 📅 **Types d'alertes** - Sessions, tours, invitations, échanges
+- 📅 **Préférences utilisateur** - Configuration méthodes de notification
+
+### Authentification Avancée
+- 📅 **Reset mot de passe** - Système complet avec emails sécurisés
+- 📅 **Tokens temporaires** - Gestion expiration et sécurité
+- 📅 **Notifications sécurité** - Alertes connexions et modifications
+
+## 🌟 Phase 4 : Campagnes Avancées (Futur)
 
 ### Structure de Campagnes
 - 📅 **Système de chapitres** - Organisation narrative par chapitres
@@ -53,18 +84,16 @@ Cette roadmap présente l'évolution prévue du projet par phases de développem
 - 📅 **Liaison narrative** - Référencement PNJ dans les événements
 
 ### Gestion Multi-Joueurs
-- 📅 **Invitations campagne** - Système d'invitation par email/notification
 - 📅 **Campagnes publiques** - Découverte et rejointe de campagnes ouvertes
 - 📅 **Duplication campagnes** - Clonage pour autres groupes de joueurs
 - 📅 **Permissions avancées** - Gestion fine des droits par rôle
 
-### Système de Combat
-- 📅 **Initiative automatique** - Gestion des tours de combat
-- 📅 **Calculs D&D** - Attaques, dégâts, CA automatiques
-- 📅 **Interface temps réel** - État du combat partagé en direct
-- 📅 **Historique combat** - Logs détaillés des actions
+### Intelligence Artificielle
+- 📅 **Génération de contenu** - IA pour PNJ, lieux, événements
+- 📅 **Assistance narration** - Suggestions contextuelles pour MJ
+- 📅 **Création automatique** - Monstres et défis équilibrés
 
-## 🌟 Phase 4 : Extensions et Optimisations (Futur)
+## 🔮 Phase 5 : Extensions et Optimisations (Vision)
 
 ### Nouveaux Systèmes de Jeu
 - 📅 **Skyrim** - Sorts, objets et règles spécifiques
@@ -83,26 +112,6 @@ Cette roadmap présente l'évolution prévue du projet par phases de développem
 - 📅 **Rate Limiting** - Protection contre les abus
 - 📅 **Monitoring avancé** - Métriques et logs centralisés
 - 📅 **API GraphQL** - Alternative pour requêtes complexes
-
-## 🔮 Phase 5 : Écosystème et Communauté (Vision)
-
-### Marketplace et Partage
-- 📅 **Bibliothèque communautaire** - Partage de campagnes entre MJ
-- 📅 **Système de notation** - Reviews des campagnes et contenus
-- 📅 **Outils d'import/export** - Compatibilité avec d'autres outils JDR
-- 📅 **API publique** - Intégration avec outils tiers
-
-### Outils de Création
-- 📅 **Éditeur visuel de cartes** - Création de plans et donjons
-- 📅 **Générateur de PNJ/Monstres** - Création assistée par IA
-- 📅 **Templates de campagnes** - Modèles prêts à l'emploi
-- 📅 **Système de mods** - Extensions développées par la communauté
-
-### Monétisation et Business
-- 📅 **Contenu premium** - Campagnes officielles payantes
-- 📅 **Abonnements MJ** - Fonctionnalités avancées pour les maîtres du jeu
-- 📅 **Partenariats éditeurs** - Intégration contenu officiel D&D, Pathfinder
-- 📅 **API commerciale** - Licensing pour développeurs tiers
 
 ## 📈 Métriques de Succès
 

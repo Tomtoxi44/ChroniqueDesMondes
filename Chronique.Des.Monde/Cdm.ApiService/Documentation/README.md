@@ -110,13 +110,26 @@ Paladin     → Charisme + Bonus Maîtrise
 - **Transfert** : L'équipement change de propriétaire
 - **Validation** : Quantités, compatibilité, permissions
 
-## ⚔️ Gestion des Combats
+## ⚔️ Gestion des Combats ✨ AMÉLIORÉ
 
-### Interface MJ
+### Interface MJ de Combat
 - **Vue par chapitre** avec sélection PNJ/Monstres
 - **Déclenchement combat** avec participants choisis
 - **Calculs automatiques** pour D&D (CA, dégâts, modificateurs)
 - **Gestion manuelle** pour systèmes non supportés
+
+### **Combat en Temps Réel** 🆕
+- **Invitations dynamiques** : Ajout de joueurs en cours de combat
+- **Jet d'initiative automatique** : Intégration immédiate dans l'ordre des tours
+- **Notifications de tour** : Alertes visuelles et sonores pour le joueur actif
+- **Interface visuelle** : Cadres colorés et animations pour indiquer les tours
+- **Pop-ups de notification** : Alertes discrètes "À votre tour !"
+
+### Gestion des Tours
+- **Ordre d'initiative** : Calcul et affichage automatique
+- **Timer optionnel** : Limite de temps par tour
+- **Actions contextuelles** : Suggestions selon la situation
+- **État en temps réel** : Synchronisation pour tous les participants
 
 ## 📡 Endpoints Principaux
 
@@ -146,6 +159,39 @@ Paladin     → Charisme + Bonus Maîtrise
 - `POST /campaign/{id}/equipment/trade` - Échange joueur→joueur
 - `GET /campaign/{id}/equipment/offers?playerId={id}` - Propositions en attente
 
+### Sessions et Combats ✨ NOUVEAU
+- `POST /campaign/{id}/session/start` - Lancement de session
+- `POST /session/{id}/combat/{combatId}/invite-player` - Inviter joueur en combat
+- `PUT /session/{id}/combat/{combatId}/join` - Rejoindre combat en cours
+- `GET /session/{id}/save-status` - État des sauvegardes
+- `PUT /session/{id}/chapter/complete` - Compléter un chapitre
+
+### Invitations et Notifications
+- `POST /campaign/{id}/invite` - Inviter joueurs à campagne
+- `PUT /invitation/{id}/respond` - Répondre à invitation
+- `GET /user/{id}/campaigns/available` - Campagnes disponibles pour session
+- `POST /auth/password/reset-request` - Demande reset mot de passe
+- `POST /auth/password/reset-confirm` - Confirmation nouveau mot de passe
+
+## 🎮 Système de Sessions ✨ NOUVEAU
+
+### Lancement et Gestion des Sessions
+- **Sessions multi-sources** : Lancement depuis campagnes créées ou publiques rejointes
+- **Transformation en MJ** : Le lanceur devient automatiquement MJ de la session
+- **Invitations pré-session** : Invitation de joueurs avant le lancement
+- **Notifications multi-canal** : WebSocket temps réel + email pour absents
+
+### Progression et Sauvegarde
+- **Progression par chapitres** : Avancement automatique avec sauvegarde
+- **Barre de progression** : Visualisation chapitre actuel vs total
+- **Sauvegarde automatique** : Intervalles configurables et points critiques
+- **Historique de session** : Restauration d'états précédents
+
+### Sessions en Temps Réel
+- **État synchronisé** : Tous les participants voient le même état
+- **Notifications push** : Alertes pour événements importants
+- **Gestion des déconnexions** : Reconnexion automatique avec rattrapage
+
 ## 🔒 Sécurité
 
 ### Authentification & Autorisation
@@ -165,10 +211,13 @@ Paladin     → Charisme + Bonus Maîtrise
 - **[Architecture Technique](./TechnicalArchitecture.md)** - Structure du projet, modèles de données, configuration
 - **[Schéma de Base de Données](./DatabaseSchema.md)** - Schéma complet avec état actuel et évolutions prévues
 - **[Spécifications Sorts et Équipements](./SpellsAndEquipment.md)** - Architecture bi-niveau détaillée
-- **[Cas d'usage Sorts et Équipements](./SpellsEquipmentUseCases.md)** - Exemples concrets officiels vs privés
+- **[Sessions et Notifications](./SessionsAndNotifications.md)** - Système complet de sessions temps réel ✨ NOUVEAU
 
 ### Documents Fonctionnels
+- **[Cas d'usage Sorts et Équipements](./SpellsEquipmentUseCases.md)** - Exemples concrets officiels vs privés
+- **[Cas d'usage Sessions et Combat](./SessionsUseCases.md)** - Scénarios sessions temps réel ✨ NOUVEAU
 - **[Cas d'utilisation généraux](./UseCases.md)** - Scénarios complets campagnes et combats
+- **[Roadmap](./Roadmap.md)** - Planification par phases avec métriques
 
 ### Tests et Validation
 - **[Guide des Tests](../Tests/README.md)** - Documentation complète des tests API
