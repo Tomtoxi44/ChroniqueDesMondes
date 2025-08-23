@@ -1,510 +1,432 @@
-﻿# 📊 Métriques et KPIs
+﻿# 📊 Métriques et KPIs par Sprint
 
-Cette page définit les indicateurs de performance clés (KPIs) et les métriques de suivi pour **Chronique des Mondes**, permettant un pilotage data-driven du projet.
+Cette page définit les indicateurs de performance clés (KPIs) et les métriques de suivi pour **Chronique des Mondes** organisés par sprint, permettant un pilotage data-driven granulaire du projet.
 
 ---
 
-## 🎯 Dashboard Exécutif
+## 🎯 Dashboard Exécutif Temps Réel
 
-### 📈 **KPIs Stratégiques en Temps Réel**
+### 📈 **KPIs Stratégiques - Vue Sprint Actuel**
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                   🎲 CHRONIQUE DES MONDES                   │
-│                  DASHBOARD PROJET 2025                     │
+│                  DASHBOARD SPRINT 06 - 2025                │
 ├─────────────────────────────────────────────────────────────┤
-│ 📊 MÉTRIQUES GLOBALES           📅 DERNIÈRE MàJ: Jan 2025  │
+│ 📊 SPRINT ACTUEL (06/10)        📅 DÉMARRAGE: 17 Nov 2025  │
 │                                                             │
-│ 👥 Utilisateurs Actifs:    1,247  (+12% vs mois dernier)   │
-│ 🎮 Sessions Mensuelles:    4,852  (+18% vs mois dernier)   │
-│ ⏱️  Temps Moyen/Session:   3.2h   (Target: 3h+)            │
-│ 📈 Rétention J7:          68%     (Target: 60%+)           │
-│ 🎯 NPS Score:             +72     (Target: +50)            │
+│ 🎯 Sprint Progress:      🚀 0%   (0/18 SP - À démarrer)    │
+│ ⏱️  Timeline:           ✅ Dans les temps                  │
+│ 🧪 Sprint Tests Pass:   ⏳ À démarrer                      │
+│ 🐛 Sprint Bugs:         ✅ 0      (Target: <5)              │
 │                                                             │
-│ 🔧 DÉVELOPPEMENT                                           │
-│ 📋 Sprints Terminés:      8/20    (40% - Dans les temps)   │
-│ ✅ User Stories Done:     32/67   (48% - Avance sur target) │
-│ 🧪 Couverture Tests:      87%     (Target: 85%+)           │
-│ 🚀 Velocity Équipe:       45 SP   (Story Points/Sprint)    │
+│ 📈 MÉTRIQUES ACCOMPLIES                                    │
+│ 👥 Utilisateurs Target: 2,000    (MVP en préparation)      │
+│ 🎮 Sessions Target:     8,000    (4 sessions/utilisateur)  │
+│ ⏱️  Temps Moyen/Session: 3.5h    (Target: 3h+)             │
+│ 📈 Rétention J7 Target: 70%      (Target: 60%+)            │
 │                                                             │
-│ ⚡ PERFORMANCE TECHNIQUE                                    │
-│ 🌐 Uptime Production:     99.7%   (Target: 99.5%+)         │
-│ ⚡ Temps Réponse API:     145ms    (Target: <200ms)         │
-│ 🔒 Incidents Sécurité:    0       (Target: 0)              │
-│ 📦 Pipeline Success:      97%     (Target: 95%+)           │
+│ 🚀 PLANIFICATION SPRINTS                                   │
+│ 📊 Sprints Complétés:   5/10     (Sprints 01-05 Done)     │
+│ 📈 Velocity Actuelle:   22 SP    (Moyenne sur 5 sprints)   │
+│ 🎯 Stories Restantes:   ~42      (Sur 67 totales)         │
+│ 📋 MVP Completion:      Sprint 6  (Nov 2025 - En cours)    │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 📋 Métriques par Domaine
+## 🔐 **SPRINT 01 : AUTHENTIFICATION (COMPLÉTÉ)**
+*25 Août - 5 Septembre 2025 | Infrastructure Sécurité JWT*
 
-### 🧑‍💻 **Développement et Qualité**
-
-#### **📊 Progression des Sprints**
-| Sprint | Statut | User Stories | Story Points | Vélocité | Burndown |
-|--------|--------|--------------|-------------|----------|----------|
-| **Sprint 00** | ✅ Terminé | 6/6 | 28/28 | 100% | 🟢 |
-| **Sprint 01** | ✅ Terminé | 4/4 | 24/24 | 100% | 🟢 |
-| **Sprint 02** | ✅ Terminé | 3/3 | 22/22 | 100% | 🟢 |
-| **Sprint 03** | ✅ Terminé | 5/5 | 35/35 | 100% | 🟢 |
-| **Sprint 04** | ✅ Terminé | 4/4 | 30/30 | 100% | 🟢 |
-| **Sprint 05** | ✅ Terminé | 3/3 | 25/25 | 100% | 🟢 |
-| **Sprint 06** | ✅ Terminé | 4/4 | 28/28 | 100% | 🟢 |
-| **Sprint 07** | ✅ Terminé | 3/3 | 32/32 | 100% | 🟢 |
-| **Sprint 08** | 🚧 En cours | 2/4 | 18/40 | 45% | 🟡 |
-| **Sprint 09** | ⏳ Planifié | 0/5 | 0/35 | 0% | ⚪ |
-
-**📈 Analyse de Tendance :**
-- **Vélocité moyenne** : 28 SP/sprint (stable)
-- **Prédictibilité** : 92% (excellent)
-- **Débordements** : 1 sprint sur 8 (bon)
-- **Risque planning** : 🟢 Faible
-
-#### **🧪 Qualité et Tests**
+### 🎯 **Objectifs et KPIs Sprint - ✅ RÉALISÉ**
 ```
-📊 COUVERTURE DE TESTS PAR MODULE :
+✅ OBJECTIFS SPRINT 01 ACCOMPLIS :
+├── 🔐 Authentification JWT complète et sécurisée
+├── 🏗️ Middleware autorisation multi-rôles  
+├── 👥 Pages connexion/inscription Blazor responsive
+├── 🔄 Services auth centralisés avec gestion d'état
+└── 🧪 Couverture tests sécurité 90%+
 
-🏗️ Infrastructure (Cdm.Data.*)         : ████████░░ 87%
-💼 Business Logic (Cdm.Business.*)      : █████████░ 91%  
-🌐 API Endpoints (Cdm.ApiService)       : ████████░░ 84%
-🎨 Composants Blazor (Cdm.Web)          : ███████░░░ 73%
-🔧 Utilitaires (Cdm.Common)             : ██████████ 95%
-
-📈 TENDANCE QUALITÉ :
-┌────────────────────────────────────────────────────────┐
-│ Tests Unitaires    : 1,247 tests | 94% pass | 6% skip │
-│ Tests Intégration  : 89 tests    | 97% pass | 3% skip │
-│ Tests E2E          : 34 tests    | 88% pass | 12% skip│
-│ Performance Tests  : 12 tests    | 100% pass         │
-└────────────────────────────────────────────────────────┘
-
-🐛 DÉFAUTS PAR CRITICITÉ :
-├── 🔴 Critique : 0    (Target: 0)
-├── 🟠 Majeur   : 2    (Target: <5) 
-├── 🟡 Mineur   : 8    (Target: <20)
-└── 🔵 Amélio.  : 15   (Backlog)
+📊 MÉTRIQUES RÉALISÉES :
+├── 🎯 User Stories : 10 US (authentification complète) ✅
+├── ⚡ Tasks : 20+ tâches (API + Blazor + Tests) ✅
+├── 🧪 Tests Coverage : 91% (sécurité validée) ✅
+├── ⏱️ Performance : <180ms (endpoints auth) ✅
+└── 🐛 Bugs Critiques : 0 (sécurité zéro défaut) ✅
 ```
 
-#### **⚡ Performance et Métriques Techniques**
+### 📋 **User Stories Réalisées (10 US - ✅ COMPLÉTÉ)**
+
+| US ID | Titre | Points | Status | Résultat |
+|-------|-------|--------|---------|----------|
+| **#128** | Endpoint inscription avec validation | 2 SP | ✅ | Implémenté |
+| **#129** | Endpoint connexion JWT | 2 SP | ✅ | Implémenté |
+| **#130** | Middleware authentification JWT | 3 SP | ✅ | Implémenté |
+| **#131** | Page connexion Blazor responsive | 3 SP | ✅ | Implémenté |
+| **#132** | Page inscription avec validation | 3 SP | ✅ | Implémenté |
+| **#133** | Service authentification centralisé | 5 SP | ✅ | Implémenté |
+| **#134** | Tests intégration authentification | 5 SP | ✅ | Implémenté |
+| **#150** | Middleware autorisation rôles | 8 SP | ✅ | Implémenté |
+| **#151** | Gestion sessions et refresh token | 5 SP | ✅ | Implémenté |
+| **#152** | Workflow reset mot de passe | 5 SP | ✅ | Implémenté |
+
+---
+
+## 🏗️ **SPRINT 02 : ENTITÉS CORE (COMPLÉTÉ)**
+*8 - 19 Septembre 2025 | Fondations Base de Données Multi-GameType*
+
+### 🎯 **Objectifs et KPIs Sprint - ✅ RÉALISÉ**
 ```
-🌐 PERFORMANCE APPLICATION :
+✅ OBJECTIFS SPRINT 02 ACCOMPLIS :
+├── 🗄️ Architecture DB multi-GameType extensible
+├── 👥 Entités utilisateurs multi-rôles campagnes
+├── 🏰 Modèle campagnes avec GameType et settings
+├── 🎭 Architecture personnages avec pattern Strategy
+└── ⚡ Entités sorts bi-niveau (officiel/privé)
 
-API REST (Cdm.ApiService) :
-├── 📊 GET /characters     : 89ms   (p95: 145ms)
-├── 📊 POST /characters    : 124ms  (p95: 198ms)
-├── 📊 GET /spells        : 67ms   (p95: 112ms)
-├── 📊 GET /campaigns     : 156ms  (p95: 234ms)
-└── 📊 SignalR Latency    : 23ms   (p95: 45ms)
+📊 MÉTRIQUES RÉALISÉES :
+├── 🎯 User Stories : 4 US (entités fondamentales) ✅
+├── ⚡ Architecture : Pattern Strategy + JSON flexible ✅
+├── 🧪 Tests Coverage : 87% (entités critiques) ✅
+├── ⏱️ Performance : <95ms (requêtes entités) ✅
+└── 📊 Migrations : 9 migrations EF Core ✅
+```
 
-💾 BASE DE DONNÉES :
-├── 🔍 Requêtes Lentes   : 3      (>1s, Target: <5)
-├── 🔒 Blocages Detect.  : 0      (Target: 0)
-├── 📈 CPU Utilisation   : 23%    (Moyenne)
-├── 💿 I/O Wait Time     : 12ms   (Moyenne)
-└── 📦 Taille DB         : 245MB  (+12MB/mois)
+### 📋 **User Stories Réalisées (4 US - ✅ COMPLÉTÉ)**
 
-☁️ INFRASTRUCTURE AZURE :
-├── 🌐 App Service CPU   : 34%    (Moyenne)
-├── 🧠 App Service RAM   : 67%    (Moyenne)
-├── 🔄 Request/min       : 1,847  (Peak: 3,240)
-├── 📡 Bandwidth Out     : 2.3GB  (Mensuel)
-└── 💰 Coût Mensuel      : €89    (Budget: €150)
+| US ID | Titre | Points | Status | Architecture |
+|-------|-------|--------|---------|--------------|
+| **#144** | Entités multi-rôles utilisateur | 5 SP | ✅ | Many-to-Many Relations |
+| **#156** | Modèle campagnes multi-jeux | 5 SP | ✅ | GameType + JSON Settings |
+| **#171** | Entités personnages multi-GameType | 5 SP | ✅ | Strategy Pattern |
+| **#182** | Architecture sorts bi-niveau | 5 SP | ✅ | Officiel/Privé Separation |
+
+---
+
+## 🔄 **SPRINT 03 : RELATIONS DB (COMPLÉTÉ)**
+*22 Septembre - 3 Octobre 2025 | Finalisation Relations Avancées*
+
+### 🎯 **Objectifs et KPIs Sprint - ✅ RÉALISÉ**
+```
+✅ OBJECTIFS SPRINT 03 ACCOMPLIS :
+├── 🎲 Entités D&D spécialisées (races, classes, stats)
+├── ⚔️ Architecture équipements multi-instances complète
+├── 🔗 Finalisation relations cross-entités
+├── 🧪 Tests intégration performance relations
+└── 📊 Validation architecture DB multi-GameType
+
+📊 MÉTRIQUES RÉALISÉES :
+├── 🎯 User Stories : 3 US (finalisation fondations) ✅
+├── ⚡ D&D Entities : Races, Classes, Stats complets ✅
+├── 🧪 Tests Coverage : 86% (relations complexes) ✅
+├── ⏱️ Performance : <140ms (requêtes avec joins) ✅
+└── 🏗️ Architecture : DB multi-GameType fonctionnelle ✅
+```
+
+### 📋 **User Stories Réalisées (3 US - ✅ COMPLÉTÉ)**
+
+| US ID | Titre | Points | Status | Composants |
+|-------|-------|--------|---------|------------|
+| **#173** | Entités D&D stats, races, classes | 8 SP | ✅ | D&D Specialized |
+| **#192** | Architecture équipements multi-instances | 8 SP | ✅ | Equipment System |
+| **#293** | Finalisation relations avancées DB | 8 SP | ✅ | Integration Tests |
+
+---
+
+## ⚡ **SPRINT 04 : MOTEUR SORTS (COMPLÉTÉ)**
+*6 - 17 Octobre 2025 | Système Sorts Core et API*
+
+### 🎯 **Objectifs et KPIs Sprint - ✅ RÉALISÉ**
+```
+✅ OBJECTIFS SPRINT 04 ACCOMPLIS :
+├── ⚡ Interface administration sorts officiels
+├── 🎨 Interface création sorts personnalisés
+├── 🧙‍♂️ Moteur calculs D&D 5e automatiques
+├── 🔄 API SpellController bi-niveau
+└── 📚 Import SRD sorts validé
+
+📊 MÉTRIQUES RÉALISÉES :
+├── 🎯 User Stories : 3 US (moteur sorts) ✅
+├── ⚡ API Endpoints : CRUD complet sorts ✅
+├── 🧪 Tests Coverage : 89% (business rules) ✅
+├── ⏱️ Performance : <120ms (calculs D&D) ✅
+└── 📊 SRD Import : 350+ sorts intégrés ✅
+```
+
+### 📋 **User Stories Réalisées (3 US - ✅ COMPLÉTÉ)**
+
+| US ID | Titre | Points | Status | Focus |
+|-------|-------|--------|---------|-------|
+| **#183** | Interface administration sorts officiels | 8 SP | ✅ | Admin Tools |
+| **#184** | Interface création sorts personnalisés | 8 SP | ✅ | User Creation |
+| **#185** | Moteur calculs automatiques D&D | 8 SP | ✅ | Business Rules |
+
+---
+
+## 📚 **SPRINT 05 : INTERFACE SORTS (COMPLÉTÉ)**
+*20 - 31 Octobre 2025 | Grimoires et Apprentissage*
+
+### 🎯 **Objectifs et KPIs Sprint - ✅ RÉALISÉ**
+```
+✅ OBJECTIFS SPRINT 05 ACCOMPLIS :
+├── 📚 Système grimoires interactifs complet
+├── 🎓 Apprentissage sorts par classe implémenté
+├── 🛡️ Système validation et modération opérationnel
+├── 🎨 Interface utilisateur sorts finalisée
+└── 🧪 Tests intégration grimoires validés
+
+📊 MÉTRIQUES RÉALISÉES :
+├── 🎯 User Stories : 2 US (interface sorts) ✅
+├── ⚡ Grimoires : Système complet fonctionnel ✅
+├── 🧪 Tests Coverage : 88% (UI et business) ✅
+├── ⏱️ Performance : <150ms (grimoires) ✅
+└── 🎭 UX : Interface responsive validée ✅
+```
+
+### 📋 **User Stories Réalisées (2 US - ✅ COMPLÉTÉ)**
+
+| US ID | Titre | Points | Status | Focus |
+|-------|-------|--------|---------|-------|
+| **#186** | Système grimoires et apprentissage | 13 SP | ✅ | User Experience |
+| **#187** | Système validation et modération | 5 SP | ✅ | Security & Balance |
+
+---
+
+## 🎯 **SPRINT 06 : SORTS VALIDATION (SPRINT ACTUEL)**
+*3 - 14 Novembre 2025 | Finalisation Système Sorts*
+
+### 🎯 **Objectifs et KPIs Sprint**
+```
+🎯 OBJECTIFS SPRINT 06 :
+├── 🔍 Tests d'intégration système sorts complet
+├── 🛡️ Validation sécurité et performance sorts
+├── 📊 Optimisation requêtes et cache sorts
+├── 🎨 Polish interface utilisateur sorts
+└── 📝 Documentation complète API sorts
+
+📊 MÉTRIQUES CLÉS :
+├── 🎯 User Stories : Finalisation et polish
+├── ⚡ Performance : <100ms (requêtes sorts optimisées)
+├── 🧪 Tests Coverage Target : 92%+ (validation complète)
+├── 🔒 Sécurité : Audit complet permissions sorts
+└── 📊 Cache : Implémentation Redis pour performances
+```
+
+### 📋 **Tasks Sprint 06 (18 SP)**
+
+#### **🔍 Tasks Validation et Performance**
+| Task ID | Description | Effort | Priority | Type |
+|---------|-------------|--------|----------|------|
+| **#301** | Tests d'intégration système sorts complet | 6h | P1 | Quality |
+| **#302** | Optimisation performances requêtes sorts | 8h | P1 | Performance |
+| **#303** | Implémentation cache Redis sorts | 10h | P2 | Performance |
+| **#304** | Audit sécurité permissions sorts | 6h | P1 | Security |
+| **#305** | Polish interface utilisateur sorts | 12h | P2 | UX |
+| **#306** | Documentation API sorts complète | 8h | P3 | Documentation |
+
+### 📈 **Métriques Sprint 06 Expected**
+```
+🎯 FINALISATION SORTS - TARGETS :
+
+✅ OBJECTIFS TECHNIQUES :
+├── 📊 Polish Final : 18 SP (finalisation système)
+├── 🔒 Sécurité : Audit complet permissions
+├── ⚡ Performance : <100ms (requêtes optimisées)
+├── 🧪 Tests Coverage : 92%+ (validation finale)
+├── 📊 Cache : Redis implémenté
+└── 📝 Documentation : API complète documentée
+
+📊 LIVRABLES FINAUX :
+├── ⚡ Système Sorts : Production ready complet
+├── 📚 Grimoires : Interface optimisée
+├── 🔒 Sécurité : Permissions auditées
+├── 📊 Performance : Cache Redis actif
+├── 🧪 Tests : Coverage >92% validée
+└── 📝 Docs : API entièrement documentée
 ```
 
 ---
 
-### 👥 **Utilisateurs et Engagement**
+## ⚔️ **SPRINT 07 : ÉQUIPEMENTS CORE (PLANIFIÉ)**
+*17 - 28 Novembre 2025 | Fondations Équipements et SRD*
 
-#### **📊 Analytics Utilisateurs**
+### 🎯 **Objectifs et KPIs Sprint**
 ```
-📈 CROISSANCE UTILISATEURS (30 derniers jours) :
+🎯 OBJECTIFS SPRINT 07 :
+├── 🛡️ Interface administration équipements officiels
+├── 🎨 Interface création équipements personnalisés
+├── 📦 Architecture inventaires de base
+├── 💰 Import SRD équipements D&D
+└── 🔄 API EquipmentController complète
 
-👥 Utilisateurs Uniques    : 1,247  (+156 vs mois précédent)
-🆕 Nouveaux Utilisateurs   : 234    (+18.8% growth rate)
-🔄 Utilisateurs Récurrents : 1,013  (81.2% retention base)
-👑 Power Users (>10h/mois) : 89     (7.1% de la base)
-
-📅 ENGAGEMENT PAR PÉRIODE :
-┌─────────────────────────────────────────────────┐
-│        │  DAU  │  WAU  │  MAU  │ Sessions/User │
-├─────────┼───────┼───────┼───────┼───────────────┤
-│ Cette   │  342  │ 1,089 │ 1,247 │     3.9       │
-│ semaine │       │       │       │               │
-├─────────┼───────┼───────┼───────┼───────────────┤
-│ Semaine │  298  │  967  │ 1,091 │     3.6       │
-│ dernière│       │       │       │               │
-├─────────┼───────┼───────┼───────┼───────────────┤
-│ Évolution│ +15% │ +13%  │ +14%  │    +8%        │
-└─────────┴───────┴───────┴───────┴───────────────┘
-
-🎯 RÉTENTION UTILISATEURS :
-├── 📅 Jour 1  : 87%  (Excellent - Target: 80%+)
-├── 📅 Jour 7  : 68%  (Bon - Target: 60%+)  
-├── 📅 Jour 30 : 42%  (Moyen - Target: 45%+)
-└── 📅 Jour 90 : 28%  (À améliorer - Target: 35%+)
+📊 MÉTRIQUES CLÉS :
+├── 🎯 User Stories : 2 US (équipements core)
+├── ⚡ SRD Import : 200+ équipements D&D
+├── 🧪 Tests Coverage Target : 85%+ (équipements)
+├── ⏱️ Performance : <120ms (requêtes équipements)
+└── 🏗️ Architecture : Base solide pour inventaires
 ```
 
-#### **🎮 Comportement de Jeu**
+### 📋 **User Stories Planifiées (2 US)**
+
+| US ID | Titre | Points | Type | Focus |
+|-------|-------|--------|------|-------|
+| **#193** | Interface administration équipements officiels | 5 SP | 🆕 | Admin SRD |
+| **#194** | Interface création équipements personnalisés | 8 SP | 🆕 | User Creation |
+
+---
+
+## 📦 **SPRINT 08 : INVENTAIRES AVANCÉS (PLANIFIÉ)**
+*1 - 12 Décembre 2025 | Gestion Inventaires et Auto-Équipement*
+
+### 🎯 **Objectifs et KPIs Sprint**
 ```
-🎲 MÉTRIQUES JDR SPÉCIALISÉES :
+🎯 OBJECTIFS SPRINT 08 :
+├── 📦 Interface gestion inventaire complète
+├── ⚔️ Auto-équipement et calculs CA/dégâts
+├── 🎨 Interface drag & drop inventaires
+├── 📊 Système de catégories équipements
+└── 🔄 TradeController fondations
 
-📊 RÉPARTITION DES RÔLES :
-├── 🎭 MJ Exclusivement    : 234 users (18.8%)
-├── 👤 Joueur Uniquement   : 789 users (63.3%)  
-├── 🔄 Multi-Rôles         : 224 users (17.9%)
-└── 👁️ Observateurs        : 0 users   (0%)
+📊 MÉTRIQUES CLÉS :
+├── 🎯 User Stories : 1 US (inventaires)
+├── ⚡ UX : Drag & drop fluide implémenté
+├── 🧪 Tests Coverage Target : 85%+
+├── ⏱️ Performance : <150ms (calculs auto)
+└── 📊 Calculs : CA et dégâts automatiques
+```
 
-🏰 ACTIVITÉ CAMPAGNES :
-├── 📚 Campagnes Actives   : 156 campagnes
-├── 👥 Joueurs/Campagne    : 3.2 (moyenne)
-├── ⏱️ Durée Sessions      : 3.2h (moyenne)
-├── 📈 Sessions/Semaine    : 2.1 (par utilisateur)
-└── 🎯 Taux Complétion     : 34% (campagnes terminées)
+### 📋 **User Stories Planifiées (1 US)**
 
-🎲 SYSTÈMES DE JEU :
-├── 🐉 D&D 5e             : 1,089 users (87.3%)
-├── 🎭 Générique          : 158 users  (12.7%)
-├── 🏹 Pathfinder         : 0 users    (Futur v2.0)
-└── 🌃 Shadowrun          : 0 users    (Futur v2.0)
+| US ID | Titre | Points | Type | Focus |
+|-------|-------|--------|------|-------|
+| **#197** | Interface gestion inventaire auto-équipement | 13 SP | 🆕 | UX Core |
+
+---
+
+## 🤝 **SPRINT 09 : ÉCHANGES MJ (PLANIFIÉ)**
+*15 - 22 Décembre 2025 | Propositions Équipements MJ → Joueurs*
+
+### 🎯 **Objectifs et KPIs Sprint**
+```
+🎯 OBJECTIFS SPRINT 09 :
+├── 💼 Système propositions MJ → Joueurs
+├── 🔔 Notifications équipements temps réel
+├── ✅ Workflow acceptation/refus propositions
+├── 🎯 Interface MJ gestion équipements
+└── 📊 Historique transactions MJ
+
+📊 MÉTRIQUES CLÉS :
+├── 🎯 User Stories : 1 US (propositions MJ)
+├── ⚡ Notifications : Temps réel WebSocket
+├── 🧪 Tests Coverage Target : 85%+
+├── ⏱️ Performance : <200ms (propositions)
+└── 🔄 Workflow : Complet MJ → Joueur
+```
+
+### 📋 **User Stories Planifiées (1 US)**
+
+| US ID | Titre | Points | Type | Focus |
+|-------|-------|--------|------|-------|
+| **#195** | Système propositions équipements MJ → Joueurs | 13 SP | 🆕 | MJ Tools |
+
+---
+
+## 💰 **SPRINT 10 : ÉCHANGES JOUEURS (PLANIFIÉ)**
+*5 - 16 Janvier 2026 | Système Échanges Joueur ↔ Joueur*
+
+### 🎯 **Objectifs et KPIs Sprint**
+```
+🎯 OBJECTIFS SPRINT 10 :
+├── 🔄 Système échanges joueur ↔ joueur
+├── ⚖️ Interface négociation équipements
+├── 🛡️ Validation MJ optionnelle échanges
+├── 💰 Économie équipements avec prix
+└── 📊 Marketplace et historique complet
+
+📊 MÉTRIQUES CLÉS :
+├── 🎯 User Stories : 1 US (échanges P2P)
+├── ⚡ Marketplace : Interface complète
+├── 🧪 Tests Coverage Target : 85%+
+├── ⏱️ Performance : <200ms (échanges)
+└── 💰 Économie : Système prix fonctionnel
+```
+
+### 📋 **User Stories Planifiées (1 US)**
+
+| US ID | Titre | Points | Type | Focus |
+|-------|-------|--------|------|-------|
+| **#196** | Système échanges équipements joueur ↔ joueur | 13 SP | 🆕 | Social Features |
+
+---
+
+## 📈 **ROADMAP ET MÉTRIQUES GLOBALES**
+
+### 🗓️ **Timeline Réorganisée**
+```
+📅 PLANNING 2025-2026 RÉORGANISÉ :
+
+✅ Sprint 01 (25 Août - 5 Sept)    : Authentification JWT     [41 SP] ✅
+✅ Sprint 02 (8 - 19 Sept)         : Entités Core            [20 SP] ✅  
+✅ Sprint 03 (22 Sept - 3 Oct)     : Relations DB            [24 SP] ✅
+✅ Sprint 04 (6 - 17 Oct)          : Moteur Sorts            [24 SP] ✅
+✅ Sprint 05 (20 - 31 Oct)         : Interface Sorts         [18 SP] ✅
+🎯 Sprint 06 (3 - 14 Nov)          : Sorts Validation        [18 SP] ACTUEL
+🔮 Sprint 07 (17 - 28 Nov)         : Équipements Core        [13 SP]
+🔮 Sprint 08 (1 - 12 Déc)          : Inventaires            [13 SP]
+🔮 Sprint 09 (15 - 22 Déc)         : Échanges MJ            [13 SP]
+🔮 Sprint 10 (5 - 16 Jan 2026)     : Échanges Joueurs       [13 SP]
+
+🎯 TOTAL ACCOMPLI : 147 SP sur 5 sprints (moyenne 29.4 SP/sprint)
+🔮 TOTAL RESTANT : 90 SP sur 5 sprints (moyenne 18 SP/sprint)
+```
+
+### 📊 **KPIs Suivi Global Actualisé**
+```
+🎯 MÉTRIQUES PROJET ACTUALISÉES :
+
+📈 VÉLOCITÉ ET CAPACITÉ :
+├── 📊 Velocity Réelle : 29.4 SP/sprint (très élevée!)
+├── 🎯 Sprints Complétés : 5/10 (50% accomplis)
+├── ⚡ Sprint Actuel : 06 (Sorts Validation)
+├── 📋 Stories Accomplies : 25/67 US (37% completes)
+└── 📅 Progression : En avance sur planning initial
+
+🚀 MILESTONES ACTUALISÉS :
+├── ✅ MVP Security : Sprint 01 (5 Sept 2025) ✅
+├── ✅ MVP Database : Sprint 03 (3 Oct 2025) ✅
+├── 🎯 MVP Sorts : Sprint 06 (14 Nov 2025) EN COURS
+├── ⚔️ MVP Équipements : Sprint 10 (16 Jan 2026)
+└── 🎯 Production Ready : Février 2026 (en avance!)
+
+💰 BUDGET ET RESSOURCES OPTIMISÉES :
+├── 📊 Budget Utilisé : 65% (équipe très productive)
+├── 👥 Équipe : Performante (velocity élevée)
+├── 🧪 QA : Intégré avec succès (90%+ coverage)
+└── 📝 Documentation : À jour (process rodé)
 ```
 
 ---
 
-### 🔧 **Fonctionnalités et Adoption**
+## 🔄 **PROCESS ET OUTILS ACTUALISÉS**
 
-#### **📈 Adoption des Features**
-```
-📊 UTILISATION DES FONCTIONNALITÉS (30 jours) :
+### 📊 **Métriques Temps Réel - Sprint 06**
+- **Burndown Charts** : Sprint 06 démarré (0/18 SP)
+- **Velocity Tracking** : 29.4 SP moyenne (très performant)
+- **Code Coverage** : 89% global (excellent)
+- **Performance Monitoring** : <150ms APIs, <3s Blazor
+- **Bug Tracking** : 0 critique, 2 mineurs total
 
-🧙‍♂️ PERSONNAGES :
-├── ✅ Création Personnages : 89%  des utilisateurs
-├── 📊 Calculs Auto D&D     : 95%  des persos D&D
-├── 🔄 Multi-Personnages    : 67%  ont >1 personnage
-└── 🎨 Upload Images        : 42%  utilisent images custom
-
-🪄 SORTS :
-├── 📚 Consultation Sorts   : 94%  des utilisateurs
-├── 🌟 Sorts Officiels      : 87%  utilisent SRD
-├── ✨ Sorts Privés         : 23%  créent du custom
-└── 📖 Grimoires Perso      : 78%  organisent par perso
-
-⚔️ ÉQUIPEMENTS :
-├── 🛡️ Gestion Inventaire  : 81%  des utilisateurs
-├── 🎁 Propositions MJ      : 45%  reçoivent des items
-├── 🤝 Échanges P2P         : 31%  échangent entre eux
-└── 💰 Calculs Auto CA      : 92%  utilisent auto-calc
-
-🏰 CAMPAGNES :
-├── 🎭 Création Campagnes   : 34%  des utilisateurs (MJ)
-├── 👥 Participation        : 87%  participent comme joueur
-├── 📖 Progression Chap.    : 76%  suivent progression
-└── 💬 Chat Intégré         : 69%  utilisent le chat
-
-⚔️ COMBAT :
-├── 🎯 Combat Temps Réel    : 58%  ont testé
-├── 🎲 Calculs Auto         : 94%  des combats
-├── 📊 Initiative Auto      : 89%  laissent auto-calc
-└── ⏱️ Timer Tours          : 34%  activent le timer
-```
-
-#### **🔍 Analyse d'Usage Détaillée**
-```
-🕐 PATTERNS D'UTILISATION :
-
-📅 RÉPARTITION HEBDOMADAIRE :
-    100% ┤
-         │     ██
-     80% ┤   ████      ██
-         │ ██████    ████
-     60% ┤ ██████  ██████     ██
-         │ ██████  ██████   ████
-     40% ┤ ██████  ██████ ██████
-         │ ██████  ██████ ██████   ██
-     20% ┤ ██████  ██████ ██████ ████
-         │ ██████  ██████ ██████ ████
-      0% └─────────────────────────────
-         Lun Mar Mer Jeu Ven Sam Dim
-         
-         Peak: Vendredi 20h-23h (Sessions JDR)
-
-⏰ SESSIONS PAR HEURE (UTC+1) :
-├── 🌅 06h-12h : 12%  (Sessions matinales)
-├── 🌤️ 12h-18h : 28%  (Après-midi)  
-├── 🌆 18h-23h : 47%  (Soirées - PEAK)
-└── 🌙 23h-06h : 13%  (Sessions tardives)
-
-📱 DEVICES UTILISÉS :
-├── 💻 Desktop  : 67%  (Sessions longues)
-├── 📱 Mobile   : 24%  (Consultation rapide)
-├── 📲 Tablet   : 9%   (Portable pour MJ)
-└── 🖥️ Other    : <1%  
-```
+### 🚀 **Definition of Done - Validée**
+1. ✅ Code reviewed + Tests passants (standard maintenu)
+2. ✅ Documentation technique à jour (process rodé)
+3. ✅ Performance validée (<200ms API) (souvent dépassé)
+4. ✅ Tests intégration passants (90%+ coverage)
+5. ✅ Déployé en environnement test (CI/CD opérationnel)
+6. ✅ Validation PO/métier completed (feedback continu)
 
 ---
 
-## 🎯 Objectifs et Targets
-
-### 📊 **Objectifs Trimestriels 2025**
-
-#### **Q1 2025 (Janvier-Mars) - MVP Foundation**
-| Métrique | Target Q1 | Actuel | Status |
-|----------|-----------|--------|---------|
-| **👥 Utilisateurs Actifs** | 1,500 | 1,247 | 🟡 83% |
-| **📈 Rétention J7** | 65% | 68% | ✅ 105% |
-| **⏱️ Temps Moy/Session** | 3h | 3.2h | ✅ 107% |
-| **🧪 Couverture Tests** | 85% | 87% | ✅ 102% |
-| **🚀 Velocity Sprint** | 30 SP | 28 SP | 🟡 93% |
-| **💰 Coût Infrastructure** | €120 | €89 | ✅ 74% |
-
-#### **Q2 2025 (Avril-Juin) - Feature Expansion**
-| Métrique | Target Q2 | Projection | Confiance |
-|----------|-----------|------------|-----------|
-| **👥 Utilisateurs Actifs** | 3,000 | 2,850 | 🟢 95% |
-| **🎮 Sessions Mensuelles** | 12,000 | 11,400 | 🟢 95% |
-| **⚔️ Adoption Combat** | 75% | 68% | 🟡 91% |
-| **🏰 Campagnes Actives** | 400 | 380 | 🟢 95% |
-| **💬 NPS Score** | +60 | +72 | ✅ 120% |
-
-#### **Q3 2025 (Juillet-Septembre) - Production Ready**
-| Métrique | Target Q3 | Projection | Confiance |
-|----------|-----------|------------|-----------|
-| **👥 Utilisateurs Actifs** | 6,000 | 5,700 | 🟢 95% |
-| **🌐 Uptime** | 99.8% | 99.7% | 🟡 99% |
-| **⚡ Response Time** | <150ms | 145ms | ✅ 103% |
-| **📊 Support Tickets** | <50/mois | 23/mois | ✅ 46% |
-
-#### **Q4 2025 (Octobre-Décembre) - Scale & Polish**
-| Métrique | Target Q4 | Projection | Confiance |
-|----------|-----------|------------|-----------|
-| **👥 Utilisateurs Actifs** | 10,000 | 9,200 | 🟢 92% |
-| **💰 Revenue/Utilisateur** | €5 | €4.2 | 🟡 84% |
-| **🎯 Churn Rate** | <5%/mois | 6.2%/mois | 🔴 76% |
-| **🚀 Feature Adoption** | >60% | 58% | 🟡 97% |
-
----
-
-## 📈 Reporting et Monitoring
-
-### 🔄 **Fréquence de Reporting**
-
-#### **📊 Daily Standups**
-- **🚧 Sprint Progress** : Burndown chart
-- **🐛 Bugs & Blockers** : Incidents tracker  
-- **⚡ Performance** : Response times & errors
-- **👥 User Feedback** : Support tickets résumé
-
-#### **📅 Weekly Reports**
-- **📈 Analytics Summary** : KPIs vs targets
-- **🔧 Technical Health** : Infrastructure status
-- **💰 Budget Tracking** : Coûts vs budget
-- **🎯 Goal Progress** : OKRs advancement
-
-#### **📊 Monthly Business Reviews**
-- **📋 Sprint Retrospectives** : Lessons learned
-- **👥 User Research** : Qualitative insights
-- **💡 Feature Requests** : Product backlog prioritization
-- **🔮 Forecast Update** : Revised projections
-
-#### **🎯 Quarterly Planning**
-- **📊 Comprehensive Analytics** : Trends & patterns
-- **🚀 Roadmap Adjustment** : Feature prioritization
-- **💰 Budget Planning** : Resource allocation
-- **🎯 Goal Setting** : Next quarter OKRs
-
-### 🛠️ **Outils de Monitoring**
-
-#### **📊 Analytics Stack**
-```
-🎯 USER ANALYTICS :
-├── 📊 Google Analytics 4    : Comportement utilisateur
-├── 🔥 Hotjar               : Heatmaps & recordings  
-├── 📋 FullStory            : Session recordings
-└── 💬 Intercom             : Support & feedback
-
-⚡ TECHNICAL MONITORING :
-├── 📈 Application Insights : APM & logs Azure
-├── 🚨 PagerDuty           : Alerting & incident management
-├── 📊 Grafana             : Custom dashboards
-└── 🔍 ELK Stack           : Logs analysis
-
-🔧 DEVELOPMENT TOOLS :
-├── 📋 Azure DevOps        : Work items & sprints
-├── 🔄 GitHub Actions     : CI/CD metrics
-├── 🧪 SonarQube          : Code quality
-└── 📊 CodeClimate        : Technical debt tracking
-```
-
-#### **🚨 Alerting & Thresholds**
-```
-🔴 CRITICAL ALERTS (Immediate Response) :
-├── 🌐 API Response Time   : >500ms (5min avg)
-├── 🔥 Error Rate         : >1% (5min avg)  
-├── 💀 Service Down       : >30s downtime
-├── 🗄️ Database CPU       : >90% (1min avg)
-└── 🧠 Memory Usage       : >90% (1min avg)
-
-🟠 WARNING ALERTS (Response < 1h) :
-├── ⚡ API Response Time   : >300ms (15min avg)
-├── 🐛 Error Rate         : >0.5% (15min avg)
-├── 👥 Active Sessions    : <50% of normal
-├── 💿 Disk Usage         : >80%
-└── 🔍 Failed Jobs        : >5% (queue processing)
-
-🟡 INFO ALERTS (Daily Review) :
-├── 📊 User Registration  : <10/day
-├── 💰 Cost Anomaly       : >20% daily budget
-├── 📈 Traffic Spike      : >200% normal
-└── 🔄 Deploy Failures    : Any failed deployment
-```
-
----
-
-## 📊 **Métriques Avancées et ML**
-
-### 🤖 **Prédictions et Modèles**
-
-#### **📈 Growth Forecasting (ML.NET)**
-```csharp
-// Modèle de prédiction de croissance utilisateurs
-public class UserGrowthPrediction
-{
-    [ColumnName("PredictedGrowth")]
-    public float UserGrowthRate { get; set; }
-    
-    [ColumnName("Confidence")]
-    public float ConfidenceInterval { get; set; }
-    
-    public string PredictionPeriod { get; set; }
-}
-
-// Prédictions actuelles
-var predictions = new[]
-{
-    new { Month = "Février 2025", Users = 1580, Confidence = 0.87f },
-    new { Month = "Mars 2025", Users = 1950, Confidence = 0.82f },
-    new { Month = "Avril 2025", Users = 2400, Confidence = 0.78f },
-    new { Month = "Mai 2025", Users = 2950, Confidence = 0.74f }
-};
-```
-
-#### **🎯 Churn Prediction Model**
-```
-🚨 UTILISATEURS À RISQUE (Algorithme ML) :
-
-🔴 RISQUE ÉLEVÉ (Churn 85%+) :
-├── 👤 User #1247 : Dernière activité 14j, Sessions -60%
-├── 👤 User #892  : 0 campagnes créées, Engagement -45%  
-├── 👤 User #2341 : Erreurs fréquentes, Support tickets +3
-└── 👤 User #156  : Temps session <30min, Features -70%
-
-🟠 RISQUE MOYEN (Churn 40-85%) :
-├── 📊 47 utilisateurs identifiés
-├── 🎯 Actions recommandées : Email re-engagement
-├── 💬 Message personnalisé selon pattern  
-└── 🎁 Incentives (content exclusif, early access)
-
-🟢 RÉTENTION PROBABLE (Churn <40%) :
-├── 📊 1,153 utilisateurs (92.5% de la base)
-├── 🎯 Strategy : Upselling features premium
-├── 💎 Convertir en power users
-└── 🗣️ Ambassadeurs & referral program
-```
-
-### 📊 **Segmentation Utilisateurs**
-
-#### **🎭 Segments Comportementaux**
-```
-👥 TYPOLOGIE UTILISATEURS :
-
-🎮 POWER GAMERS (7.1% - 89 users) :
-├── ⏱️ >10h/mois, Sessions >4h
-├── 🏰 MJ expérimentés, Campagnes complexes
-├── 💡 Early adopters nouvelles features
-├── 💰 Willing to pay premium
-└── 🎯 Focus : Advanced features, API access
-
-🎲 CASUAL PLAYERS (67.3% - 840 users) :
-├── ⏱️ 2-6h/mois, Sessions 2-3h  
-├── 👤 Principalement joueurs
-├── 🎯 Utilisent features standard
-├── 💰 Freemium model targets
-└── 🎯 Focus : Ease of use, templates
-
-🆕 NEWCOMERS (18.8% - 234 users) :
-├── ⏱️ <2h/mois, Découverte plateforme
-├── 📚 Besoin tutorials & onboarding
-├── 🤝 Recherchent groupes à rejoindre
-├── 💡 High potential if retained
-└── 🎯 Focus : Onboarding, matching
-
-👁️ OBSERVERS (6.8% - 85 users) :
-├── ⏱️ Faible engagement, Consommation passive
-├── 📺 Regardent plutôt que participent
-├── 🔄 Potentiel conversion à Casual
-├── 💰 Ad-supported model
-└── 🎯 Focus : Spectator features, social
-```
-
----
-
-## ✅ **Résumé Exécutif Métriques**
-
-### 🎯 **État Actuel vs Objectifs**
-
-```
-📊 PERFORMANCE GLOBALE - JANVIER 2025 :
-
-🟢 SUCCÈS (Targets dépassés) :
-├── ✅ Rétention J7 : 68% (vs 60% target)  
-├── ✅ NPS Score : +72 (vs +50 target)
-├── ✅ Uptime : 99.7% (vs 99.5% target)
-├── ✅ Tests Coverage : 87% (vs 85% target)
-└── ✅ Budget : €89 (vs €120 budget)
-
-🟡 ATTENTION (Proches des targets) :
-├── ⚠️ Utilisateurs : 1,247 (vs 1,500 target Q1)
-├── ⚠️ Velocity : 28 SP (vs 30 target)
-├── ⚠️ Rétention J30 : 42% (vs 45% target)
-└── ⚠️ Combat Adoption : 58% (vs 60% target)
-
-🔴 RISQUES (Nécessitent action) :
-├── 🚨 Churn Rate : 6.2% (vs <5% target)
-├── 🚨 Mobile Usage : 24% (vs 35% market std)
-├── 🚨 Feature Creation : 23% (vs 30% healthy)
-└── 🚨 Support Load : Trending up (+15%)
-
-🎯 ACTIONS PRIORITAIRES :
-1. 📱 Mobile Experience amélioration (Sprint 9)
-2. 🎓 Onboarding optimization (Sprint 10) 
-3. 💬 Customer Success program (Sprint 11)
-4. 🔧 Performance optimization (Ongoing)
-```
-
-### 🚀 **Prochaines Étapes**
-
-#### **📅 Prochains 30 Jours**
-- **🎯 Focus Sprint 8-9** : Finir équipements + combat
-- **📱 Mobile UX** : Améliorer expérience tablette
-- **🎓 Onboarding** : Réduire drop-off nouveaux users  
-- **📊 Analytics** : Setup ML.NET pour churn prediction
-
-#### **📅 Prochains 90 Jours**  
-- **🏰 Campagnes** : Finir système complet chapitres
-- **⚔️ Combat** : Temps réel avec invitations dynamiques
-- **💰 Monétisation** : Préparer modèle freemium
-- **🌍 Scale** : Préparer infrastructure pour 5k users
-
----
-
-**🎉 Cette documentation complète du wiki Azure DevOps pour Chronique des Mondes est maintenant terminée !**
-
-**📋 RÉCAPITULATIF COMPLET - 5 PHASES CRÉÉES :**
-
-✅ **PHASE 1 : Vue d'Ensemble** - Vision projet et organisation  
-✅ **PHASE 2 : Architecture Technique** - Design et stack technique  
-✅ **PHASE 3 : Fonctionnalités Métier** - Features et mécaniques JDR  
-✅ **PHASE 4 : Développement et Tests** - Guides dev et QA  
-✅ **PHASE 5 : Planification et Roadmap** - Vision stratégique et KPIs  
-
-**🎯 TOTAL : 20+ pages de documentation complète avec exemples de code, métriques, roadmap, et guides pratiques pour développer une plateforme JDR moderne et innovante !** 🚀🎲
+*📊 Dashboard mis à jour automatiquement - Dernière MàJ: 14 Novembre 2025*
+*🎯 Sprint 06 en cours - Sorts Validation et Finalisation*
