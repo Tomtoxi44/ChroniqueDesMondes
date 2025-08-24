@@ -1,7 +1,8 @@
-namespace Chronique.Des.Mondes.ApiService.Extensions;
+﻿namespace Chronique.Des.Mondes.ApiService.Extensions;
 
 using Cmd.Business.Character.Extensions;
 using Cdm.Business.Common.Business.Users;
+using Cdm.Business.Common.Business.Campaigns;
 
 public static class ServiceCollectionExtensions
 {
@@ -17,6 +18,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddCommonBusiness(this IServiceCollection services)
     {
         services.AddTransient<UserBusiness>();
+        services.AddTransient<CampaignBusiness>();
+        services.AddTransient<ChapterBusiness>();
         services.AddScoped<PasswordService>();
         services.AddScoped<JwtService>();
 

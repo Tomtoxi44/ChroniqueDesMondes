@@ -1,4 +1,5 @@
-using Chronique.Des.Mondes.ApiService.Endpoints;
+﻿using Chronique.Des.Mondes.ApiService.Endpoints;
+using Cdm.ApiService.Endpoints;
 using Microsoft.AspNetCore.Builder;
 
 public static class EndpointMappingExtensions
@@ -8,5 +9,7 @@ public static class EndpointMappingExtensions
         app.MapWeatherEndpoints();
         app.MapUserEndpoints();
         app.MapPlayerCharacterEndpoint();
+        app.MapCampaignEndpoints();
+        app.MapChapterEndpoints();
     }
 }
