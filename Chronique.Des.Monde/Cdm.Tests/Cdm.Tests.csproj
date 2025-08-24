@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -16,11 +16,13 @@
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.Testing" Version="9.4.1" />
     <PackageReference Include="MSTest" Version="3.10.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.8" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Cdm.AppHost\Cdm.AppHost.csproj" />
     <ProjectReference Include="..\Cdm.Business.Common\Cdm.Business.Common.csproj" />
+    <ProjectReference Include="..\Cdm.Data.Common\Cdm.Data.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
