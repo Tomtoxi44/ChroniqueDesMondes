@@ -1,138 +1,78 @@
-﻿namespace Chronique.Des.Mondes.ApiService.Endpoints;
+﻿using Microsoft.AspNetCore.Mvc;
+using Cdm.Data.Dnd.Models;
+using Cdm.Data.Dnd;
+using Microsoft.EntityFrameworkCore;
 
-using Cdm.Common;
-using Cmd.Abstraction;
-using Cmd.Abstraction.ModelsRequest;
-using Cmd.Business.Character.ModelsRequest;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
+namespace Cdm.ApiService.Endpoints;
 
 public static class CharacterEndpoint
 {
-    public static void MapPlayerCharacterEndpoint(this WebApplication app)
+    public static void MapCharacterEndpoints(this WebApplication app)
     {
-        var characterGroup = app.MapGroup("/character").RequireAuthorization();
+        var characterGroup = app.MapGroup("/api/characters").RequireAuthorization();
 
-        // GET /character - Récupérer tous les personnages d'un utilisateur
-        characterGroup.MapGet(string.Empty, async (int userId, [FromHeader(Name = "X-GameType")] string gameType, IServiceProvider serviceProvider) =>
+        characterGroup.MapGet("/", async (DndDbContext context) =>
         {
-            try
-            {
-                var serviceCharacter = serviceProvider.GetRequiredKeyedService<ICharacterBusiness>(gameType);
-                var result = await serviceCharacter.GetAllCharactersByUserId(userId);
-                return Results.Ok(result);
-            }
-            catch (BusinessException ex)
-            {
-                return Results.BadRequest(new { Error = ex.Message });
-            }
+            var characters = await context.CharactersDnd
+                .Where(c => !c.IsNpc)
+                .ToListAsync();
+            return Results.Ok(characters);
         });
 
-        // GET /character/{id} - Récupérer un personnage par ID
-        characterGroup.MapGet("/{id:int}", async (int id, [FromHeader(Name = "X-GameType")] string gameType, IServiceProvider serviceProvider) =>
+        characterGroup.MapGet("/{id:int}", async (int id, DndDbContext context) =>
         {
-            try
-            {
-                var serviceCharacter = serviceProvider.GetRequiredKeyedService<ICharacterBusiness>(gameType);
-                var result = await serviceCharacter.GetCharacterById(id);
-                return Results.Ok(result);
-            }
-            catch (BusinessException ex)
-            {
-                return Results.BadRequest(new { Error = ex.Message });
-            }
+            var character = await context.CharactersDnd
+                .FirstOrDefaultAsync(c => c.Id == id && !c.IsNpc);
+            
+            return character != null ? Results.Ok(character) : Results.NotFound();
         });
 
-        // POST /character - Créer un nouveau personnage (générique)
-        characterGroup.MapPost(string.Empty, async (int userId, [FromHeader(Name = "X-GameType")] string gameType, [FromBody] CharacterRequest characterRequest, IServiceProvider serviceProvider) =>
+        characterGroup.MapPost("/", async ([FromBody] CharacterDnd character, DndDbContext context) =>
         {
-            try
-            {
-                var serviceCharacter = serviceProvider.GetRequiredKeyedService<ICharacterBusiness>(gameType);
-                var result = await serviceCharacter.CreateCharacter(characterRequest, userId);
-                return Results.Created($"/character/{result.Id}", result);
-            }
-            catch (BusinessException ex)
-            {
-                return Results.BadRequest(new { Error = ex.Message });
-            }
+            character.IsNpc = false; // Ensure it's not an NPC
+            context.CharactersDnd.Add(character);
+            await context.SaveChangesAsync();
+            return Results.Created($"/api/characters/{character.Id}", character);
         });
 
-        // POST /character/dnd - Créer un nouveau personnage D&D (option spécifique pour compatibilité)
-        characterGroup.MapPost("/dnd", async (int userId, [FromHeader(Name = "X-GameType")] string gameType, [FromBody] CharacterDndRequest dndRequest, IServiceProvider serviceProvider) =>
+        characterGroup.MapPut("/{id:int}", async (int id, [FromBody] CharacterDnd updatedCharacter, DndDbContext context) =>
         {
-            try
-            {
-                var serviceCharacter = serviceProvider.GetRequiredKeyedService<ICharacterBusiness>(gameType);
-                
-                // Conversion du CharacterDndRequest vers le format générique
-                var genericRequest = CharacterRequestFactory.CreateDndCharacterRequest(
-                    dndRequest.Name, dndRequest.Leveling, dndRequest.Life,
-                    dndRequest.Picture, dndRequest.Background, dndRequest.Class,
-                    dndRequest.ClassArmor, dndRequest.Strong, dndRequest.Dexterity,
-                    dndRequest.Constitution, dndRequest.Intelligence, dndRequest.Wisdoms, dndRequest.Charism);
-                
-                var result = await serviceCharacter.CreateCharacter(genericRequest, userId);
-                return Results.Created($"/character/{result.Id}", result);
-            }
-            catch (BusinessException ex)
-            {
-                return Results.BadRequest(new { Error = ex.Message });
-            }
+            var character = await context.CharactersDnd
+                .FirstOrDefaultAsync(c => c.Id == id && !c.IsNpc);
+            
+            if (character == null)
+                return Results.NotFound();
+
+            // Update properties
+            character.Name = updatedCharacter.Name;
+            character.Class = updatedCharacter.Class;
+            character.Life = updatedCharacter.Life;
+            character.Leveling = updatedCharacter.Leveling;
+            character.Strong = updatedCharacter.Strong;
+            character.Dexterity = updatedCharacter.Dexterity;
+            character.Constitution = updatedCharacter.Constitution;
+            character.Intelligence = updatedCharacter.Intelligence;
+            character.Wisdoms = updatedCharacter.Wisdoms;
+            character.Charism = updatedCharacter.Charism;
+            character.ClassArmor = updatedCharacter.ClassArmor;
+            character.Background = updatedCharacter.Background;
+            character.Picture = updatedCharacter.Picture;
+
+            await context.SaveChangesAsync();
+            return Results.Ok(character);
         });
 
-        // PUT /character/{id} - Mettre à jour un personnage
-        characterGroup.MapPut("/{id:int}", async (int id, [FromHeader(Name = "X-GameType")] string gameType, [FromBody] CharacterRequest characterRequest, IServiceProvider serviceProvider) =>
+        characterGroup.MapDelete("/{id:int}", async (int id, DndDbContext context) =>
         {
-            try
-            {
-                var serviceCharacter = serviceProvider.GetRequiredKeyedService<ICharacterBusiness>(gameType);
-                var result = await serviceCharacter.UpdateCharacter(characterRequest, id);
-                return Results.Ok(result);
-            }
-            catch (BusinessException ex)
-            {
-                return Results.BadRequest(new { Error = ex.Message });
-            }
-        });
+            var character = await context.CharactersDnd
+                .FirstOrDefaultAsync(c => c.Id == id && !c.IsNpc);
+            
+            if (character == null)
+                return Results.NotFound();
 
-        // PUT /character/dnd/{id} - Mettre à jour un personnage D&D (option spécifique pour compatibilité)
-        characterGroup.MapPut("/dnd/{id:int}", async (int id, [FromHeader(Name = "X-GameType")] string gameType, [FromBody] CharacterDndRequest dndRequest, IServiceProvider serviceProvider) =>
-        {
-            try
-            {
-                var serviceCharacter = serviceProvider.GetRequiredKeyedService<ICharacterBusiness>(gameType);
-                
-                // Conversion du CharacterDndRequest vers le format générique
-                var genericRequest = CharacterRequestFactory.CreateDndCharacterRequest(
-                    dndRequest.Name, dndRequest.Leveling, dndRequest.Life,
-                    dndRequest.Picture, dndRequest.Background, dndRequest.Class,
-                    dndRequest.ClassArmor, dndRequest.Strong, dndRequest.Dexterity,
-                    dndRequest.Constitution, dndRequest.Intelligence, dndRequest.Wisdoms, dndRequest.Charism);
-                
-                var result = await serviceCharacter.UpdateCharacter(genericRequest, id);
-                return Results.Ok(result);
-            }
-            catch (BusinessException ex)
-            {
-                return Results.BadRequest(new { Error = ex.Message });
-            }
-        });
-
-        // DELETE /character/{id} - Supprimer un personnage
-        characterGroup.MapDelete("/{id:int}", async (int id, [FromHeader(Name = "X-GameType")] string gameType, IServiceProvider serviceProvider) =>
-        {
-            try
-            {
-                var serviceCharacter = serviceProvider.GetRequiredKeyedService<ICharacterBusiness>(gameType);
-                await serviceCharacter.DeleteCharacter(id);
-                return Results.NoContent();
-            }
-            catch (BusinessException ex)
-            {
-                return Results.BadRequest(new { Error = ex.Message });
-            }
+            context.CharactersDnd.Remove(character);
+            await context.SaveChangesAsync();
+            return Results.NoContent();
         });
     }
 }

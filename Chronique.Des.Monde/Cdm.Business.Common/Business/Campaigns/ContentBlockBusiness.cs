@@ -1,6 +1,6 @@
 ﻿using Cdm.Business.Common.Models.Campaign.ContentBlock;
 using Cdm.Common;
-using Cdm.Data;
+using Cdm.Data.Dnd;
 using Cdm.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -9,9 +9,9 @@ namespace Cdm.Business.Common.Business.Campaigns;
 
 public class ContentBlockBusiness
 {
-    private readonly AppDbContext _context;
+    private readonly DndDbContext _context;
 
-    public ContentBlockBusiness(AppDbContext context)
+    public ContentBlockBusiness(DndDbContext context)
     {
         _context = context;
     }

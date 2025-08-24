@@ -4,18 +4,17 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Chronique.Des.Mondes.ApiService</RootNamespace>
+    <RootNamespace>Cdm.ApiService</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Cdm.Migrations\Cdm.Migrations.csproj" />
     <ProjectReference Include="..\Chronique.Des.Monde.Common\Cdm.Common.csproj" />
-    <ProjectReference Include="..\Chronique.Des.Monde.Player\Cdm.Business.Dnd.csproj" />
     <ProjectReference Include="..\Cmd.Abstraction\Cmd.Abstraction.csproj" />
     <ProjectReference Include="..\Cdm.SampleWeather\Cdm.SampleWeather.csproj" />
     <ProjectReference Include="..\Cdm.ServiceDefaults\Cdm.ServiceDefaults.csproj" />
     <ProjectReference Include="..\Cdm.Business.Common\Cdm.Business.Common.csproj" />
-    <ProjectReference Include="..\Cdm.Web\Cdm.Web.csproj" />
+    <ProjectReference Include="..\Cdm.Data.Dnd\Cdm.Data.Dnd.csproj" />
   </ItemGroup>
 
   <ItemGroup>

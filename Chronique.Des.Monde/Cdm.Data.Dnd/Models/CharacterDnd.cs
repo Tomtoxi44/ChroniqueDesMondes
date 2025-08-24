@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Chronique.Des.Mondes.Data.Models;
+using Cdm.Data.Models;
 
 namespace Cdm.Data.Dnd.Models;
 

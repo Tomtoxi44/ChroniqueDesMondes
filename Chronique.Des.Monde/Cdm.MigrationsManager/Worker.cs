@@ -1,4 +1,4 @@
-namespace Cdm.MigrationsManager;
+﻿namespace Cdm.MigrationsManager;
 
 using Cdm.Migrations;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +26,7 @@ public class Worker(
         }
         catch (Exception ex)
         {
-            activity?.RecordException(ex);
+            activity?.AddException(ex);
             throw;
         }
 

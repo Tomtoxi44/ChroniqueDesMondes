@@ -1,7 +1,7 @@
 ﻿using Cdm.Business.Common.Models.Campaign.Npc;
 using Cdm.Common;
 using Cdm.Common.Enums;
-using Cdm.Data;
+using Cdm.Data.Dnd;
 using Cdm.Data.Dnd.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -10,9 +10,9 @@ namespace Cdm.Business.Common.Business.Campaigns;
 
 public class NpcBusiness
 {
-    private readonly AppDbContext _context;
+    private readonly DndDbContext _context;
 
-    public NpcBusiness(AppDbContext context)
+    public NpcBusiness(DndDbContext context)
     {
         _context = context;
     }

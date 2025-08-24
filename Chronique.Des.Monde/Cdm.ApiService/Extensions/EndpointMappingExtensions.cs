@@ -1,19 +1,11 @@
-﻿using Chronique.Des.Mondes.ApiService.Endpoints;
-using Cdm.ApiService.Endpoints;
-using Microsoft.AspNetCore.Builder;
+﻿using Cdm.ApiService.Endpoints;
+
+namespace Cdm.ApiService.Extensions;
 
 public static class EndpointMappingExtensions
 {
     public static void MapApplicationEndpoints(this WebApplication app)
     {
-        app.MapWeatherEndpoints();
-        app.MapUserEndpoints();
-        app.MapPlayerCharacterEndpoint();
-        
-        // Campaign system endpoints
-        app.MapCampaignEndpoints();
-        app.MapChapterEndpoints();
-        app.MapContentBlockEndpoints();
-        app.MapNpcEndpoints();
+        app.MapCharacterEndpoints();
     }
 }
