@@ -2,6 +2,7 @@
 
 using Cdm.Business.Common.Business.Users;
 using Cdm.Business.Common.Business.Campaigns;
+using Cdm.Common.Services;
 
 public static class ServiceCollectionExtensions
 {
@@ -19,8 +20,10 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ChapterBusiness>();
         services.AddTransient<ContentBlockBusiness>();
         services.AddTransient<NpcBusiness>();
+        services.AddTransient<InvitationService>();
         services.AddScoped<Cdm.Common.PasswordService>();
         services.AddScoped<Cdm.Common.JwtService>();
+        services.AddScoped<IEmailService, EmailService>();
 
         return services;
     }

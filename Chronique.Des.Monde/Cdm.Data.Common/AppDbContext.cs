@@ -18,6 +18,10 @@ public class AppDbContext : DbContext
     public DbSet<Chapter> Chapters { get; set; }
     public DbSet<ContentBlock> ContentBlocks { get; set; }
 
+    // Invitation system DbSets
+    public DbSet<CampaignInvitation> CampaignInvitations { get; set; }
+    public DbSet<CampaignParticipant> CampaignParticipants { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -29,5 +33,9 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CampaignConfiguration());
         modelBuilder.ApplyConfiguration(new ChapterConfiguration());
         modelBuilder.ApplyConfiguration(new ContentBlockConfiguration());
+
+        // Apply invitation system configurations
+        modelBuilder.ApplyConfiguration(new CampaignInvitationConfiguration());
+        modelBuilder.ApplyConfiguration(new CampaignParticipantConfiguration());
     }
 }

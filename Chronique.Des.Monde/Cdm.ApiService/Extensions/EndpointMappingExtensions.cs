@@ -7,5 +7,6 @@ public static class EndpointMappingExtensions
     public static void MapApplicationEndpoints(this WebApplication app)
     {
         app.MapCharacterEndpoints();
+        app.MapInvitationEndpoints();
     }
 }
