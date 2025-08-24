@@ -1,7 +1,7 @@
 ﻿using Cdm.Business.Common.Models.Campaign.Npc;
 using Cdm.Common;
 using Cdm.Common.Enums;
-using Chronique.Des.Mondes.Data;
+using Cdm.Data;
 using Cdm.Data.Dnd.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;

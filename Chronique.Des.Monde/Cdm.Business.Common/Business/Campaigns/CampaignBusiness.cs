@@ -1,8 +1,7 @@
-﻿using Cdm.Business.Common.Models.Campaign;
+﻿using Cdm.Business.Common.Models.Campaign.Campaign;
 using Cdm.Common;
-using Cdm.Common.Enums;
-using Chronique.Des.Mondes.Data;
-using Chronique.Des.Mondes.Data.Models;
+using Cdm.Data;
+using Cdm.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cdm.Business.Common.Business.Campaigns;
@@ -21,25 +20,16 @@ public class CampaignBusiness
     /// </summary>
     public async Task<CampaignView> CreateCampaignAsync(CampaignRequest campaignRequest, int createdById)
     {
-        // Validate name uniqueness for the user
-        var existingCampaign = await _dbContext.Campaigns
-            .FirstOrDefaultAsync(c => c.Name == campaignRequest.Name && c.CreatedById == createdById);
-
-        if (existingCampaign != null)
-        {
-            throw new BusinessException($"A campaign with the name '{campaignRequest.Name}' already exists for this user.");
-        }
-
         var campaign = new Campaign
         {
             Name = campaignRequest.Name,
             Description = campaignRequest.Description,
-            GameType = (int)campaignRequest.GameType,
+            GameType = campaignRequest.GameType,
             IsPublic = campaignRequest.IsPublic,
             CreatedById = createdById,
             Settings = campaignRequest.Settings,
-            CreatedDate = DateTime.UtcNow,
-            IsActive = true
+            IsActive = true,
+            CreatedDate = DateTime.UtcNow
         };
 
         _dbContext.Campaigns.Add(campaign);
@@ -49,7 +39,7 @@ public class CampaignBusiness
     }
 
     /// <summary>
-    /// Gets a campaign by ID with creator information
+    /// Gets a campaign by ID
     /// </summary>
     public async Task<CampaignView?> GetCampaignByIdAsync(int campaignId)
     {
@@ -66,7 +56,7 @@ public class CampaignBusiness
             Id = campaign.Id,
             Name = campaign.Name,
             Description = campaign.Description,
-            GameType = (GameType)campaign.GameType,
+            GameType = campaign.GameType,
             IsPublic = campaign.IsPublic,
             CreatedById = campaign.CreatedById,
             CreatedByName = campaign.CreatedBy.UserName,
@@ -86,17 +76,20 @@ public class CampaignBusiness
         var campaign = await _dbContext.Campaigns
             .Include(c => c.CreatedBy)
             .Include(c => c.Chapters.Where(ch => ch.IsActive))
+            .ThenInclude(ch => ch.ContentBlocks.Where(cb => cb.IsActive))
+            .Include(c => c.Chapters)
+            .ThenInclude(ch => ch.Characters.Where(ch => ch.IsNpc))
             .FirstOrDefaultAsync(c => c.Id == campaignId && c.IsActive);
 
         if (campaign == null)
             return null;
 
-        return new CampaignDetailView
+        var campaignView = new CampaignDetailView
         {
             Id = campaign.Id,
             Name = campaign.Name,
             Description = campaign.Description,
-            GameType = (GameType)campaign.GameType,
+            GameType = campaign.GameType,
             IsPublic = campaign.IsPublic,
             CreatedById = campaign.CreatedById,
             CreatedByName = campaign.CreatedBy.UserName,
@@ -105,19 +98,24 @@ public class CampaignBusiness
             UpdatedDate = campaign.UpdatedDate,
             IsActive = campaign.IsActive,
             ChapterCount = campaign.Chapters.Count,
-            Chapters = campaign.Chapters.OrderBy(ch => ch.Order).Select(ch => new ChapterView
+            Chapters = campaign.Chapters.OrderBy(ch => ch.Order).Select(chapter => new Cdm.Business.Common.Models.Campaign.Chapter.ChapterView
             {
-                Id = ch.Id,
-                CampaignId = ch.CampaignId,
-                Order = ch.Order,
-                Title = ch.Title,
-                Content = ch.Content,
-                IsActive = ch.IsActive,
-                CreatedDate = ch.CreatedDate,
-                UpdatedDate = ch.UpdatedDate,
-                Notes = ch.Notes
+                Id = chapter.Id,
+                CampaignId = chapter.CampaignId,
+                Order = chapter.Order,
+                Title = chapter.Title,
+                Content = chapter.Content,
+                IsActive = chapter.IsActive,
+                CreatedDate = chapter.CreatedDate,
+                UpdatedDate = chapter.UpdatedDate,
+                Notes = chapter.Notes,
+                ContentBlocksCount = chapter.ContentBlocks.Count(cb => cb.IsActive),
+                CharactersCount = chapter.Characters.Count(c => c.IsNpc),
+                HostileCharactersCount = chapter.Characters.Count(c => c.IsNpc && c.IsHostile)
             }).ToList()
         };
+
+        return campaignView;
     }
 
     /// <summary>
@@ -146,7 +144,7 @@ public class CampaignBusiness
             Id = campaign.Id,
             Name = campaign.Name,
             Description = campaign.Description,
-            GameType = (GameType)campaign.GameType,
+            GameType = campaign.GameType,
             IsPublic = campaign.IsPublic,
             CreatedById = campaign.CreatedById,
             CreatedByName = campaign.CreatedBy.UserName,
@@ -176,20 +174,9 @@ public class CampaignBusiness
             throw new BusinessException("You can only modify campaigns you created.");
         }
 
-        // Check name uniqueness (excluding current campaign)
-        var existingCampaign = await _dbContext.Campaigns
-            .FirstOrDefaultAsync(c => c.Name == campaignRequest.Name && 
-                                    c.CreatedById == userId && 
-                                    c.Id != campaignId);
-
-        if (existingCampaign != null)
-        {
-            throw new BusinessException($"A campaign with the name '{campaignRequest.Name}' already exists for this user.");
-        }
-
         campaign.Name = campaignRequest.Name;
         campaign.Description = campaignRequest.Description;
-        campaign.GameType = (int)campaignRequest.GameType;
+        campaign.GameType = campaignRequest.GameType;
         campaign.IsPublic = campaignRequest.IsPublic;
         campaign.Settings = campaignRequest.Settings;
         campaign.UpdatedDate = DateTime.UtcNow;
