@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Chronique.Des.Mondes.Data.Models;
+namespace Cdm.Data.Models;
 
 [Table("Chapters")]
 public class Chapter

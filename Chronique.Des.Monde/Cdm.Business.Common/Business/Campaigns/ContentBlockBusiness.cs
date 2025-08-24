@@ -1,7 +1,7 @@
 ﻿using Cdm.Business.Common.Models.Campaign.ContentBlock;
 using Cdm.Common;
-using Chronique.Des.Mondes.Data;
-using Chronique.Des.Mondes.Data.Models;
+using Cdm.Data;
+using Cdm.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 

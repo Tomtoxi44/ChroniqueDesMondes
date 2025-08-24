@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Chronique.Des.Mondes.Data.Models.Configuration;
+namespace Cdm.Data.Models.Configuration;
 
 public class ContentBlockConfiguration : IEntityTypeConfiguration<ContentBlock>
 {

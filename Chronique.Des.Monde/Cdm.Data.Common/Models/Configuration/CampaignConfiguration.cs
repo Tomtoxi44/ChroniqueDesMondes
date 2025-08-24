@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Cdm.Common.Enums;
 
-namespace Chronique.Des.Mondes.Data.Models.Configuration;
+namespace Cdm.Data.Models.Configuration;
 
 public class CampaignConfiguration : IEntityTypeConfiguration<Campaign>
 {

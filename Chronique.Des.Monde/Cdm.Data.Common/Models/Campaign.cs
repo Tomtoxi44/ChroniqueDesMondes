@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Chronique.Des.Monde.Common.Enums;
+using Cdm.Common.Enums;
 
-namespace Chronique.Des.Mondes.Data.Models;
+namespace Cdm.Data.Models;
 
 [Table("Campaigns")]
 public class Campaign

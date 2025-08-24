@@ -1,7 +1,7 @@
-﻿namespace Chronique.Des.Mondes.Data;
+﻿namespace Cdm.Data;
 
-using Chronique.Des.Mondes.Data.Models;
-using Chronique.Des.Mondes.Data.Models.Configuration;
+using Cdm.Data.Models;
+using Cdm.Data.Models.Configuration;
 using Cdm.Data.Dnd.Models;
 using Microsoft.EntityFrameworkCore;
 

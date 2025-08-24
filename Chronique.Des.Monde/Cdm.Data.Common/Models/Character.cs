@@ -1,10 +1,10 @@
-﻿namespace Chronique.Des.Mondes.Data.Models;
+﻿namespace Cdm.Data.Models;
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Chronique.Des.Monde.Common.Enums;
+using Cdm.Common.Enums;
 
 public abstract class ACharacter
 {
