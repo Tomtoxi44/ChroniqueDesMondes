@@ -9,7 +9,11 @@ public static class EndpointMappingExtensions
         app.MapWeatherEndpoints();
         app.MapUserEndpoints();
         app.MapPlayerCharacterEndpoint();
+        
+        // Campaign system endpoints
         app.MapCampaignEndpoints();
         app.MapChapterEndpoints();
+        app.MapContentBlockEndpoints();
+        app.MapNpcEndpoints();
     }
 }

@@ -8,34 +8,50 @@ public class ChapterConfiguration : IEntityTypeConfiguration<Chapter>
     public void Configure(EntityTypeBuilder<Chapter> builder)
     {
         // Primary key
-        builder.HasKey(ch => ch.Id);
+        builder.HasKey(c => c.Id);
 
         // Indexes for performance
-        builder.HasIndex(ch => ch.CampaignId)
+        builder.HasIndex(c => c.CampaignId)
                .HasDatabaseName("IX_Chapters_CampaignId");
 
-        builder.HasIndex(ch => new { ch.CampaignId, ch.Order })
+        builder.HasIndex(c => c.IsActive)
+               .HasDatabaseName("IX_Chapters_IsActive");
+
+        builder.HasIndex(c => new { c.CampaignId, c.Order })
                .HasDatabaseName("IX_Chapters_CampaignId_Order")
                .IsUnique();
 
-        builder.HasIndex(ch => ch.IsActive)
-               .HasDatabaseName("IX_Chapters_IsActive");
-
-        // Foreign key relationship
-        builder.HasOne(ch => ch.Campaign)
-               .WithMany(c => c.Chapters)
-               .HasForeignKey(ch => ch.CampaignId)
+        // Foreign key relationships
+        builder.HasOne(c => c.Campaign)
+               .WithMany(camp => camp.Chapters)
+               .HasForeignKey(c => c.CampaignId)
                .OnDelete(DeleteBehavior.Cascade);
 
-        // Constraints
-        builder.Property(ch => ch.Title)
+        // One-to-many with ContentBlocks
+        builder.HasMany(c => c.ContentBlocks)
+               .WithOne(cb => cb.Chapter)
+               .HasForeignKey(cb => cb.ChapterId)
+               .OnDelete(DeleteBehavior.Cascade);
+
+        // One-to-many with Characters (NPCs)
+        builder.HasMany(c => c.Characters)
+               .WithOne(ch => ch.Chapter)
+               .HasForeignKey(ch => ch.ChapterId)
+               .OnDelete(DeleteBehavior.SetNull);
+
+        // Property configurations
+        builder.Property(c => c.Title)
                .IsRequired()
                .HasMaxLength(200);
 
-        builder.Property(ch => ch.Order)
+        builder.Property(c => c.Order)
                .IsRequired();
 
-        builder.Property(ch => ch.CreatedDate)
+        builder.Property(c => c.IsActive)
+               .IsRequired()
+               .HasDefaultValue(true);
+
+        builder.Property(c => c.CreatedDate)
                .IsRequired()
                .HasDefaultValueSql("GETUTCDATE()");
     }

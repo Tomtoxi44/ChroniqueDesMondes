@@ -1,8 +1,11 @@
-﻿using Cdm.Business.Common.Models.Campaign;
+﻿using Cdm.Business.Common.Models.Campaign.Chapter;
+using Cdm.Business.Common.Models.Campaign.ContentBlock;
+using Cdm.Business.Common.Models.Campaign.Npc;
 using Cdm.Common;
 using Chronique.Des.Mondes.Data;
 using Chronique.Des.Mondes.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace Cdm.Business.Common.Business.Campaigns;
 
@@ -68,6 +71,8 @@ public class ChapterBusiness
     public async Task<ChapterView?> GetChapterByIdAsync(int chapterId)
     {
         var chapter = await _dbContext.Chapters
+            .Include(ch => ch.ContentBlocks)
+            .Include(ch => ch.Characters.Where(c => c.IsNpc))
             .FirstOrDefaultAsync(ch => ch.Id == chapterId && ch.IsActive);
 
         if (chapter == null)
@@ -83,7 +88,48 @@ public class ChapterBusiness
             IsActive = chapter.IsActive,
             CreatedDate = chapter.CreatedDate,
             UpdatedDate = chapter.UpdatedDate,
-            Notes = chapter.Notes
+            Notes = chapter.Notes,
+            ContentBlocksCount = chapter.ContentBlocks.Count(cb => cb.IsActive),
+            CharactersCount = chapter.Characters.Count(c => c.IsNpc),
+            HostileCharactersCount = chapter.Characters.Count(c => c.IsNpc && c.IsHostile)
+        };
+    }
+
+    /// <summary>
+    /// Gets detailed chapter information including content blocks and NPCs
+    /// </summary>
+    public async Task<ChapterDetailView?> GetChapterDetailAsync(int chapterId, int userId)
+    {
+        var chapter = await _dbContext.Chapters
+            .Include(ch => ch.Campaign)
+            .Include(ch => ch.ContentBlocks.Where(cb => cb.IsActive))
+            .ThenInclude(cb => cb.Character)
+            .Include(ch => ch.Characters.Where(c => c.IsNpc))
+            .FirstOrDefaultAsync(ch => ch.Id == chapterId && ch.IsActive);
+
+        if (chapter == null)
+            return null;
+
+        // Check access permissions
+        if (chapter.Campaign.CreatedById != userId && !chapter.Campaign.IsPublic)
+            throw new BusinessException("You don't have access to this chapter.");
+
+        return new ChapterDetailView
+        {
+            Id = chapter.Id,
+            CampaignId = chapter.CampaignId,
+            Order = chapter.Order,
+            Title = chapter.Title,
+            Content = chapter.Content,
+            IsActive = chapter.IsActive,
+            CreatedDate = chapter.CreatedDate,
+            UpdatedDate = chapter.UpdatedDate,
+            Notes = chapter.Notes,
+            ContentBlocksCount = chapter.ContentBlocks.Count,
+            CharactersCount = chapter.Characters.Count,
+            HostileCharactersCount = chapter.Characters.Count(c => c.IsHostile),
+            ContentBlocks = chapter.ContentBlocks.OrderBy(cb => cb.Order).Select(MapToContentBlockView).ToList(),
+            Npcs = chapter.Characters.Select(MapToNpcView).ToList()
         };
     }
 
@@ -108,6 +154,8 @@ public class ChapterBusiness
         }
 
         var chapters = await _dbContext.Chapters
+            .Include(ch => ch.ContentBlocks.Where(cb => cb.IsActive))
+            .Include(ch => ch.Characters.Where(c => c.IsNpc))
             .Where(ch => ch.CampaignId == campaignId && ch.IsActive)
             .OrderBy(ch => ch.Order)
             .ToListAsync();
@@ -122,7 +170,10 @@ public class ChapterBusiness
             IsActive = chapter.IsActive,
             CreatedDate = chapter.CreatedDate,
             UpdatedDate = chapter.UpdatedDate,
-            Notes = chapter.Notes
+            Notes = chapter.Notes,
+            ContentBlocksCount = chapter.ContentBlocks.Count,
+            CharactersCount = chapter.Characters.Count,
+            HostileCharactersCount = chapter.Characters.Count(c => c.IsHostile)
         }).ToList();
     }
 
@@ -246,5 +297,68 @@ public class ChapterBusiness
         }
 
         await _dbContext.SaveChangesAsync();
+    }
+
+    private static ContentBlockView MapToContentBlockView(ContentBlock contentBlock)
+    {
+        var tags = new List<string>();
+        if (!string.IsNullOrEmpty(contentBlock.Tags))
+        {
+            try
+            {
+                tags = JsonSerializer.Deserialize<List<string>>(contentBlock.Tags) ?? new List<string>();
+            }
+            catch
+            {
+                // Si la désérialisation échoue, on garde une liste vide
+            }
+        }
+
+        return new ContentBlockView
+        {
+            Id = contentBlock.Id,
+            ChapterId = contentBlock.ChapterId,
+            Order = contentBlock.Order,
+            Type = contentBlock.Type,
+            Title = contentBlock.Title,
+            Content = contentBlock.Content,
+            CharacterId = contentBlock.CharacterId,
+            CharacterName = contentBlock.Character?.Name,
+            NpcMood = contentBlock.NpcMood,
+            Tags = tags,
+            IsActive = contentBlock.IsActive,
+            CreatedDate = contentBlock.CreatedDate,
+            UpdatedDate = contentBlock.UpdatedDate
+        };
+    }
+
+    private static NpcView MapToNpcView(ACharacter character)
+    {
+        var tags = new List<string>();
+        if (!string.IsNullOrEmpty(character.Tags))
+        {
+            try
+            {
+                tags = JsonSerializer.Deserialize<List<string>>(character.Tags) ?? new List<string>();
+            }
+            catch
+            {
+                // Si la désérialisation échoue, on garde une liste vide
+            }
+        }
+
+        return new NpcView
+        {
+            Id = character.Id,
+            ChapterId = character.ChapterId ?? 0,
+            Name = character.Name,
+            Description = character.Background,
+            GameType = character.GameType,
+            IsHostile = character.IsHostile,
+            Tags = tags,
+            IsSystemCharacter = character.IsSystemCharacter,
+            CreatedAt = character.CreatedAt,
+            DialogueBlocksCount = character.ContentBlocks?.Count ?? 0
+        };
     }
 }

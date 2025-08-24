@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Cdm.Common.Enums;
 
 namespace Chronique.Des.Mondes.Data.Models.Configuration;
 
@@ -10,7 +11,7 @@ public class CampaignConfiguration : IEntityTypeConfiguration<Campaign>
         // Primary key
         builder.HasKey(c => c.Id);
 
-        // Indexes for performance
+        // Indexes for performance optimization
         builder.HasIndex(c => c.GameType)
                .HasDatabaseName("IX_Campaigns_GameType");
 
@@ -23,19 +24,19 @@ public class CampaignConfiguration : IEntityTypeConfiguration<Campaign>
         builder.HasIndex(c => new { c.GameType, c.IsPublic })
                .HasDatabaseName("IX_Campaigns_GameType_IsPublic");
 
-        // Foreign key relationship
+        // Foreign key relationships
         builder.HasOne(c => c.CreatedBy)
                .WithMany()
                .HasForeignKey(c => c.CreatedById)
                .OnDelete(DeleteBehavior.Restrict);
 
-        // One-to-many relationship with Chapters
+        // One-to-many with Chapters
         builder.HasMany(c => c.Chapters)
                .WithOne(ch => ch.Campaign)
                .HasForeignKey(ch => ch.CampaignId)
                .OnDelete(DeleteBehavior.Cascade);
 
-        // Constraints
+        // Property configurations
         builder.Property(c => c.Name)
                .IsRequired()
                .HasMaxLength(100);
@@ -44,7 +45,17 @@ public class CampaignConfiguration : IEntityTypeConfiguration<Campaign>
                .HasMaxLength(2000);
 
         builder.Property(c => c.GameType)
-               .IsRequired();
+               .IsRequired()
+               .HasConversion<int>() // Store as int in database
+               .HasDefaultValue(GameType.Generic);
+
+        builder.Property(c => c.IsPublic)
+               .IsRequired()
+               .HasDefaultValue(false);
+
+        builder.Property(c => c.IsActive)
+               .IsRequired()
+               .HasDefaultValue(true);
 
         builder.Property(c => c.CreatedDate)
                .IsRequired()

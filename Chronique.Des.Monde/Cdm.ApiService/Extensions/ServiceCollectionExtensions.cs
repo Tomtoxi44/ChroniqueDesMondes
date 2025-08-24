@@ -20,6 +20,8 @@ public static class ServiceCollectionExtensions
         services.AddTransient<UserBusiness>();
         services.AddTransient<CampaignBusiness>();
         services.AddTransient<ChapterBusiness>();
+        services.AddTransient<ContentBlockBusiness>();
+        services.AddTransient<NpcBusiness>();
         services.AddScoped<PasswordService>();
         services.AddScoped<JwtService>();
 

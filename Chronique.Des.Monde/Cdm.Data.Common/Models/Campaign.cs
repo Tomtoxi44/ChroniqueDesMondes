@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Chronique.Des.Monde.Common.Enums;
 
 namespace Chronique.Des.Mondes.Data.Models;
 
@@ -16,10 +17,10 @@ public class Campaign
     public string? Description { get; set; }
 
     /// <summary>
-    /// GameType stored as int (0=Generic, 1=DnD, 2=Skyrim)
+    /// GameType pour cette campagne - détermine quels personnages peuvent y participer
     /// </summary>
     [Required]
-    public int GameType { get; set; } = 0; // Generic by default
+    public GameType GameType { get; set; } = GameType.Generic;
 
     public bool IsPublic { get; set; } = false;
 

@@ -1,5 +1,5 @@
 ﻿using Cdm.Business.Common.Business.Campaigns;
-using Cdm.Business.Common.Models.Campaign;
+using Cdm.Business.Common.Models.Campaign.Chapter;
 using Cdm.Common;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -38,10 +38,26 @@ public static class ChapterEndpoints
                 if (chapter == null || chapter.CampaignId != campaignId)
                     return Results.NotFound(new { Error = "Chapter not found" });
 
-                // Verify user has access to this campaign's chapters by trying to get all chapters
-                await chapterBusiness.GetChaptersByCampaignAsync(campaignId, userId);
-
                 return Results.Ok(chapter);
+            }
+            catch (BusinessException ex)
+            {
+                return Results.BadRequest(new { Error = ex.Message });
+            }
+        });
+
+        // GET /api/campaigns/{campaignId}/chapters/{id}/details - Get chapter with full details (ContentBlocks + NPCs)
+        chapterGroup.MapGet("/{id:int}/details", async (int campaignId, int id, ChapterBusiness chapterBusiness, ClaimsPrincipal user) =>
+        {
+            try
+            {
+                var userId = GetUserIdFromClaims(user);
+                var chapterDetail = await chapterBusiness.GetChapterDetailAsync(id, userId);
+                
+                if (chapterDetail == null || chapterDetail.CampaignId != campaignId)
+                    return Results.NotFound(new { Error = "Chapter not found" });
+
+                return Results.Ok(chapterDetail);
             }
             catch (BusinessException ex)
             {

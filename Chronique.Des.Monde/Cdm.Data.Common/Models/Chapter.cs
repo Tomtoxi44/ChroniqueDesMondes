@@ -34,5 +34,9 @@ public class Chapter
     /// Optional notes or metadata specific to this chapter
     /// </summary>
     [Column(TypeName = "nvarchar(max)")]
-    public string? Notes { get; set; }
+    public string? Notes { get; set; } // Notes privées du MJ
+
+    // Navigation properties
+    public virtual ICollection<ContentBlock> ContentBlocks { get; set; } = new List<ContentBlock>();
+    public virtual ICollection<ACharacter> Characters { get; set; } = new List<ACharacter>(); // NPCs du chapitre
 }
