@@ -13,22 +13,22 @@ public class UserBusiness
 
     public UserBusiness(AppDbContext dbContext, PasswordService passwordService, JwtService jwtService)
     {
-        _dbContext = dbContext;
-        _passwordService = passwordService;
-        _jwtService = jwtService;
+        this._dbContext = dbContext;
+        this._passwordService = passwordService;
+        this._jwtService = jwtService;
     }
 
     public async Task<User> CreateUserAsync(string userName, string userEmail, string password)
     {
         // Check if user already exists
-        var existingUser = await GetUserByEmailAsync(userEmail);
+        var existingUser = await this.GetUserByEmailAsync(userEmail);
         if (existingUser != null)
         {
             throw new ArgumentException("User with this email already exists.");
         }
 
         // Hash the password
-        var hashedPassword = _passwordService.HashPassword(password);
+        var hashedPassword = this._passwordService.HashPassword(password);
 
         // Create new user
         var user = new User
@@ -38,49 +38,49 @@ public class UserBusiness
             Password = hashedPassword
         };
 
-        _dbContext.Users.Add(user);
-        await _dbContext.SaveChangesAsync();
+        this._dbContext.Users.Add(user);
+        await this._dbContext.SaveChangesAsync();
 
         return user;
     }
 
     public async Task<User?> GetUserByEmailAsync(string email)
     {
-        return await _dbContext.Users
+        return await this._dbContext.Users
             .FirstOrDefaultAsync(u => u.UserEmail == email);
     }
 
     public async Task<User?> GetUserByIdAsync(int id)
     {
-        return await _dbContext.Users
+        return await this._dbContext.Users
             .FirstOrDefaultAsync(u => u.Id == id);
     }
 
     public async Task<string?> AuthenticateAsync(string email, string password)
     {
-        var user = await GetUserByEmailAsync(email);
+        var user = await this.GetUserByEmailAsync(email);
         if (user == null)
         {
             return null;
         }
 
         // Verify password
-        if (!_passwordService.VerifyPassword(password, user.Password))
+        if (!this._passwordService.VerifyPassword(password, user.Password))
         {
             return null;
         }
 
         // Generate JWT token
-        return _jwtService.GenerateToken(user.Id, user.UserName, user.UserEmail);
+        return this._jwtService.GenerateToken(user.Id, user.UserName, user.UserEmail);
     }
 
     public bool ValidateToken(string token)
     {
-        return _jwtService.ValidateToken(token);
+        return this._jwtService.ValidateToken(token);
     }
 
-    public (int userId, string userName, string userEmail)? GetUserInfoFromToken(string token)
+    public (int UserId, string UserName, string UserEmail)? GetUserInfoFromToken(string token)
     {
-        return _jwtService.GetUserInfoFromToken(token);
+        return this._jwtService.GetUserInfoFromToken(token);
     }
 }

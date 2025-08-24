@@ -14,7 +14,7 @@ public class ChapterBusiness
 
     public ChapterBusiness(DndDbContext dbContext)
     {
-        _dbContext = dbContext;
+        this._dbContext = dbContext;
     }
 
     /// <summary>
@@ -23,7 +23,7 @@ public class ChapterBusiness
     public async Task<ChapterView> CreateChapterAsync(ChapterRequest chapterRequest, int userId)
     {
         // Verify the campaign exists and user has permission
-        var campaign = await _dbContext.Campaigns
+        var campaign = await this._dbContext.Campaigns
             .FirstOrDefaultAsync(c => c.Id == chapterRequest.CampaignId && c.IsActive);
 
         if (campaign == null)
@@ -37,7 +37,7 @@ public class ChapterBusiness
         }
 
         // Verify order uniqueness within the campaign
-        var existingChapter = await _dbContext.Chapters
+        var existingChapter = await this._dbContext.Chapters
             .FirstOrDefaultAsync(ch => ch.CampaignId == chapterRequest.CampaignId && 
                                       ch.Order == chapterRequest.Order && 
                                       ch.IsActive);
@@ -58,10 +58,10 @@ public class ChapterBusiness
             CreatedDate = DateTime.UtcNow
         };
 
-        _dbContext.Chapters.Add(chapter);
-        await _dbContext.SaveChangesAsync();
+        this._dbContext.Chapters.Add(chapter);
+        await this._dbContext.SaveChangesAsync();
 
-        return await GetChapterByIdAsync(chapter.Id) ?? throw new Exception("Chapter not found after creation.");
+        return await this.GetChapterByIdAsync(chapter.Id) ?? throw new Exception("Chapter not found after creation.");
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public class ChapterBusiness
     /// </summary>
     public async Task<ChapterView?> GetChapterByIdAsync(int chapterId)
     {
-        var chapter = await _dbContext.Chapters
+        var chapter = await this._dbContext.Chapters
             .Include(ch => ch.ContentBlocks)
             .Include(ch => ch.Characters.Where(c => c.IsNpc))
             .FirstOrDefaultAsync(ch => ch.Id == chapterId && ch.IsActive);
@@ -99,7 +99,7 @@ public class ChapterBusiness
     /// </summary>
     public async Task<ChapterDetailView?> GetChapterDetailAsync(int chapterId, int userId)
     {
-        var chapter = await _dbContext.Chapters
+        var chapter = await this._dbContext.Chapters
             .Include(ch => ch.Campaign)
             .Include(ch => ch.ContentBlocks.Where(cb => cb.IsActive))
             .ThenInclude(cb => cb.Character)
@@ -127,8 +127,8 @@ public class ChapterBusiness
             ContentBlocksCount = chapter.ContentBlocks.Count,
             CharactersCount = chapter.Characters.Count,
             HostileCharactersCount = chapter.Characters.Count(c => c.IsHostile),
-            ContentBlocks = chapter.ContentBlocks.OrderBy(cb => cb.Order).Select(MapToContentBlockView).ToList(),
-            Npcs = chapter.Characters.Select(MapToNpcView).ToList()
+            ContentBlocks = chapter.ContentBlocks.OrderBy(cb => cb.Order).Select(this.MapToContentBlockView).ToList(),
+            Npcs = chapter.Characters.Select(this.MapToNpcView).ToList()
         };
     }
 
@@ -138,7 +138,7 @@ public class ChapterBusiness
     public async Task<List<ChapterView>> GetChaptersByCampaignAsync(int campaignId, int userId)
     {
         // Verify the campaign exists and user has access
-        var campaign = await _dbContext.Campaigns
+        var campaign = await this._dbContext.Campaigns
             .FirstOrDefaultAsync(c => c.Id == campaignId && c.IsActive);
 
         if (campaign == null)
@@ -152,7 +152,7 @@ public class ChapterBusiness
             throw new Exception("You don't have access to this campaign.");
         }
 
-        var chapters = await _dbContext.Chapters
+        var chapters = await this._dbContext.Chapters
             .Include(ch => ch.ContentBlocks.Where(cb => cb.IsActive))
             .Include(ch => ch.Characters.Where(c => c.IsNpc))
             .Where(ch => ch.CampaignId == campaignId && ch.IsActive)
@@ -181,7 +181,7 @@ public class ChapterBusiness
     /// </summary>
     public async Task<ChapterView> UpdateChapterAsync(int chapterId, ChapterUpdateRequest updateRequest, int userId)
     {
-        var chapter = await _dbContext.Chapters
+        var chapter = await this._dbContext.Chapters
             .Include(ch => ch.Campaign)
             .FirstOrDefaultAsync(ch => ch.Id == chapterId && ch.IsActive);
 
@@ -198,7 +198,7 @@ public class ChapterBusiness
         // Check order uniqueness if order is being changed
         if (updateRequest.Order.HasValue && updateRequest.Order.Value != chapter.Order)
         {
-            var existingChapter = await _dbContext.Chapters
+            var existingChapter = await this._dbContext.Chapters
                 .FirstOrDefaultAsync(ch => ch.CampaignId == chapter.CampaignId && 
                                           ch.Order == updateRequest.Order.Value && 
                                           ch.Id != chapterId && 
@@ -234,9 +234,9 @@ public class ChapterBusiness
 
         chapter.UpdatedDate = DateTime.UtcNow;
 
-        await _dbContext.SaveChangesAsync();
+        await this._dbContext.SaveChangesAsync();
 
-        return await GetChapterByIdAsync(chapterId) ?? throw new Exception("Chapter not found after update.");
+        return await this.GetChapterByIdAsync(chapterId) ?? throw new Exception("Chapter not found after update.");
     }
 
     /// <summary>
@@ -244,7 +244,7 @@ public class ChapterBusiness
     /// </summary>
     public async Task DeleteChapterAsync(int chapterId, int userId)
     {
-        var chapter = await _dbContext.Chapters
+        var chapter = await this._dbContext.Chapters
             .Include(ch => ch.Campaign)
             .FirstOrDefaultAsync(ch => ch.Id == chapterId && ch.IsActive);
 
@@ -261,7 +261,7 @@ public class ChapterBusiness
         chapter.IsActive = false;
         chapter.UpdatedDate = DateTime.UtcNow;
 
-        await _dbContext.SaveChangesAsync();
+        await this._dbContext.SaveChangesAsync();
     }
 
     /// <summary>
@@ -269,7 +269,7 @@ public class ChapterBusiness
     /// </summary>
     public async Task ReorderChaptersAsync(int campaignId, Dictionary<int, int> chapterOrderMap, int userId)
     {
-        var campaign = await _dbContext.Campaigns
+        var campaign = await this._dbContext.Campaigns
             .FirstOrDefaultAsync(c => c.Id == campaignId && c.IsActive);
 
         if (campaign == null)
@@ -282,7 +282,7 @@ public class ChapterBusiness
             throw new Exception("You can only reorder chapters in campaigns you created.");
         }
 
-        var chapters = await _dbContext.Chapters
+        var chapters = await this._dbContext.Chapters
             .Where(ch => ch.CampaignId == campaignId && ch.IsActive)
             .ToListAsync();
 
@@ -295,10 +295,10 @@ public class ChapterBusiness
             }
         }
 
-        await _dbContext.SaveChangesAsync();
+        await this._dbContext.SaveChangesAsync();
     }
 
-    private static ContentBlockView MapToContentBlockView(ContentBlock contentBlock)
+    private ContentBlockView MapToContentBlockView(ContentBlock contentBlock)
     {
         var tags = new List<string>();
         if (!string.IsNullOrEmpty(contentBlock.Tags))
@@ -331,7 +331,7 @@ public class ChapterBusiness
         };
     }
 
-    private static NpcView MapToNpcView(ACharacter character)
+    private NpcView MapToNpcView(ACharacter character)
     {
         var tags = new List<string>();
         if (!string.IsNullOrEmpty(character.Tags))

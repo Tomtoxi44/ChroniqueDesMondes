@@ -13,13 +13,13 @@ public class ContentBlockBusiness
 
     public ContentBlockBusiness(DndDbContext context)
     {
-        _context = context;
+        this._context = context;
     }
 
     public async Task<ContentBlockView> CreateContentBlockAsync(ContentBlockRequest request, int userId)
     {
         // Vérifier que l'utilisateur a accès au chapitre
-        var chapter = await _context.Chapters
+        var chapter = await this._context.Chapters
             .Include(c => c.Campaign)
             .FirstOrDefaultAsync(c => c.Id == request.ChapterId);
 
@@ -35,7 +35,7 @@ public class ContentBlockBusiness
             if (request.CharacterId == null || string.IsNullOrEmpty(request.NpcMood))
                 throw new BusinessException("CharacterId and NpcMood are required for NpcDialogue blocks");
 
-            var character = await _context.CharactersDnd
+            var character = await this._context.CharactersDnd
                 .FirstOrDefaultAsync(c => c.Id == request.CharacterId && c.IsNpc && c.ChapterId == request.ChapterId);
 
             if (character == null)
@@ -43,7 +43,7 @@ public class ContentBlockBusiness
         }
 
         // Vérifier que l'ordre n'est pas déjà utilisé
-        var existingBlock = await _context.ContentBlocks
+        var existingBlock = await this._context.ContentBlocks
             .FirstOrDefaultAsync(cb => cb.ChapterId == request.ChapterId && cb.Order == request.Order);
 
         if (existingBlock != null)
@@ -63,15 +63,15 @@ public class ContentBlockBusiness
             CreatedDate = DateTime.UtcNow
         };
 
-        _context.ContentBlocks.Add(contentBlock);
-        await _context.SaveChangesAsync();
+        this._context.ContentBlocks.Add(contentBlock);
+        await this._context.SaveChangesAsync();
 
-        return await GetContentBlockViewAsync(contentBlock.Id);
+        return await this.GetContentBlockViewAsync(contentBlock.Id);
     }
 
     public async Task<ContentBlockView> UpdateContentBlockAsync(int id, ContentBlockUpdateRequest request, int userId)
     {
-        var contentBlock = await _context.ContentBlocks
+        var contentBlock = await this._context.ContentBlocks
             .Include(cb => cb.Chapter)
             .ThenInclude(c => c.Campaign)
             .FirstOrDefaultAsync(cb => cb.Id == id);
@@ -92,7 +92,7 @@ public class ContentBlockBusiness
         if (request.Order.HasValue)
         {
             // Vérifier que le nouvel ordre n'est pas déjà utilisé
-            var existingBlock = await _context.ContentBlocks
+            var existingBlock = await this._context.ContentBlocks
                 .FirstOrDefaultAsync(cb => cb.ChapterId == contentBlock.ChapterId && 
                                          cb.Order == request.Order.Value && 
                                          cb.Id != id);
@@ -107,7 +107,7 @@ public class ContentBlockBusiness
         {
             if (contentBlock.Type == ContentBlockTypes.NpcDialogue)
             {
-                var character = await _context.CharactersDnd
+                var character = await this._context.CharactersDnd
                     .FirstOrDefaultAsync(c => c.Id == request.CharacterId && c.IsNpc && c.ChapterId == contentBlock.ChapterId);
 
                 if (character == null)
@@ -128,14 +128,14 @@ public class ContentBlockBusiness
 
         contentBlock.UpdatedDate = DateTime.UtcNow;
 
-        await _context.SaveChangesAsync();
+        await this._context.SaveChangesAsync();
 
-        return await GetContentBlockViewAsync(id);
+        return await this.GetContentBlockViewAsync(id);
     }
 
     public async Task DeleteContentBlockAsync(int id, int userId)
     {
-        var contentBlock = await _context.ContentBlocks
+        var contentBlock = await this._context.ContentBlocks
             .Include(cb => cb.Chapter)
             .ThenInclude(c => c.Campaign)
             .FirstOrDefaultAsync(cb => cb.Id == id);
@@ -146,13 +146,13 @@ public class ContentBlockBusiness
         if (contentBlock.Chapter.Campaign.CreatedById != userId)
             throw new BusinessException("You don't have permission to delete this content block");
 
-        _context.ContentBlocks.Remove(contentBlock);
-        await _context.SaveChangesAsync();
+        this._context.ContentBlocks.Remove(contentBlock);
+        await this._context.SaveChangesAsync();
     }
 
     public async Task<List<ContentBlockView>> GetContentBlocksByChapterAsync(int chapterId, int userId)
     {
-        var chapter = await _context.Chapters
+        var chapter = await this._context.Chapters
             .Include(c => c.Campaign)
             .FirstOrDefaultAsync(c => c.Id == chapterId);
 
@@ -163,18 +163,18 @@ public class ContentBlockBusiness
         if (chapter.Campaign.CreatedById != userId && !chapter.Campaign.IsPublic)
             throw new BusinessException("You don't have permission to view this chapter's content blocks");
 
-        var contentBlocks = await _context.ContentBlocks
+        var contentBlocks = await this._context.ContentBlocks
             .Include(cb => cb.Character)
             .Where(cb => cb.ChapterId == chapterId && cb.IsActive)
             .OrderBy(cb => cb.Order)
             .ToListAsync();
 
-        return contentBlocks.Select(MapToContentBlockView).ToList();
+        return contentBlocks.Select(this.MapToContentBlockView).ToList();
     }
 
     public async Task<ContentBlockView> GetContentBlockByIdAsync(int id, int userId)
     {
-        var contentBlock = await _context.ContentBlocks
+        var contentBlock = await this._context.ContentBlocks
             .Include(cb => cb.Chapter)
             .ThenInclude(c => c.Campaign)
             .Include(cb => cb.Character)
@@ -187,12 +187,12 @@ public class ContentBlockBusiness
         if (contentBlock.Chapter.Campaign.CreatedById != userId && !contentBlock.Chapter.Campaign.IsPublic)
             throw new BusinessException("You don't have permission to view this content block");
 
-        return MapToContentBlockView(contentBlock);
+        return this.MapToContentBlockView(contentBlock);
     }
 
     public async Task ReorderContentBlocksAsync(int chapterId, Dictionary<int, int> orderMap, int userId)
     {
-        var chapter = await _context.Chapters
+        var chapter = await this._context.Chapters
             .Include(c => c.Campaign)
             .FirstOrDefaultAsync(c => c.Id == chapterId);
 
@@ -202,7 +202,7 @@ public class ContentBlockBusiness
         if (chapter.Campaign.CreatedById != userId)
             throw new BusinessException("You don't have permission to reorder content blocks in this chapter");
 
-        var contentBlocks = await _context.ContentBlocks
+        var contentBlocks = await this._context.ContentBlocks
             .Where(cb => cb.ChapterId == chapterId && orderMap.Keys.Contains(cb.Id))
             .ToListAsync();
 
@@ -215,19 +215,19 @@ public class ContentBlockBusiness
             }
         }
 
-        await _context.SaveChangesAsync();
+        await this._context.SaveChangesAsync();
     }
 
     private async Task<ContentBlockView> GetContentBlockViewAsync(int id)
     {
-        var contentBlock = await _context.ContentBlocks
+        var contentBlock = await this._context.ContentBlocks
             .Include(cb => cb.Character)
             .FirstOrDefaultAsync(cb => cb.Id == id);
 
-        return MapToContentBlockView(contentBlock!);
+        return this.MapToContentBlockView(contentBlock!);
     }
 
-    private static ContentBlockView MapToContentBlockView(ContentBlock contentBlock)
+    private ContentBlockView MapToContentBlockView(ContentBlock contentBlock)
     {
         var tags = new List<string>();
         if (!string.IsNullOrEmpty(contentBlock.Tags))
