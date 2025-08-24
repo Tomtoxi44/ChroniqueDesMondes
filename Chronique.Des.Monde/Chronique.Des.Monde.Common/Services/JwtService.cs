@@ -7,20 +7,20 @@ namespace Cdm.Common;
 
 public class JwtService
 {
-    private readonly string _secretKey;
-    private readonly string _issuer;
+    private readonly string secretKey;
+    private readonly string issuer;
 
     public JwtService()
     {
         // Configuration temporaire (à externaliser)
-        this._secretKey = "your-super-secret-key-that-is-at-least-32-characters-long";
-        this._issuer = "ChroniqueDesMondes";
+        this.secretKey = "your-super-secret-key-that-is-at-least-32-characters-long";
+        this.issuer = "ChroniqueDesMondes";
     }
 
     public string GenerateToken(int userId, string userName, string userEmail)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(this._secretKey);
+        var key = Encoding.ASCII.GetBytes(this.secretKey);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
@@ -30,8 +30,8 @@ public class JwtService
                 new Claim(ClaimTypes.Email, userEmail)
             }),
             Expires = DateTime.UtcNow.AddDays(7),
-            Issuer = this._issuer,
-            Audience = this._issuer,
+            Issuer = this.issuer,
+            Audience = this.issuer,
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -43,15 +43,15 @@ public class JwtService
         try
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(this._secretKey);
+            var key = Encoding.ASCII.GetBytes(this.secretKey);
             tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = true,
-                ValidIssuer = this._issuer,
+                ValidIssuer = this.issuer,
                 ValidateAudience = true,
-                ValidAudience = this._issuer,
+                ValidAudience = this.issuer,
                 ClockSkew = TimeSpan.Zero
             }, out SecurityToken validatedToken);
             return true;
@@ -67,15 +67,15 @@ public class JwtService
         try
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(this._secretKey);
+            var key = Encoding.ASCII.GetBytes(this.secretKey);
             var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = true,
-                ValidIssuer = this._issuer,
+                ValidIssuer = this.issuer,
                 ValidateAudience = true,
-                ValidAudience = this._issuer,
+                ValidAudience = this.issuer,
                 ClockSkew = TimeSpan.Zero
             }, out SecurityToken validatedToken);
 

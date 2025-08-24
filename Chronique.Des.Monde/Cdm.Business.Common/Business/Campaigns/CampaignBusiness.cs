@@ -8,11 +8,11 @@ namespace Cdm.Business.Common.Business.Campaigns;
 
 public class CampaignBusiness
 {
-    private readonly AppDbContext _dbContext;
+    private readonly AppDbContext dbContext;
 
     public CampaignBusiness(AppDbContext dbContext)
     {
-        this._dbContext = dbContext;
+        this.dbContext = dbContext;
     }
 
     /// <summary>
@@ -32,8 +32,8 @@ public class CampaignBusiness
             CreatedDate = DateTime.UtcNow
         };
 
-        this._dbContext.Campaigns.Add(campaign);
-        await this._dbContext.SaveChangesAsync();
+        this.dbContext.Campaigns.Add(campaign);
+        await this.dbContext.SaveChangesAsync();
 
         return await this.GetCampaignByIdAsync(campaign.Id) ?? throw new BusinessException("Campaign not found after creation.");
     }
@@ -43,7 +43,7 @@ public class CampaignBusiness
     /// </summary>
     public async Task<CampaignView?> GetCampaignByIdAsync(int campaignId)
     {
-        var campaign = await this._dbContext.Campaigns
+        var campaign = await this.dbContext.Campaigns
             .Include(c => c.CreatedBy)
             .Include(c => c.Chapters.Where(ch => ch.IsActive))
             .FirstOrDefaultAsync(c => c.Id == campaignId && c.IsActive);
@@ -73,7 +73,7 @@ public class CampaignBusiness
     /// </summary>
     public async Task<CampaignDetailView?> GetCampaignDetailAsync(int campaignId)
     {
-        var campaign = await this._dbContext.Campaigns
+        var campaign = await this.dbContext.Campaigns
             .Include(c => c.CreatedBy)
             .Include(c => c.Chapters.Where(ch => ch.IsActive))
             .ThenInclude(ch => ch.ContentBlocks.Where(cb => cb.IsActive))
@@ -123,7 +123,7 @@ public class CampaignBusiness
     /// </summary>
     public async Task<List<CampaignView>> GetCampaignsByUserAsync(int userId, bool includePublic = false)
     {
-        var query = this._dbContext.Campaigns
+        var query = this.dbContext.Campaigns
             .Include(c => c.CreatedBy)
             .Include(c => c.Chapters.Where(ch => ch.IsActive))
             .Where(c => c.IsActive);
@@ -161,7 +161,7 @@ public class CampaignBusiness
     /// </summary>
     public async Task<CampaignView> UpdateCampaignAsync(int campaignId, CampaignRequest campaignRequest, int userId)
     {
-        var campaign = await this._dbContext.Campaigns
+        var campaign = await this.dbContext.Campaigns
             .FirstOrDefaultAsync(c => c.Id == campaignId && c.IsActive);
 
         if (campaign == null)
@@ -181,7 +181,7 @@ public class CampaignBusiness
         campaign.Settings = campaignRequest.Settings;
         campaign.UpdatedDate = DateTime.UtcNow;
 
-        await this._dbContext.SaveChangesAsync();
+        await this.dbContext.SaveChangesAsync();
 
         return await this.GetCampaignByIdAsync(campaignId) ?? throw new BusinessException("Campaign not found after update.");
     }
@@ -191,7 +191,7 @@ public class CampaignBusiness
     /// </summary>
     public async Task DeleteCampaignAsync(int campaignId, int userId)
     {
-        var campaign = await this._dbContext.Campaigns
+        var campaign = await this.dbContext.Campaigns
             .FirstOrDefaultAsync(c => c.Id == campaignId && c.IsActive);
 
         if (campaign == null)
@@ -207,6 +207,6 @@ public class CampaignBusiness
         campaign.IsActive = false;
         campaign.UpdatedDate = DateTime.UtcNow;
 
-        await this._dbContext.SaveChangesAsync();
+        await this.dbContext.SaveChangesAsync();
     }
 }

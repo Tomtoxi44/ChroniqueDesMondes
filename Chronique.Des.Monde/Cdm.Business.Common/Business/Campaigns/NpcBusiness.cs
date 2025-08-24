@@ -10,17 +10,17 @@ namespace Cdm.Business.Common.Business.Campaigns;
 
 public class NpcBusiness
 {
-    private readonly DndDbContext _context;
+    private readonly DndDbContext context;
 
     public NpcBusiness(DndDbContext context)
     {
-        _context = context;
+        this.context = context;
     }
 
     public async Task<NpcView> CreateNpcAsync(NpcRequest request, int userId)
     {
         // Vérifier que l'utilisateur a accès au chapitre
-        var chapter = await _context.Chapters
+        var chapter = await this.context.Chapters
             .Include(c => c.Campaign)
             .FirstOrDefaultAsync(c => c.Id == request.ChapterId);
 
@@ -43,7 +43,7 @@ public class NpcBusiness
         if (request.GameType == GameType.DnD || chapter.Campaign.GameType == GameType.DnD)
         {
             // Pour D&D, on a besoin des propriétés spécifiques
-            var dndProperties = ParseDndProperties(request.DndProperties);
+            var dndProperties = this.ParseDndProperties(request.DndProperties);
             
             npcCharacter = new CharacterDnd
             {
@@ -99,15 +99,15 @@ public class NpcBusiness
             };
         }
 
-        _context.CharactersDnd.Add(npcCharacter);
-        await _context.SaveChangesAsync();
+        this.context.CharactersDnd.Add(npcCharacter);
+        await this.context.SaveChangesAsync();
 
-        return await GetNpcViewAsync(npcCharacter.Id);
+        return await this.GetNpcViewAsync(npcCharacter.Id);
     }
 
     public async Task<NpcView> UpdateNpcAsync(int id, NpcUpdateRequest request, int userId)
     {
-        var npc = await _context.CharactersDnd
+        var npc = await this.context.CharactersDnd
             .Include(c => c.Chapter)
             .ThenInclude(ch => ch!.Campaign)
             .FirstOrDefaultAsync(c => c.Id == id && c.IsNpc);
@@ -134,7 +134,7 @@ public class NpcBusiness
         // Mettre à jour les propriétés D&D si fournies
         if (!string.IsNullOrEmpty(request.DndProperties))
         {
-            var dndProperties = ParseDndProperties(request.DndProperties);
+            var dndProperties = this.ParseDndProperties(request.DndProperties);
             npc.Class = dndProperties.Class;
             npc.ClassArmor = dndProperties.ArmorClass;
             npc.Strong = dndProperties.Strength;
@@ -147,14 +147,14 @@ public class NpcBusiness
             npc.Leveling = dndProperties.Level;
         }
 
-        await _context.SaveChangesAsync();
+        await this.context.SaveChangesAsync();
 
-        return await GetNpcViewAsync(id);
+        return await this.GetNpcViewAsync(id);
     }
 
     public async Task DeleteNpcAsync(int id, int userId)
     {
-        var npc = await _context.CharactersDnd
+        var npc = await this.context.CharactersDnd
             .Include(c => c.Chapter)
             .ThenInclude(ch => ch!.Campaign)
             .FirstOrDefaultAsync(c => c.Id == id && c.IsNpc);
@@ -166,19 +166,19 @@ public class NpcBusiness
             throw new BusinessException("You don't have permission to delete this NPC");
 
         // Vérifier s'il y a des ContentBlocks liés
-        var linkedBlocks = await _context.ContentBlocks
+        var linkedBlocks = await this.context.ContentBlocks
             .CountAsync(cb => cb.CharacterId == id);
 
         if (linkedBlocks > 0)
             throw new BusinessException("Cannot delete NPC that has linked dialogue blocks. Remove the blocks first.");
 
-        _context.CharactersDnd.Remove(npc);
-        await _context.SaveChangesAsync();
+        this.context.CharactersDnd.Remove(npc);
+        await this.context.SaveChangesAsync();
     }
 
     public async Task<List<NpcView>> GetNpcsByChapterAsync(int chapterId, int userId)
     {
-        var chapter = await _context.Chapters
+        var chapter = await this.context.Chapters
             .Include(c => c.Campaign)
             .FirstOrDefaultAsync(c => c.Id == chapterId);
 
@@ -189,17 +189,17 @@ public class NpcBusiness
         if (chapter.Campaign.CreatedById != userId && !chapter.Campaign.IsPublic)
             throw new BusinessException("You don't have permission to view this chapter's NPCs");
 
-        var npcs = await _context.CharactersDnd
+        var npcs = await this.context.CharactersDnd
             .Include(c => c.ContentBlocks)
             .Where(c => c.ChapterId == chapterId && c.IsNpc)
             .ToListAsync();
 
-        return npcs.Select(MapToNpcView).ToList();
+        return npcs.Select(this.MapToNpcView).ToList();
     }
 
     public async Task<List<NpcView>> GetHostileNpcsByChapterAsync(int chapterId, int userId)
     {
-        var chapter = await _context.Chapters
+        var chapter = await this.context.Chapters
             .Include(c => c.Campaign)
             .FirstOrDefaultAsync(c => c.Id == chapterId);
 
@@ -209,16 +209,16 @@ public class NpcBusiness
         if (chapter.Campaign.CreatedById != userId)
             throw new BusinessException("You don't have permission to view this chapter's combat NPCs");
 
-        var hostileNpcs = await _context.CharactersDnd
+        var hostileNpcs = await this.context.CharactersDnd
             .Where(c => c.ChapterId == chapterId && c.IsNpc && c.IsHostile)
             .ToListAsync();
 
-        return hostileNpcs.Select(MapToNpcView).ToList();
+        return hostileNpcs.Select(this.MapToNpcView).ToList();
     }
 
     public async Task<NpcView?> GetNpcByIdAsync(int id, int userId)
     {
-        var npc = await _context.CharactersDnd
+        var npc = await this.context.CharactersDnd
             .Include(c => c.Chapter)
             .ThenInclude(ch => ch!.Campaign)
             .Include(c => c.ContentBlocks)
@@ -231,19 +231,19 @@ public class NpcBusiness
         if (npc.Chapter?.Campaign.CreatedById != userId && npc.Chapter?.Campaign.IsPublic != true)
             throw new BusinessException("You don't have permission to view this NPC");
 
-        return MapToNpcView(npc);
+        return this.MapToNpcView(npc);
     }
 
     private async Task<NpcView> GetNpcViewAsync(int id)
     {
-        var npc = await _context.CharactersDnd
+        var npc = await this.context.CharactersDnd
             .Include(c => c.ContentBlocks)
             .FirstOrDefaultAsync(c => c.Id == id && c.IsNpc);
 
-        return MapToNpcView(npc!);
+        return this.MapToNpcView(npc!);
     }
 
-    private static NpcView MapToNpcView(CharacterDnd npc)
+    private NpcView MapToNpcView(CharacterDnd npc)
     {
         var tags = new List<string>();
         if (!string.IsNullOrEmpty(npc.Tags))
@@ -267,7 +267,7 @@ public class NpcBusiness
             GameType = npc.GameType,
             IsHostile = npc.IsHostile,
             Tags = tags,
-            DndProperties = SerializeDndProperties(npc),
+            DndProperties = this.SerializeDndProperties(npc),
             GenericProperties = null, // TODO: implémenter si nécessaire
             IsSystemCharacter = npc.IsSystemCharacter,
             CreatedAt = npc.CreatedAt,
@@ -275,7 +275,7 @@ public class NpcBusiness
         };
     }
 
-    private static string SerializeDndProperties(CharacterDnd npc)
+    private string SerializeDndProperties(CharacterDnd npc)
     {
         var properties = new
         {
@@ -294,7 +294,7 @@ public class NpcBusiness
         return JsonSerializer.Serialize(properties);
     }
 
-    private static DndNpcProperties ParseDndProperties(string? json)
+    private DndNpcProperties ParseDndProperties(string? json)
     {
         if (string.IsNullOrEmpty(json))
         {
