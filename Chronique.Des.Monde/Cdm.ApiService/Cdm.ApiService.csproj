@@ -15,6 +15,8 @@
     <ProjectReference Include="..\Cdm.ServiceDefaults\Cdm.ServiceDefaults.csproj" />
     <ProjectReference Include="..\Cdm.Business.Common\Cdm.Business.Common.csproj" />
     <ProjectReference Include="..\Cdm.Data.Dnd\Cdm.Data.Dnd.csproj" />
+    <ProjectReference Include="..\Cdm.Business.Dnd\Cdm.Business.Dnd.csproj" />
+    <ProjectReference Include="..\Cdm.Data.Common\Cdm.Data.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

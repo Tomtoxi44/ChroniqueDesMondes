@@ -21,7 +21,10 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddProblemDetails();
-        builder.Services.AddApplicationServices();
+        
+        // Add business services et database services
+        builder.Services.AddBusinessServices();
+        builder.Services.AddDatabaseServices(builder.Configuration);
 
         var jwtSettings = builder.Configuration.GetSection("JwtSettings");
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -42,12 +45,6 @@ public class Program
         builder.Services.AddDbContext<MigrationContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-        builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-        builder.Services.AddDbContext<DndDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
 
@@ -66,7 +63,8 @@ public class Program
             app.MapOpenApi();
         }
 
-        app.MapApplicationEndpoints();
+        // Map all endpoints
+        app.MapAllEndpoints();
 
         app.Run();
     }

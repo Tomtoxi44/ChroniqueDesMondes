@@ -1,6 +1,7 @@
 ﻿using Cdm.Business.Common.Models.Campaign.Chapter;
 using Cdm.Business.Common.Models.Campaign.ContentBlock;
 using Cdm.Business.Common.Models.Campaign.Npc;
+using Cdm.Common;
 using Cdm.Data.Dnd;
 using Cdm.Data.Models;
 using Microsoft.EntityFrameworkCore;
@@ -28,12 +29,12 @@ public class ChapterBusiness
 
         if (campaign == null)
         {
-            throw new Exception("Campaign not found.");
+            throw new BusinessException("Campaign not found.");
         }
 
         if (campaign.CreatedById != userId)
         {
-            throw new Exception("You can only add chapters to campaigns you created.");
+            throw new BusinessException("You can only add chapters to campaigns you created.");
         }
 
         // Verify order uniqueness within the campaign
@@ -44,7 +45,7 @@ public class ChapterBusiness
 
         if (existingChapter != null)
         {
-            throw new Exception($"A chapter with order {chapterRequest.Order} already exists in this campaign.");
+            throw new BusinessException($"A chapter with order {chapterRequest.Order} already exists in this campaign.");
         }
 
         var chapter = new Chapter
@@ -61,7 +62,7 @@ public class ChapterBusiness
         this.dbContext.Chapters.Add(chapter);
         await this.dbContext.SaveChangesAsync();
 
-        return await this.GetChapterByIdAsync(chapter.Id) ?? throw new Exception("Chapter not found after creation.");
+        return await this.GetChapterByIdAsync(chapter.Id) ?? throw new BusinessException("Chapter not found after creation.");
     }
 
     /// <summary>
@@ -111,7 +112,7 @@ public class ChapterBusiness
 
         // Check access permissions
         if (chapter.Campaign.CreatedById != userId && !chapter.Campaign.IsPublic)
-            throw new Exception("You don't have access to this chapter.");
+            throw new BusinessException("You don't have access to this chapter.");
 
         return new ChapterDetailView
         {
@@ -143,13 +144,13 @@ public class ChapterBusiness
 
         if (campaign == null)
         {
-            throw new Exception("Campaign not found.");
+            throw new BusinessException("Campaign not found.");
         }
 
         // Check if user has access (owner or public campaign)
         if (campaign.CreatedById != userId && !campaign.IsPublic)
         {
-            throw new Exception("You don't have access to this campaign.");
+            throw new BusinessException("You don't have access to this campaign.");
         }
 
         var chapters = await this.dbContext.Chapters
@@ -187,12 +188,12 @@ public class ChapterBusiness
 
         if (chapter == null)
         {
-            throw new Exception("Chapter not found.");
+            throw new BusinessException("Chapter not found.");
         }
 
         if (chapter.Campaign.CreatedById != userId)
         {
-            throw new Exception("You can only modify chapters in campaigns you created.");
+            throw new BusinessException("You can only modify chapters in campaigns you created.");
         }
 
         // Check order uniqueness if order is being changed
@@ -206,7 +207,7 @@ public class ChapterBusiness
 
             if (existingChapter != null)
             {
-                throw new Exception($"A chapter with order {updateRequest.Order.Value} already exists in this campaign.");
+                throw new BusinessException($"A chapter with order {updateRequest.Order.Value} already exists in this campaign.");
             }
 
             chapter.Order = updateRequest.Order.Value;
@@ -236,7 +237,7 @@ public class ChapterBusiness
 
         await this.dbContext.SaveChangesAsync();
 
-        return await this.GetChapterByIdAsync(chapterId) ?? throw new Exception("Chapter not found after update.");
+        return await this.GetChapterByIdAsync(chapterId) ?? throw new BusinessException("Chapter not found after update.");
     }
 
     /// <summary>
@@ -250,12 +251,12 @@ public class ChapterBusiness
 
         if (chapter == null)
         {
-            throw new Exception("Chapter not found.");
+            throw new BusinessException("Chapter not found.");
         }
 
         if (chapter.Campaign.CreatedById != userId)
         {
-            throw new Exception("You can only delete chapters in campaigns you created.");
+            throw new BusinessException("You can only delete chapters in campaigns you created.");
         }
 
         chapter.IsActive = false;
@@ -274,12 +275,12 @@ public class ChapterBusiness
 
         if (campaign == null)
         {
-            throw new Exception("Campaign not found.");
+            throw new BusinessException("Campaign not found.");
         }
 
         if (campaign.CreatedById != userId)
         {
-            throw new Exception("You can only reorder chapters in campaigns you created.");
+            throw new BusinessException("You can only reorder chapters in campaigns you created.");
         }
 
         var chapters = await this.dbContext.Chapters

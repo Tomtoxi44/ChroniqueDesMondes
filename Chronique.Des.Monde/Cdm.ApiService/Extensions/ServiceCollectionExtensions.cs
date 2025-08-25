@@ -1,29 +1,46 @@
-﻿namespace Cdm.ApiService.Extensions;
-
-using Cdm.Business.Common.Business.Users;
-using Cdm.Business.Common.Business.Campaigns;
+﻿using Cdm.Business.Common.Business.Campaigns;
+using Cdm.Data;
+using Microsoft.EntityFrameworkCore;
+using Cdm.Data.Dnd;
 using Cdm.Common.Services;
+using Cdm.Common;
+using Cdm.Business.Common.Business.Users;
+using Cdm.Business.Dnd.Extensions;
+
+namespace Cdm.ApiService.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    public static IServiceCollection AddBusinessServices(this IServiceCollection services)
     {
-        services.AddCommonBusiness();
+        // Services métier communs
+        services.AddScoped<CampaignBusiness>();
+        services.AddScoped<ChapterBusiness>();
+        services.AddScoped<ContentBlockBusiness>();
+        services.AddScoped<NpcBusiness>();
+        services.AddScoped<UserBusiness>();
+        services.AddScoped<InvitationService>();
         
+        // Services métier spécialisés D&D
+        services.AddDndBusiness();
+
+        // Services communs
+        services.AddScoped<IEmailService, AzureEmailService>();
+        services.AddScoped<JwtService>();
+        services.AddScoped<PasswordService>();
+
         return services;
     }
 
-    public static IServiceCollection AddCommonBusiness(this IServiceCollection services)
+    public static IServiceCollection AddDatabaseServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddTransient<UserBusiness>();
-        services.AddTransient<CampaignBusiness>();
-        services.AddTransient<ChapterBusiness>();
-        services.AddTransient<ContentBlockBusiness>();
-        services.AddTransient<NpcBusiness>();
-        services.AddTransient<InvitationService>();
-        services.AddScoped<Cdm.Common.PasswordService>();
-        services.AddScoped<Cdm.Common.JwtService>();
-        services.AddScoped<IEmailService, AzureEmailService>();
+        // Base de données principale
+        services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+        // Base de données D&D
+        services.AddDbContext<DndDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
         return services;
     }
