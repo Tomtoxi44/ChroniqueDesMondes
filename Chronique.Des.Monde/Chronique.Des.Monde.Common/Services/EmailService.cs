@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Azure.Communication.Email;
+using Azure;
 
 namespace Cdm.Common.Services;
 
@@ -9,51 +12,119 @@ public interface IEmailService
     Task<bool> SendInvitationRejectedEmailAsync(string toEmail, string campaignName, string playerName);
 }
 
-public class EmailService : IEmailService
+public class AzureEmailService : IEmailService
 {
-    private readonly ILogger<EmailService> logger;
+    private readonly EmailClient emailClient;
+    private readonly string fromAddress;
+    private readonly ILogger<AzureEmailService> logger;
 
-    public EmailService(ILogger<EmailService> logger)
+    public AzureEmailService(IConfiguration configuration, ILogger<AzureEmailService> logger)
     {
         this.logger = logger;
+        
+        var connectionString = configuration["AzureEmail:ConnectionString"];
+        this.fromAddress = configuration["AzureEmail:FromAddress"] ?? "noreply@chroniquedesmondes.com";
+        
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            throw new InvalidOperationException("AzureEmail:ConnectionString is required in configuration");
+        }
+        
+        this.emailClient = new EmailClient(connectionString);
     }
 
     public async Task<bool> SendInvitationEmailAsync(string toEmail, string campaignName, string inviterName, string invitationLink, string? message = null)
     {
-        // Pour l'instant, on simule l'envoi d'email avec des logs
-        this.logger.LogInformation("📧 Email d'invitation simulé:");
-        this.logger.LogInformation("  To: {Email}", toEmail);
-        this.logger.LogInformation("  Campaign: {Campaign}", campaignName);
-        this.logger.LogInformation("  Inviter: {Inviter}", inviterName);
-        this.logger.LogInformation("  Link: {Link}", invitationLink);
-        
-        if (!string.IsNullOrEmpty(message))
-        {
-            this.logger.LogInformation("  Message: {Message}", message);
-        }
+        var subject = $"Invitation à rejoindre la campagne {campaignName}";
+        var htmlBody = $@"
+            <html>
+                <body>
+                    <h2>Invitation à une campagne</h2>
+                    <p>Bonjour,</p>
+                    <p><strong>{inviterName}</strong> vous invite à rejoindre la campagne <strong>{campaignName}</strong>.</p>
+                    <p><a href='{invitationLink}' style='background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;'>Accepter/Refuser l'invitation</a></p>
+                    {(string.IsNullOrEmpty(message) ? "" : $"<p><em>Message personnel :</em><br>{message}</p>")}
+                    <p>Cette invitation expirera dans 7 jours.</p>
+                    <hr>
+                    <p><small>Chronique des Mondes - Système de gestion de campagnes</small></p>
+                </body>
+            </html>";
 
-        // Simulation d'un délai d'envoi
-        await Task.Delay(100);
-
-        this.logger.LogInformation("✅ Email d'invitation envoyé avec succès (simulé)");
-        return true;
+        return await this.SendEmailAsync(toEmail, subject, htmlBody);
     }
 
     public async Task<bool> SendInvitationAcceptedEmailAsync(string toEmail, string campaignName, string playerName)
     {
-        this.logger.LogInformation("📧 Email acceptation invitation simulé:");
-        this.logger.LogInformation("  To: {Email} - {Player} a accepté votre invitation pour {Campaign}", toEmail, playerName, campaignName);
-        
-        await Task.Delay(100);
-        return true;
+        var subject = $"Invitation acceptée - {campaignName}";
+        var htmlBody = $@"
+            <html>
+                <body>
+                    <h2>Invitation acceptée</h2>
+                    <p>Bonjour,</p>
+                    <p><strong>{playerName}</strong> a accepté votre invitation à rejoindre la campagne <strong>{campaignName}</strong>.</p>
+                    <p>Vous pouvez maintenant commencer à organiser vos sessions de jeu !</p>
+                    <hr>
+                    <p><small>Chronique des Mondes - Système de gestion de campagnes</small></p>
+                </body>
+            </html>";
+
+        return await this.SendEmailAsync(toEmail, subject, htmlBody);
     }
 
     public async Task<bool> SendInvitationRejectedEmailAsync(string toEmail, string campaignName, string playerName)
     {
-        this.logger.LogInformation("📧 Email rejet invitation simulé:");
-        this.logger.LogInformation("  To: {Email} - {Player} a refusé votre invitation pour {Campaign}", toEmail, playerName, campaignName);
-        
-        await Task.Delay(100);
-        return true;
+        var subject = $"Invitation refusée - {campaignName}";
+        var htmlBody = $@"
+            <html>
+                <body>
+                    <h2>Invitation refusée</h2>
+                    <p>Bonjour,</p>
+                    <p><strong>{playerName}</strong> a refusé votre invitation à rejoindre la campagne <strong>{campaignName}</strong>.</p>
+                    <p>Vous pouvez réessayer plus tard ou inviter d'autres joueurs.</p>
+                    <hr>
+                    <p><small>Chronique des Mondes - Système de gestion de campagnes</small></p>
+                </body>
+            </html>";
+
+        return await this.SendEmailAsync(toEmail, subject, htmlBody);
+    }
+
+    private async Task<bool> SendEmailAsync(string toEmail, string subject, string htmlBody)
+    {
+        try
+        {
+            var emailContent = new EmailContent(subject)
+            {
+                Html = htmlBody
+            };
+
+            var emailMessage = new EmailMessage(this.fromAddress, toEmail, emailContent);
+
+            this.logger.LogInformation("📧 Envoi d'email vers {ToEmail} avec le sujet: {Subject}", toEmail, subject);
+
+            var emailSendOperation = await this.emailClient.SendAsync(WaitUntil.Completed, emailMessage);
+
+            if (emailSendOperation.HasCompleted)
+            {
+                this.logger.LogInformation("✅ Email envoyé avec succès vers {ToEmail}", toEmail);
+                return true;
+            }
+            else
+            {
+                this.logger.LogWarning("⚠️ Email en cours d'envoi vers {ToEmail}", toEmail);
+                return true; // Considéré comme réussi même si en cours
+            }
+        }
+        catch (RequestFailedException ex)
+        {
+            this.logger.LogError(ex, "❌ Erreur Azure lors de l'envoi d'email vers {ToEmail}: {ErrorCode} - {ErrorMessage}", 
+                toEmail, ex.ErrorCode, ex.Message);
+            return false;
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError(ex, "❌ Erreur générale lors de l'envoi d'email vers {ToEmail}", toEmail);
+            return false;
+        }
     }
 }

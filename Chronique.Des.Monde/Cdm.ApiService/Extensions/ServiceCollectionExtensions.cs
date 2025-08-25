@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<InvitationService>();
         services.AddScoped<Cdm.Common.PasswordService>();
         services.AddScoped<Cdm.Common.JwtService>();
-        services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IEmailService, AzureEmailService>();
 
         return services;
     }
