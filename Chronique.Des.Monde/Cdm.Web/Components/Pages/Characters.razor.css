@@ -1,0 +1,244 @@
+﻿/* ======================
+   PERSONNAGES - STYLES SCOPÉS
+   ====================== */
+
+.characters-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+.character-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.characters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.character-card {
+    background: linear-gradient(135deg, var(--card-background), var(--background-secondary));
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-large);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-medium);
+    transition: all var(--animation-duration) var(--animation-timing);
+    position: relative;
+    overflow: hidden;
+}
+
+.character-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-heavy);
+    border-color: var(--primary-color);
+}
+
+/* Thèmes par classe */
+.character-card.warrior {
+    border-left: 4px solid #dc2626;
+}
+
+.character-card.wizard {
+    border-left: 4px solid #2563eb;
+}
+
+.character-card.ranger {
+    border-left: 4px solid #16a34a;
+}
+
+.character-card.cleric {
+    border-left: 4px solid #eab308;
+}
+
+.character-card.paladin {
+    border-left: 4px solid #fbbf24;
+}
+
+.character-card.rogue {
+    border-left: 4px solid #6b7280;
+}
+
+.character-card.barbarian {
+    border-left: 4px solid #7c2d12;
+}
+
+.character-card.bard {
+    border-left: 4px solid #a855f7;
+}
+
+.character-portrait {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.portrait-icon {
+    font-size: 3rem;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(218, 165, 32, 0.1);
+    border-radius: 50%;
+    border: 2px solid rgba(218, 165, 32, 0.3);
+}
+
+.character-level {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.character-info {
+    margin-bottom: 1rem;
+}
+
+.character-name {
+    font-family: var(--font-family-primary);
+    font-size: 1.4rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.25rem;
+    text-align: center;
+}
+
+.character-class-race {
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.character-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-group {
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    display: block;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.ability-scores {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.ability {
+    text-align: center;
+    padding: 0.5rem 0.25rem;
+    background: rgba(139, 69, 19, 0.1);
+    border-radius: 6px;
+    border: 1px solid rgba(139, 69, 19, 0.2);
+}
+
+.ability-label {
+    display: block;
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.ability-score {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.character-campaign {
+    text-align: center;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: rgba(138, 43, 226, 0.1);
+    border: 1px solid rgba(138, 43, 226, 0.3);
+    border-radius: 6px;
+}
+
+.campaign-label {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+}
+
+.campaign-name {
+    color: #dda0dd;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.character-actions-card {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.character-actions-card .btn {
+    flex: 1;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .characters-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .character-card {
+        padding: 1.25rem;
+    }
+    
+    .character-name {
+        font-size: 1.2rem;
+    }
+    
+    .ability-scores {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .character-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .character-actions-card {
+        flex-direction: column;
+    }
+}

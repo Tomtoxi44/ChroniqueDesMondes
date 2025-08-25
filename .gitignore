@@ -6,7 +6,6 @@ obj/
 *.log
 
 # Fichiers de configuration utilisateurs
-*.user
 *.suo
 *.userosscache
 *.sln.docstates

@@ -1,0 +1,114 @@
+﻿@page "/equipment"
+@using Cdm.Web.Services.Authentication
+
+<PageTitle>Équipements - Chronique des Mondes</PageTitle>
+
+<div class="equipment-container">
+    <div class="page-header">
+        <h1 class="page-title">🛡️ Arsenal et Équipements</h1>
+        <p class="page-subtitle">Découvrez armes, armures et objets magiques légendaires</p>
+        
+        <div class="search-filters">
+            <input type="text" @bind="searchTerm" @bind:event="oninput" class="form-control search-input" placeholder="Rechercher un équipement..." />
+            <select @bind="selectedType" class="form-control filter-select">
+                <option value="">Tous les types</option>
+                <option value="Arme">Armes</option>
+                <option value="Armure">Armures</option>
+                <option value="Bouclier">Boucliers</option>
+                <option value="Accessoire">Accessoires</option>
+                <option value="Objet Magique">Objets Magiques</option>
+            </select>
+            <select @bind="selectedRarity" class="form-control filter-select">
+                <option value="">Toutes les raretés</option>
+                <option value="Commun">Commun</option>
+                <option value="Peu Commun">Peu Commun</option>
+                <option value="Rare">Rare</option>
+                <option value="Très Rare">Très Rare</option>
+                <option value="Légendaire">Légendaire</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="equipment-grid">
+        @foreach (var item in filteredEquipment)
+        {
+            <div class="equipment-card @GetRarityClass(item.Rarity)">
+                <div class="item-header">
+                    <div class="item-icon">@item.Icon</div>
+                    <div class="item-rarity">@item.Rarity</div>
+                </div>
+                
+                <h3 class="item-name">@item.Name</h3>
+                <p class="item-type">@item.Type @(item.Subtype != "" ? $"({item.Subtype})" : "")</p>
+                
+                <div class="item-stats">
+                    @if (item.Type == "Arme")
+                    {
+                        <div class="stat-row">
+                            <span class="stat-label">Dégâts:</span>
+                            <span class="stat-value">@item.Damage</span>
+                        </div>
+                    }
+                    @if (item.Type == "Armure" || item.Type == "Bouclier")
+                    {
+                        <div class="stat-row">
+                            <span class="stat-label">CA:</span>
+                            <span class="stat-value">@item.ArmorClass</span>
+                        </div>
+                    }
+                    @if (item.Weight > 0)
+                    {
+                        <div class="stat-row">
+                            <span class="stat-label">Poids:</span>
+                            <span class="stat-value">@item.Weight kg</span>
+                        </div>
+                    }
+                    @if (item.Value > 0)
+                    {
+                        <div class="stat-row">
+                            <span class="stat-label">Valeur:</span>
+                            <span class="stat-value">@item.Value po</span>
+                        </div>
+                    }
+                </div>
+                
+                <p class="item-description">@item.Description</p>
+                
+                @if (item.MagicalProperties.Any())
+                {
+                    <div class="magical-properties">
+                        <h4>Propriétés Magiques:</h4>
+                        <ul>
+                            @foreach (var property in item.MagicalProperties)
+                            {
+                                <li>@property</li>
+                            }
+                        </ul>
+                    </div>
+                }
+                
+                @if (item.Requirements != "")
+                {
+                    <div class="requirements">
+                        <span class="req-label">Pré-requis:</span>
+                        <span class="req-text">@item.Requirements</span>
+                    </div>
+                }
+                
+                <div class="item-actions">
+                    <button class="btn btn-primary btn-sm">Équiper</button>
+                    <button class="btn btn-secondary btn-sm">Détails</button>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!filteredEquipment.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3>Aucun équipement trouvé</h3>
+            <p>Essayez de modifier vos critères de recherche</p>
+        </div>
+    }
+</div>

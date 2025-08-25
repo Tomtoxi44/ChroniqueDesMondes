@@ -1,0 +1,258 @@
+### Scénarios de tests end-to-end pour l'API Character
+### Importe la configuration depuis ../character-config.http
+
+### ====================================
+### SCÉNARIO 1: Workflow complet générique
+### ====================================
+
+### Étape 1.1 : Créer un personnage générique
+POST {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Test Character Générique",
+  "leveling": 1,
+  "life": 20,
+  "picture": "test.jpg",
+  "background": "Aventurier",
+  "competences": {
+    "Class": "Rôdeur",
+    "ClassArmor": 14,
+    "Strong": 12,
+    "Dexterity": 16,
+    "Constitution": 14,
+    "Intelligence": 11,
+    "Wisdoms": 15,
+    "Charism": 10
+  },
+  "stats": {}
+}
+
+### Étape 1.2 : Récupérer le personnage créé
+# Remplacer {newCharacterId} par l'ID retourné dans la réponse précédente
+# GET {{baseUrl}}/character/{newCharacterId}
+# X-GameType: {{gameType}}
+# Authorization: {{authToken}}
+
+### Étape 1.3 : Modifier le personnage
+# PUT {{baseUrl}}/character/{newCharacterId}
+# X-GameType: {{gameType}}
+# Authorization: {{authToken}}
+# Content-Type: application/json
+# 
+# {
+#   "name": "Test Character Modifié",
+#   "leveling": 2,
+#   "life": 25,
+#   "picture": "test_updated.jpg",
+#   "background": "Vétéran",
+#   "competences": {
+#     "Class": "Rôdeur Expérimenté",
+#     "Strong": 13,
+#     "Dexterity": 17
+#   },
+#   "stats": {}
+# }
+
+### Étape 1.4 : Supprimer le personnage
+# DELETE {{baseUrl}}/character/{newCharacterId}
+# X-GameType: {{gameType}}
+# Authorization: {{authToken}}
+
+### ====================================
+### SCÉNARIO 2: Workflow complet D&D
+### ====================================
+
+### Étape 2.1 : Créer un guerrier D&D
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Test Warrior DnD",
+  "leveling": 1,
+  "life": 15,
+  "picture": "test_warrior.jpg",
+  "background": "Soldat",
+  "class": "Guerrier",
+  "classArmor": 16,
+  "strong": 15,
+  "dexterity": 12,
+  "constitution": 14,
+  "intelligence": 10,
+  "wisdoms": 11,
+  "charism": 9
+}
+
+### Étape 2.2 : Récupérer le guerrier avec l'API générique
+# GET {{baseUrl}}/character/{dndWarriorId}
+# X-GameType: {{gameType}}
+# Authorization: {{authToken}}
+
+### Étape 2.3 : Faire évoluer le guerrier en paladin (D&D)
+# PUT {{baseUrl}}/character/dnd/{dndWarriorId}
+# X-GameType: {{gameType}}
+# Authorization: {{authToken}}
+# Content-Type: application/json
+# 
+# {
+#   "name": "Test Paladin DnD",
+#   "leveling": 3,
+#   "life": 35,
+#   "class": "Paladin",
+#   "classArmor": 18,
+#   "strong": 16,
+#   "charism": 14
+# }
+
+### Étape 2.4 : Supprimer avec l'API générique
+# DELETE {{baseUrl}}/character/{dndWarriorId}
+# X-GameType: {{gameType}}
+# Authorization: {{authToken}}
+
+### ====================================
+### SCÉNARIO 3: Gestion d'équipe complète
+### ====================================
+
+### Étape 3.1 : Créer une équipe de 4 personnages
+
+### Guerrier
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Tankred le Protecteur",
+  "leveling": 5,
+  "life": 60,
+  "class": "Guerrier",
+  "strong": 18,
+  "constitution": 16
+}
+
+### Mage
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Merlin le Sage",
+  "leveling": 5,
+  "life": 35,
+  "class": "Magicien",
+  "intelligence": 18,
+  "wisdoms": 15
+}
+
+### Voleur
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Shadow l'Agile",
+  "leveling": 5,
+  "life": 40,
+  "class": "Voleur",
+  "dexterity": 18,
+  "charism": 14
+}
+
+### Clerc
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Lucia la Guérisseuse",
+  "leveling": 5,
+  "life": 45,
+  "class": "Clerc",
+  "wisdoms": 18,
+  "charism": 16
+}
+
+### Étape 3.2 : Récupérer toute l'équipe
+GET {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### ====================================
+### SCÉNARIO 4: Test de performances
+### ====================================
+
+### Étape 4.1 : Créer 10 personnages rapidement
+### (Répéter cette requête 10 fois avec des noms différents)
+
+POST {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Perf Test 1",
+  "leveling": 1,
+  "life": 10,
+  "competences": {
+    "Class": "Test",
+    "Strong": 10,
+    "Dexterity": 10,
+    "Constitution": 10,
+    "Intelligence": 10,
+    "Wisdoms": 10,
+    "Charism": 10
+  },
+  "stats": {}
+}
+
+### Étape 4.2 : Récupérer tous les personnages (doit inclure les 10 nouveaux)
+GET {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### ====================================
+### SCÉNARIO 5: Test de robustesse
+### ====================================
+
+### Étape 5.1 : Créer un personnage avec des données limites
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Test Limites",
+  "leveling": 20,
+  "life": 200,
+  "picture": "very-long-filename-with-special-characters-éàü.jpg",
+  "background": "Background très long avec beaucoup de détails sur l'histoire du personnage, son passé, sa famille, ses motivations, etc.",
+  "class": "Classe Très Spéciale",
+  "classArmor": 25,
+  "strong": 20,
+  "dexterity": 20,
+  "constitution": 20,
+  "intelligence": 20,
+  "wisdoms": 20,
+  "charism": 20
+}
+
+### Étape 5.2 : Tenter une modification avec des données invalides
+# PUT {{baseUrl}}/character/{limitsCharacterId}
+# X-GameType: {{gameType}}
+# Authorization: {{authToken}}
+# Content-Type: application/json
+# 
+# {
+#   "name": "",
+#   "leveling": -5,
+#   "life": 0
+# }

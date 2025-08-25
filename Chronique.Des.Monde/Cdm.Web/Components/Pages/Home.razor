@@ -1,0 +1,66 @@
+﻿@page "/"
+@using Cdm.Web.Services.Authentication
+@inject IAuthenticationService AuthService
+@inject NavigationManager Navigation
+
+<PageTitle>Chronique des Mondes</PageTitle>
+
+<div class="home-container animate-fade-in">
+    <div class="hero-section">
+        <div class="hero-content">
+            <img src="/images/icon_cdm.svg" alt="Chronique des Mondes" class="hero-logo animate-pulse" />
+            <h1 class="hero-title">Chronique des Mondes</h1>
+            <p class="hero-subtitle">Plongez dans l'univers des jeux de rôle</p>
+            
+            @if (AuthService.IsAuthenticated)
+            {
+                <div class="welcome-section animate-slide-right">
+                    <h2>Bienvenue, Aventurier !</h2>
+                    <p>Votre quête peut commencer...</p>
+                    <div class="action-buttons">
+                        <a href="/adventures" class="btn btn-primary">Mes Aventures</a>
+                        <a href="/characters" class="btn btn-secondary">Mes Personnages</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="auth-section animate-slide-left">
+                    <p class="auth-message">Connectez-vous pour commencer votre aventure</p>
+                    <div class="auth-buttons">
+                        <a href="/login" class="btn btn-primary">Se connecter</a>
+                        <a href="/register" class="btn btn-secondary">Créer un compte</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="features-section">
+        <div class="features-grid">
+            <div class="feature-card card animate-fade-in">
+                <div class="feature-icon">⚔️</div>
+                <h3>Gestion des Personnages</h3>
+                <p>Créez et gérez vos personnages avec tous leurs détails, équipements et statistiques.</p>
+            </div>
+            
+            <div class="feature-card card animate-fade-in">
+                <div class="feature-icon">🗺️</div>
+                <h3>Campagnes Épiques</h3>
+                <p>Organisez vos campagnes, suivez l'évolution de l'histoire et les quêtes accomplies.</p>
+            </div>
+            
+            <div class="feature-card card animate-fade-in">
+                <div class="feature-icon">🎲</div>
+                <h3>Système de Dés</h3>
+                <p>Lancez des dés virtuels pour tous vos tests et combats avec un système complet.</p>
+            </div>
+            
+            <div class="feature-card card animate-fade-in">
+                <div class="feature-icon">📚</div>
+                <h3>Bibliothèque de Règles</h3>
+                <p>Accédez à une vaste bibliothèque de règles, sorts et équipements pour D&D 5e.</p>
+            </div>
+        </div>
+    </div>
+</div>

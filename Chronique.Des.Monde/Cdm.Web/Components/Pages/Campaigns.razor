@@ -1,0 +1,73 @@
+﻿@page "/campaigns"
+
+<PageTitle>Campagnes - Chronique des Mondes</PageTitle>
+
+<div class="campaigns-container">
+    <div class="page-header">
+        <h1 class="page-title">🗺️ Mes Campagnes</h1>
+        <p class="page-subtitle">Gérez vos aventures épiques et créez des histoires légendaires</p>
+        
+        <div class="campaign-actions">
+            <button class="btn btn-primary">Créer une Campagne</button>
+            <button class="btn btn-secondary">Rejoindre une Campagne</button>
+        </div>
+    </div>
+
+    <div class="campaigns-grid">
+        @foreach (var campaign in campaigns)
+        {
+            <div class="campaign-card @GetStatusClass(campaign.Status)">
+                <div class="campaign-header">
+                    <div class="campaign-icon">@campaign.Icon</div>
+                    <div class="campaign-status">@campaign.Status</div>
+                </div>
+                
+                <h3 class="campaign-name">@campaign.Name</h3>
+                <p class="campaign-description">@campaign.Description</p>
+                
+                <div class="campaign-info">
+                    <div class="info-item">
+                        <span class="info-label">Maître de Jeu:</span>
+                        <span class="info-value">@campaign.GameMaster</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Joueurs:</span>
+                        <span class="info-value">@campaign.PlayerCount/@campaign.MaxPlayers</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Système:</span>
+                        <span class="info-value">@campaign.System</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Dernière session:</span>
+                        <span class="info-value">@campaign.LastSession</span>
+                    </div>
+                </div>
+                
+                <div class="campaign-progress">
+                    <h4>Progression</h4>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: @campaign.Progress%"></div>
+                    </div>
+                    <span class="progress-text">Session @campaign.CurrentSession de l'arc @campaign.CurrentArc</span>
+                </div>
+                
+                <div class="campaign-actions-card">
+                    <button class="btn btn-primary btn-sm">Rejoindre</button>
+                    <button class="btn btn-secondary btn-sm">Détails</button>
+                    <button class="btn btn-outline btn-sm">Notes</button>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!campaigns.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🎲</div>
+            <h3>Aucune campagne active</h3>
+            <p>Créez votre première campagne ou rejoignez celle d'un ami !</p>
+            <button class="btn btn-primary">Commencer l'Aventure</button>
+        </div>
+    }
+</div>

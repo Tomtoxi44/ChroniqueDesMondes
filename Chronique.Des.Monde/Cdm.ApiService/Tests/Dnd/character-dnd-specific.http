@@ -1,0 +1,271 @@
+### Tests pour l'API Character - Endpoints Spécifiques D&D
+### Importe la configuration depuis ../character-config.http
+
+### ====================================
+### POST - Création de personnage D&D
+### ====================================
+
+### 1. POST - Créer un guerrier D&D
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Gorthak le Brave",
+  "leveling": 3,
+  "life": 45,
+  "picture": "warrior.jpg",
+  "background": "Soldat",
+  "class": "Guerrier",
+  "classArmor": 18,
+  "strong": 16,
+  "dexterity": 12,
+  "constitution": 15,
+  "intelligence": 10,
+  "wisdoms": 13,
+  "charism": 8
+}
+
+### 2. POST - Créer un mage D&D
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Elara la Mystique",
+  "leveling": 2,
+  "life": 25,
+  "picture": "wizard.jpg",
+  "background": "Érudit",
+  "class": "Magicien",
+  "classArmor": 10,
+  "strong": 8,
+  "dexterity": 14,
+  "constitution": 12,
+  "intelligence": 18,
+  "wisdoms": 15,
+  "charism": 11
+}
+
+### 3. POST - Créer un rôdeur D&D
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Aranis Chassevent",
+  "leveling": 4,
+  "life": 38,
+  "picture": "ranger.jpg",
+  "background": "Chasseur",
+  "class": "Rôdeur",
+  "classArmor": 14,
+  "strong": 13,
+  "dexterity": 17,
+  "constitution": 14,
+  "intelligence": 12,
+  "wisdoms": 16,
+  "charism": 10
+}
+
+### 4. POST - Créer un voleur D&D
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Slinky Ombrelame",
+  "leveling": 5,
+  "life": 32,
+  "picture": "rogue.jpg",
+  "background": "Criminel",
+  "class": "Voleur",
+  "classArmor": 12,
+  "strong": 10,
+  "dexterity": 18,
+  "constitution": 13,
+  "intelligence": 14,
+  "wisdoms": 12,
+  "charism": 15
+}
+
+### ====================================
+### PUT - Mise à jour de personnage D&D
+### ====================================
+
+### 5. PUT - Évolution guerrier vers paladin
+PUT {{baseUrl}}/character/dnd/{{characterId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Gorthak le Vétéran",
+  "leveling": 4,
+  "life": 55,
+  "picture": "warrior_veteran.jpg",
+  "background": "Commandant",
+  "class": "Paladin",
+  "classArmor": 20,
+  "strong": 18,
+  "dexterity": 12,
+  "constitution": 16,
+  "intelligence": 11,
+  "wisdoms": 14,
+  "charism": 15
+}
+
+### 6. PUT - Amélioration d'un mage
+PUT {{baseUrl}}/character/dnd/{{characterId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Elara l'Archimage",
+  "leveling": 3,
+  "life": 30,
+  "picture": "archmage.jpg",
+  "background": "Sage",
+  "class": "Archimage",
+  "classArmor": 12,
+  "strong": 8,
+  "dexterity": 15,
+  "constitution": 13,
+  "intelligence": 20,
+  "wisdoms": 16,
+  "charism": 12
+}
+
+### ====================================
+### Tests spécifiques D&D - Validation des stats
+### ====================================
+
+### 7. POST - Personnage avec stats maximales D&D
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Héros Légendaire",
+  "leveling": 20,
+  "life": 200,
+  "picture": "legend.jpg",
+  "background": "Légende",
+  "class": "Champion",
+  "classArmor": 25,
+  "strong": 20,
+  "dexterity": 20,
+  "constitution": 20,
+  "intelligence": 20,
+  "wisdoms": 20,
+  "charism": 20
+}
+
+### 8. POST - Personnage avec stats minimales D&D
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Novice Débutant",
+  "leveling": 1,
+  "life": 6,
+  "picture": "novice.jpg",
+  "background": "Fermier",
+  "class": "Roturier",
+  "classArmor": 8,
+  "strong": 8,
+  "dexterity": 8,
+  "constitution": 8,
+  "intelligence": 8,
+  "wisdoms": 8,
+  "charism": 8
+}
+
+### ====================================
+### Tests d'erreurs spécifiques D&D
+### ====================================
+
+### 9. POST - Stats invalides (hors limites D&D)
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Personnage Impossible",
+  "leveling": 25,
+  "life": 1000,
+  "class": "Impossible",
+  "classArmor": 50,
+  "strong": 25,
+  "dexterity": -5,
+  "constitution": 0,
+  "intelligence": 30,
+  "wisdoms": -10,
+  "charism": 100
+}
+
+### 10. POST - Données manquantes D&D
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "",
+  "class": "",
+  "strong": null,
+  "dexterity": null
+}
+
+### ====================================
+### Tests de classes D&D populaires
+### ====================================
+
+### 11. POST - Barbare
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Grunk le Furieux",
+  "leveling": 6,
+  "life": 68,
+  "class": "Barbare",
+  "classArmor": 16,
+  "strong": 18,
+  "dexterity": 14,
+  "constitution": 17,
+  "intelligence": 8,
+  "wisdoms": 12,
+  "charism": 9
+}
+
+### 12. POST - Clerc
+POST {{baseUrl}}/character/dnd?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Sœur Luminara",
+  "leveling": 7,
+  "life": 52,
+  "class": "Clerc",
+  "classArmor": 18,
+  "strong": 14,
+  "dexterity": 10,
+  "constitution": 15,
+  "intelligence": 13,
+  "wisdoms": 18,
+  "charism": 16
+}

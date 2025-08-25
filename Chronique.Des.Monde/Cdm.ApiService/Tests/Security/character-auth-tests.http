@@ -1,0 +1,124 @@
+### Tests d'authentification et d'autorisation pour l'API Character
+### Importe la configuration depuis ../character-config.http
+
+### ====================================
+### Tests sans authentification
+### ====================================
+
+### 1. GET - Sans token d'authentification (doit retourner 401)
+GET {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Content-Type: application/json
+
+### 2. POST - Création sans token (doit retourner 401)
+POST {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Content-Type: application/json
+
+{
+  "name": "Personnage Non Autorisé",
+  "leveling": 1,
+  "life": 10,
+  "competences": {},
+  "stats": {}
+}
+
+### ====================================
+### Tests avec token invalide
+### ====================================
+
+### 3. GET - Token malformé
+GET {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: Bearer token-invalide
+Content-Type: application/json
+
+### 4. GET - Token expiré (simulé)
+GET {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+Content-Type: application/json
+
+### ====================================
+### Tests sans header X-GameType
+### ====================================
+
+### 5. GET - Sans header X-GameType (doit retourner erreur)
+GET {{baseUrl}}/character?userId={{userId}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### 6. POST - Création sans X-GameType
+POST {{baseUrl}}/character?userId={{userId}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Personnage Sans GameType",
+  "leveling": 1,
+  "life": 10,
+  "competences": {},
+  "stats": {}
+}
+
+### ====================================
+### Tests avec GameType invalide
+### ====================================
+
+### 7. GET - GameType non supporté
+GET {{baseUrl}}/character?userId={{userId}}
+X-GameType: pathfinder
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### 8. GET - GameType vide
+GET {{baseUrl}}/character?userId={{userId}}
+X-GameType: 
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### ====================================
+### Tests d'accès non autorisé
+### ====================================
+
+### 9. GET - Accès aux personnages d'un autre utilisateur
+GET {{baseUrl}}/character?userId=999
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### 10. PUT - Modification d'un personnage d'un autre utilisateur
+PUT {{baseUrl}}/character/{{characterId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Tentative de piratage",
+  "leveling": 999,
+  "life": 999,
+  "competences": {},
+  "stats": {}
+}
+
+### ====================================
+### Tests avec différents formats d'autorisation
+### ====================================
+
+### 11. GET - Format Bearer en minuscules
+GET {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: bearer {{authToken}}
+Content-Type: application/json
+
+### 12. GET - Sans le préfixe Bearer
+GET {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization: {{authToken}}
+Content-Type: application/json
+
+### 13. GET - Token avec espaces supplémentaires
+GET {{baseUrl}}/character?userId={{userId}}
+X-GameType: {{gameType}}
+Authorization:  Bearer  {{authToken}}  
+Content-Type: application/json

@@ -1,0 +1,95 @@
+﻿@page "/characters"
+
+<PageTitle>Personnages - Chronique des Mondes</PageTitle>
+
+<div class="characters-container">
+    <div class="page-header">
+        <h1 class="page-title">⚔️ Mes Personnages</h1>
+        <p class="page-subtitle">Gérez vos héros et créez de nouvelles légendes</p>
+        
+        <div class="character-actions">
+            <button class="btn btn-primary">Créer un Personnage</button>
+            <button class="btn btn-secondary">Importer</button>
+        </div>
+    </div>
+
+    <div class="characters-grid">
+        @foreach (var character in characters)
+        {
+            <div class="character-card @GetClassTheme(character.Class)">
+                <div class="character-portrait">
+                    <div class="portrait-icon">@character.Icon</div>
+                    <div class="character-level">Niv. @character.Level</div>
+                </div>
+                
+                <div class="character-info">
+                    <h3 class="character-name">@character.Name</h3>
+                    <p class="character-class-race">@character.Race @character.Class</p>
+                    
+                    <div class="character-stats">
+                        <div class="stat-group">
+                            <span class="stat-label">PV:</span>
+                            <span class="stat-value">@character.CurrentHP/@character.MaxHP</span>
+                        </div>
+                        <div class="stat-group">
+                            <span class="stat-label">CA:</span>
+                            <span class="stat-value">@character.ArmorClass</span>
+                        </div>
+                        <div class="stat-group">
+                            <span class="stat-label">XP:</span>
+                            <span class="stat-value">@character.Experience</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ability-scores">
+                        <div class="ability">
+                            <span class="ability-label">FOR</span>
+                            <span class="ability-score">@character.Strength</span>
+                        </div>
+                        <div class="ability">
+                            <span class="ability-label">DEX</span>
+                            <span class="ability-score">@character.Dexterity</span>
+                        </div>
+                        <div class="ability">
+                            <span class="ability-label">CON</span>
+                            <span class="ability-score">@character.Constitution</span>
+                        </div>
+                        <div class="ability">
+                            <span class="ability-label">INT</span>
+                            <span class="ability-score">@character.Intelligence</span>
+                        </div>
+                        <div class="ability">
+                            <span class="ability-label">SAG</span>
+                            <span class="ability-score">@character.Wisdom</span>
+                        </div>
+                        <div class="ability">
+                            <span class="ability-label">CHA</span>
+                            <span class="ability-score">@character.Charisma</span>
+                        </div>
+                    </div>
+                    
+                    <div class="character-campaign">
+                        <span class="campaign-label">Campagne:</span>
+                        <span class="campaign-name">@character.Campaign</span>
+                    </div>
+                </div>
+                
+                <div class="character-actions-card">
+                    <button class="btn btn-primary btn-sm">Jouer</button>
+                    <button class="btn btn-secondary btn-sm">Éditer</button>
+                    <button class="btn btn-outline btn-sm">Fiche</button>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!characters.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">🎭</div>
+            <h3>Aucun personnage créé</h3>
+            <p>Créez votre premier héros et commencez votre aventure !</p>
+            <button class="btn btn-primary">Créer mon Premier Héros</button>
+        </div>
+    }
+</div>
