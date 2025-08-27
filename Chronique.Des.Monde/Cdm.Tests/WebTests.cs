@@ -1,9 +1,8 @@
-namespace Cdm.Tests;
+﻿namespace Cdm.Tests;
 
-[TestClass]
 public class WebTests
 {
-    [TestMethod]
+    [Fact]
     public async Task GetWebResourceRootReturnsOkStatusCode()
     {
         // Arrange
@@ -23,6 +22,6 @@ public class WebTests
         var response = await httpClient.GetAsync("/");
 
         // Assert
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 }

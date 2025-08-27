@@ -1,7 +1,8 @@
 # Dossiers de build
 bin/
 obj/
-
+appsettings.json
+appsettings.Development.json
 # Fichiers de logs et diagnostics
 *.log
 
