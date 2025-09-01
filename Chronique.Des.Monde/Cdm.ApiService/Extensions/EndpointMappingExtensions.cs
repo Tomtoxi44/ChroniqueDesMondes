@@ -4,14 +4,19 @@ namespace Cdm.ApiService.Extensions;
 
 public static class EndpointMappingExtensions
 {
-    public static void MapAllEndpoints(this WebApplication app)
+    public static WebApplication MapAllEndpoints(this WebApplication app)
     {
-        // Existing endpoints
+        // Mapping des endpoints existants
         app.MapWeatherEndpoints();
         app.MapCharacterEndpoints();
+        app.MapInvitationEndpoints();
         app.MapContentBlockEndpoints();
         app.MapChapterEndpoints();
         app.MapNpcEndpoints();
-        app.MapInvitationEndpoints();
+
+        // Mapping des endpoints de sorts (API générique avec redispatch)
+        app.MapSpellEndpoints();
+
+        return app;
     }
 }

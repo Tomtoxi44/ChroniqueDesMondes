@@ -2,6 +2,8 @@
 
 using Cdm.Data.Models;
 using Cdm.Data.Models.Configuration;
+using Cdm.Data.Common.Models;
+using Cdm.Data.Common.Models.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 public class AppDbContext : DbContext
@@ -22,6 +24,9 @@ public class AppDbContext : DbContext
     public DbSet<CampaignInvitation> CampaignInvitations { get; set; }
     public DbSet<CampaignParticipant> CampaignParticipants { get; set; }
 
+    // Spell system DbSets (classe de base)
+    public DbSet<ASpell> Spells { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -37,5 +42,8 @@ public class AppDbContext : DbContext
         // Apply invitation system configurations
         modelBuilder.ApplyConfiguration(new CampaignInvitationConfiguration());
         modelBuilder.ApplyConfiguration(new CampaignParticipantConfiguration());
+
+        // Apply spell system configurations (classe de base)
+        modelBuilder.ApplyConfiguration(new ASpellConfiguration());
     }
 }

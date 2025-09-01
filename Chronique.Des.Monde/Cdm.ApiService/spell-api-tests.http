@@ -1,0 +1,91 @@
+﻿### Tests pour les endpoints Spell API - Pattern CharacterEndpoint
+### Remplace {userId} et {token} par les vraies valeurs
+
+@baseUrl = https://localhost:7001
+@userId = 1
+@token = YOUR_JWT_TOKEN_HERE
+
+### 1. Récupérer tous les sorts D&D disponibles pour un utilisateur
+GET {{baseUrl}}/api/spells?userId={{userId}}&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 2. Créer un sort générique
+POST {{baseUrl}}/api/spells?userId={{userId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Boule de feu personnalisée",
+  "description": "Une version personnalisée du sort boule de feu",
+  "gameType": "Generic",
+  "tags": ["feu", "dégâts", "zone"]
+}
+
+### 3. Créer un sort D&D spécialisé (avec endpoint dédié)
+POST {{baseUrl}}/api/spells/dnd?userId={{userId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Missile magique amélioré",
+  "description": "Une version améliorée du missile magique",
+  "school": "Évocation",
+  "level": 1,
+  "castingTime": "1 action",
+  "range": "30 mètres",
+  "duration": "Instantané",
+  "components": "V, S",
+  "attackRoll": "Auto-touche",
+  "damage": "1d4 + 1 par missile",
+  "isRitual": false,
+  "requiresConcentration": false,
+  "tags": ["force", "missile", "auto-touche"]
+}
+
+### 4. Récupérer un sort par ID
+GET {{baseUrl}}/api/spells/1?userId={{userId}}
+Authorization: Bearer {{token}}
+
+### 5. Rechercher des sorts
+GET {{baseUrl}}/api/spells/search?q=missile&userId={{userId}}&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 6. Mettre à jour un sort (générique)
+PUT {{baseUrl}}/api/spells/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Boule de feu modifiée",
+  "description": "Description mise à jour",
+  "gameType": "Generic",
+  "tags": ["feu", "dégâts", "zone", "modifié"]
+}
+
+### 7. Mettre à jour un sort D&D (avec propriétés spécialisées)
+PUT {{baseUrl}}/api/spells/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Missile magique super amélioré",
+  "description": "Version encore plus puissante",
+  "gameType": "DnD",
+  "tags": ["force", "missile", "amélioré"],
+  "specializedProperties": {
+    "School": "Évocation",
+    "Level": 2,
+    "CastingTime": "1 action",
+    "Range": "45 mètres",
+    "Duration": "Instantané",
+    "Components": "V, S",
+    "AttackRoll": "Auto-touche",
+    "Damage": "1d6 + 1 par missile",
+    "IsRitual": false,
+    "RequiresConcentration": false
+  }
+}
+
+### 8. Supprimer un sort
+DELETE {{baseUrl}}/api/spells/1
+Authorization: Bearer {{token}}

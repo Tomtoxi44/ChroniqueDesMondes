@@ -3,6 +3,7 @@ using Cdm.Data.Dnd.Models;
 using Cdm.Data.Models;
 using Cdm.Common.Enums;
 using Microsoft.EntityFrameworkCore;
+using Cdm.Data.Dnd.Models.Configuration;
 
 namespace Cdm.Data.Dnd;
 
@@ -20,6 +21,7 @@ public class DndDbContext : DbContext
     
     // D&D specific DbSets
     public DbSet<CharacterDnd> CharactersDnd { get; set; }
+    public DbSet<SpellDnd> SpellsDnd { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -78,5 +80,12 @@ public class DndDbContext : DbContext
         modelBuilder.Entity<ACharacter>()
             .Property(c => c.CreatedAt)
             .HasDefaultValueSql("GETUTCDATE()");
+
+        // Apply D&D specific configurations
+        // modelBuilder.ApplyConfiguration(new CharacterDndConfiguration());
+        modelBuilder.ApplyConfiguration(new SpellDndConfiguration());
+
+        // Apply spell base configuration
+        modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.ASpellConfiguration());
     }
 }
