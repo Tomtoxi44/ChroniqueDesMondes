@@ -298,7 +298,4 @@ public static class EquipmentExchangeEndpoints
 
 public record CreateOfferRequest(int CampaignId, int TargetPlayerId, int EquipmentId, int Quantity, string? Message);
 public record RespondToOfferRequest(bool Accepted, string? ResponseMessage);
-public record CreateTradeRequest(int CampaignId, int FromCharacterId, int ToPlayerId, int EquipmentId, int Quantity, string? Message);
-public record RespondToTradeRequest(bool Accepted);
-public record AddToInventoryRequest(int EquipmentId, int Quantity, string? Notes);
-public record EquipItemRequest(int EquipmentId, bool Equipped);
+public record ProposeTradeRequest(int CampaignId, int ToPlayerId, int EquipmentId, int Quantity, string? Message);
