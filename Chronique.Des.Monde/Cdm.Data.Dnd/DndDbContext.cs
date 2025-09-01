@@ -13,16 +13,28 @@ public class DndDbContext : DbContext
     {
     }
 
-    // Inclure tous les DbSets du AppDbContext
-    public DbSet<User> Users { get; set; }
-    public DbSet<Campaign> Campaigns { get; set; }
-    public DbSet<Chapter> Chapters { get; set; }
-    public DbSet<ContentBlock> ContentBlocks { get; set; }
-    
-    // D&D specific DbSets
+    // Character DbSets
     public DbSet<CharacterDnd> CharactersDnd { get; set; }
+
+    // Spell DbSets
     public DbSet<SpellDnd> SpellsDnd { get; set; }
+
+    // Equipment DbSets
     public DbSet<EquipmentDnd> EquipmentDnd { get; set; }
+
+    // Import shared entities from AppDbContext for navigation
+    public DbSet<Cdm.Data.Models.User> Users { get; set; }
+    public DbSet<Cdm.Data.Models.Campaign> Campaigns { get; set; }
+    public DbSet<Cdm.Data.Models.Chapter> Chapters { get; set; }
+    public DbSet<Cdm.Data.Models.ContentBlock> ContentBlocks { get; set; }
+
+    // Import character liaison entities
+    public DbSet<Cdm.Data.Common.Models.CharacterSpells> CharacterSpells { get; set; }
+    public DbSet<Cdm.Data.Common.Models.CharacterInventory> CharacterInventory { get; set; }
+
+    // Import equipment exchange entities
+    public DbSet<Cdm.Data.Common.Models.EquipmentOffer> EquipmentOffers { get; set; }
+    public DbSet<Cdm.Data.Common.Models.EquipmentTrade> EquipmentTrades { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,5 +48,13 @@ public class DndDbContext : DbContext
         // Apply base configurations
         modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.ASpellConfiguration());
         modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.AEquipmentConfiguration());
+        
+        // Apply character liaison configurations
+        modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.CharacterSpellsConfiguration());
+        modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.CharacterInventoryConfiguration());
+
+        // Apply equipment exchange configurations
+        modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.EquipmentOfferConfiguration());
+        modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.EquipmentTradeConfiguration());
     }
 }
