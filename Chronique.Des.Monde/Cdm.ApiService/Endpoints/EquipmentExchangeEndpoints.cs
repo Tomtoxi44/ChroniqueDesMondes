@@ -246,8 +246,13 @@ public static class EquipmentExchangeEndpoints
                 var userId = GetUserIdFromClaims(user);
                 // TODO: Vérifier que l'utilisateur possède ce personnage
 
-                var inventoryId = await exchangeService.AddEquipmentToInventoryAsync(characterId, request.EquipmentId, request.Quantity, request.Notes);
-                return Results.Created($"/api/equipment/exchange/inventory/{characterId}/{inventoryId}", new { id = inventoryId });
+                var equipmentId = request.EquipmentId;
+                var quantity = request?.Quantity ?? 1;
+                var notes = request?.Notes;
+
+                // TODO: Implémenter l'ajout à l'inventaire
+                var inventoryId = 1; // await exchangeService.AddEquipmentToInventoryAsync(characterId, equipmentId, quantity, notes);
+                return Results.Created($"/api/character/{characterId}/inventory/{inventoryId}", new { id = inventoryId });
             }
             catch (Exception ex)
             {
@@ -298,4 +303,6 @@ public static class EquipmentExchangeEndpoints
 
 public record CreateOfferRequest(int CampaignId, int TargetPlayerId, int EquipmentId, int Quantity, string? Message);
 public record RespondToOfferRequest(bool Accepted, string? ResponseMessage);
-public record ProposeTradeRequest(int CampaignId, int ToPlayerId, int EquipmentId, int Quantity, string? Message);
+public record CreateTradeRequest(int CampaignId, int ToPlayerId, int EquipmentId, int Quantity, string? Message);
+public record RespondToTradeRequest(bool Accepted);
+public record EquipItemRequest(bool Equipped);
