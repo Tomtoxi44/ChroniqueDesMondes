@@ -33,6 +33,9 @@ public class AppDbContext : DbContext
     public DbSet<EquipmentTrade> EquipmentTrades { get; set; }
     public DbSet<CharacterInventory> CharacterInventory { get; set; }
 
+    // Character ↔ Spell liaison DbSets
+    public DbSet<CharacterSpells> CharacterSpells { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -57,5 +60,8 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new EquipmentOfferConfiguration());
         modelBuilder.ApplyConfiguration(new EquipmentTradeConfiguration());
         modelBuilder.ApplyConfiguration(new CharacterInventoryConfiguration());
+
+        // Apply character liaison configurations
+        modelBuilder.ApplyConfiguration(new CharacterSpellsConfiguration());
     }
 }

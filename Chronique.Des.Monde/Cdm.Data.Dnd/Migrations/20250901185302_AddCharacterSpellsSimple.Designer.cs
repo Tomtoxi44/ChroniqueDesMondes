@@ -4,6 +4,7 @@ using Cdm.Data.Dnd;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cdm.Data.Dnd.Migrations
 {
     [DbContext(typeof(DndDbContext))]
-    partial class DndDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250901185302_AddCharacterSpellsSimple")]
+    partial class AddCharacterSpellsSimple
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,135 +121,6 @@ namespace Cdm.Data.Dnd.Migrations
                         .HasDatabaseName("IX_CharacterSpells_Character_Spell");
 
                     b.ToTable("CharacterSpells", (string)null);
-                });
-
-            modelBuilder.Entity("Cdm.Data.Common.Models.EquipmentOffer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CampaignId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<int>("EquipmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GameMasterId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Message")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("RespondedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ResponseMessage")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)")
-                        .HasDefaultValue("Pending");
-
-                    b.Property<int>("TargetPlayerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CampaignId")
-                        .HasDatabaseName("IX_EquipmentOffers_CampaignId");
-
-                    b.HasIndex("EquipmentId");
-
-                    b.HasIndex("GameMasterId");
-
-                    b.HasIndex("Status")
-                        .HasDatabaseName("IX_EquipmentOffers_Status");
-
-                    b.HasIndex("TargetPlayerId")
-                        .HasDatabaseName("IX_EquipmentOffers_TargetPlayerId");
-
-                    b.HasIndex("CampaignId", "TargetPlayerId", "Status")
-                        .HasDatabaseName("IX_EquipmentOffers_Campaign_Player_Status");
-
-                    b.ToTable("EquipmentOffers", (string)null);
-                });
-
-            modelBuilder.Entity("Cdm.Data.Common.Models.EquipmentTrade", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CampaignId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<int>("EquipmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FromPlayerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Message")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)")
-                        .HasDefaultValue("Pending");
-
-                    b.Property<int>("ToPlayerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CampaignId")
-                        .HasDatabaseName("IX_EquipmentTrades_CampaignId");
-
-                    b.HasIndex("EquipmentId");
-
-                    b.HasIndex("FromPlayerId")
-                        .HasDatabaseName("IX_EquipmentTrades_FromPlayerId");
-
-                    b.HasIndex("Status")
-                        .HasDatabaseName("IX_EquipmentTrades_Status");
-
-                    b.HasIndex("ToPlayerId")
-                        .HasDatabaseName("IX_EquipmentTrades_ToPlayerId");
-
-                    b.HasIndex("CampaignId", "Status")
-                        .HasDatabaseName("IX_EquipmentTrades_Campaign_Status");
-
-                    b.ToTable("EquipmentTrades", (string)null);
                 });
 
             modelBuilder.Entity("Cdm.Data.Models.ACharacter", b =>
@@ -892,76 +766,6 @@ namespace Cdm.Data.Dnd.Migrations
                     b.Navigation("Character");
 
                     b.Navigation("Equipment");
-                });
-
-            modelBuilder.Entity("Cdm.Data.Common.Models.EquipmentOffer", b =>
-                {
-                    b.HasOne("Cdm.Data.Models.Campaign", "Campaign")
-                        .WithMany()
-                        .HasForeignKey("CampaignId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Cdm.Data.Models.AEquipment", "Equipment")
-                        .WithMany()
-                        .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Cdm.Data.Models.User", "GameMaster")
-                        .WithMany()
-                        .HasForeignKey("GameMasterId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Cdm.Data.Models.User", "TargetPlayer")
-                        .WithMany()
-                        .HasForeignKey("TargetPlayerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Campaign");
-
-                    b.Navigation("Equipment");
-
-                    b.Navigation("GameMaster");
-
-                    b.Navigation("TargetPlayer");
-                });
-
-            modelBuilder.Entity("Cdm.Data.Common.Models.EquipmentTrade", b =>
-                {
-                    b.HasOne("Cdm.Data.Models.Campaign", "Campaign")
-                        .WithMany()
-                        .HasForeignKey("CampaignId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Cdm.Data.Models.AEquipment", "Equipment")
-                        .WithMany()
-                        .HasForeignKey("EquipmentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Cdm.Data.Models.User", "FromPlayer")
-                        .WithMany()
-                        .HasForeignKey("FromPlayerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Cdm.Data.Models.User", "ToPlayer")
-                        .WithMany()
-                        .HasForeignKey("ToPlayerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Campaign");
-
-                    b.Navigation("Equipment");
-
-                    b.Navigation("FromPlayer");
-
-                    b.Navigation("ToPlayer");
                 });
 
             modelBuilder.Entity("Cdm.Data.Models.ACharacter", b =>

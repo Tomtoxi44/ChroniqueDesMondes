@@ -1,0 +1,153 @@
+﻿### Tests pour les endpoints Character Spells API
+### Remplace {characterId}, {spellId} et {token} par les vraies valeurs
+
+@baseUrl = https://localhost:7001
+@characterId = 1
+@spellId = 1
+@token = YOUR_JWT_TOKEN_HERE
+
+### === GESTION DES SORTS DU PERSONNAGE ===
+
+### 1. Récupérer tous les sorts d'un personnage
+GET {{baseUrl}}/api/characters/{{characterId}}/spells
+Authorization: Bearer {{token}}
+
+### 2. Récupérer les sorts préparés d'un personnage (D&D)
+GET {{baseUrl}}/api/characters/{{characterId}}/spells/prepared
+Authorization: Bearer {{token}}
+
+### 3. Récupérer les sorts disponibles pour un personnage (avec validation de compatibilité)
+GET {{baseUrl}}/api/characters/{{characterId}}/spells/available
+Authorization: Bearer {{token}}
+
+### 4. Rechercher des sorts compatibles avec un personnage
+GET {{baseUrl}}/api/characters/{{characterId}}/spells/search?q=boule de feu
+Authorization: Bearer {{token}}
+
+### 5. Apprendre un sort à un personnage
+POST {{baseUrl}}/api/characters/{{characterId}}/spells/{{spellId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "notes": "Sort appris en montant de niveau"
+}
+
+### 6. Mettre à jour les propriétés d'un sort du personnage
+PUT {{baseUrl}}/api/characters/{{characterId}}/spells/{{spellId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "notes": "Sort favori du personnage",
+  "isPrepared": true,
+  "spellSlotLevel": 3,
+  "customName": "Boule de feu de Gandalf"
+}
+
+### 7. Préparer un sort (D&D)
+PUT {{baseUrl}}/api/characters/{{characterId}}/spells/{{spellId}}/prepare
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "isPrepared": true
+}
+
+### 8. Dépréparer un sort (D&D)
+PUT {{baseUrl}}/api/characters/{{characterId}}/spells/{{spellId}}/prepare
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "isPrepared": false
+}
+
+### 9. Définir le niveau d'emplacement pour lancer un sort (D&D)
+PUT {{baseUrl}}/api/characters/{{characterId}}/spells/{{spellId}}/slot-level
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "slotLevel": 4
+}
+
+### 10. Réinitialiser le niveau d'emplacement
+PUT {{baseUrl}}/api/characters/{{characterId}}/spells/{{spellId}}/slot-level
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "slotLevel": null
+}
+
+### 11. Faire oublier un sort à un personnage
+DELETE {{baseUrl}}/api/characters/{{characterId}}/spells/{{spellId}}
+Authorization: Bearer {{token}}
+
+### === TESTS D'ERREURS ET VALIDATION ===
+
+### 12. Tentative d'apprendre un sort incompatible (doit échouer si SpellDnd sur CharacterGeneric)
+POST {{baseUrl}}/api/characters/{{characterId}}/spells/99
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "notes": "Ce sort ne devrait pas être compatible"
+}
+
+### 13. Tentative d'apprendre un sort déjà connu (doit échouer)
+POST {{baseUrl}}/api/characters/{{characterId}}/spells/{{spellId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "notes": "Sort déjà appris"
+}
+
+### 14. Tentative de modifier un sort non appris (doit retourner 404)
+PUT {{baseUrl}}/api/characters/{{characterId}}/spells/999
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "notes": "Sort inexistant"
+}
+
+### 15. Tentative de supprimer un sort non appris (doit retourner 404)
+DELETE {{baseUrl}}/api/characters/{{characterId}}/spells/999
+Authorization: Bearer {{token}}
+
+### === SCÉNARIOS D'USAGE D&D ===
+
+### 16. Workflow complet D&D : Apprendre → Préparer → Définir niveau → Lancer
+# Étape 1: Apprendre un sort de niveau 1
+POST {{baseUrl}}/api/characters/{{characterId}}/spells/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "notes": "Sort de base niveau 1"
+}
+
+### 17. Étape 2: Préparer le sort
+PUT {{baseUrl}}/api/characters/{{characterId}}/spells/1/prepare
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "isPrepared": true
+}
+
+### 18. Étape 3: Le lancer avec un emplacement de niveau supérieur
+PUT {{baseUrl}}/api/characters/{{characterId}}/spells/1/slot-level
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "slotLevel": 3
+}
+
+### 19. Vérifier le statut final du sort
+GET {{baseUrl}}/api/characters/{{characterId}}/spells
+Authorization: Bearer {{token}}

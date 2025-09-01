@@ -10,6 +10,7 @@
     <ProjectReference Include="..\Cdm.Data.Common\Cdm.Data.Common.csproj" />
     <ProjectReference Include="..\Chronique.Des.Monde.Common\Cdm.Common.csproj" />
     <ProjectReference Include="..\Cdm.Data.Dnd\Cdm.Data.Dnd.csproj" />
+    <ProjectReference Include="..\Cmd.Abstraction\Cmd.Abstraction.csproj" />
   </ItemGroup>
 
 </Project>

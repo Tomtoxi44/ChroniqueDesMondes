@@ -1,5 +1,7 @@
 ﻿using Cdm.Business.Common.Business.Campaigns;
 using Cdm.Business.Common.Business.Spells;
+using Cdm.Business.Common.Business.Characters;
+using Cdm.Business.Common.Business.Equipment;
 using Cdm.Data;
 using Microsoft.EntityFrameworkCore;
 using Cdm.Data.Dnd;
@@ -7,6 +9,8 @@ using Cdm.Common.Services;
 using Cdm.Common;
 using Cdm.Business.Common.Business.Users;
 using Cdm.Business.Dnd.Extensions;
+using Cmd.Abstraction.Characters;
+using Cmd.Abstraction.Equipment;
 
 namespace Cdm.ApiService.Extensions;
 
@@ -24,6 +28,8 @@ public static class ServiceCollectionExtensions
         
         // Services de gestion des sorts
         services.AddScoped<ISpellService, SpellService>();
+        services.AddScoped<ICharacterSpellService, CharacterSpellService>();
+        services.AddScoped<IEquipmentExchangeService, EquipmentExchangeService>();
         
         // Services métier spécialisés D&D
         services.AddDndBusiness();
