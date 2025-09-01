@@ -24,6 +24,9 @@ public static class EndpointMappingExtensions
         // Mapping des endpoints d'attribution sorts/équipements aux personnages
         app.MapCharacterSpellEndpoints();
 
+        // Mapping des endpoints de calculs automatiques D&D
+        app.MapDndCalculatorEndpoints();
+
         return app;
     }
 }

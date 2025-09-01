@@ -24,6 +24,7 @@
     <ProjectReference Include="..\Cdm.Business.Common\Cdm.Business.Common.csproj" />
     <ProjectReference Include="..\Cdm.Data.Common\Cdm.Data.Common.csproj" />
     <ProjectReference Include="..\Cdm.Business.Dnd\Cdm.Business.Dnd.csproj" />
+    <ProjectReference Include="..\Chronique.Des.Monde.Common\Cdm.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
