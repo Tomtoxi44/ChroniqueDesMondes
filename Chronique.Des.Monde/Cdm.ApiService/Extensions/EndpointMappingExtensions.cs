@@ -17,6 +17,10 @@ public static class EndpointMappingExtensions
         // Mapping des endpoints de sorts (API générique avec redispatch)
         app.MapSpellEndpoints();
 
+        // Mapping des endpoints d'équipements (API générique avec redispatch)
+        app.MapEquipmentEndpoints();
+        app.MapEquipmentExchangeEndpoints();
+
         return app;
     }
 }

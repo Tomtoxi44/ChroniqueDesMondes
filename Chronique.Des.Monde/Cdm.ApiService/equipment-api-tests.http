@@ -1,0 +1,179 @@
+﻿### Tests pour les endpoints Equipment API - Pattern CharacterEndpoint
+### Remplace {userId}, {campaignId} et {token} par les vraies valeurs
+
+@baseUrl = https://localhost:7001
+@userId = 1
+@campaignId = 1
+@characterId = 1
+@token = YOUR_JWT_TOKEN_HERE
+
+### === GESTION DES ÉQUIPEMENTS ===
+
+### 1. Récupérer tous les équipements D&D disponibles pour un utilisateur
+GET {{baseUrl}}/api/equipment?userId={{userId}}&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 2. Créer un équipement générique
+POST {{baseUrl}}/api/equipment?userId={{userId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Épée personnalisée",
+  "description": "Une épée forgée par un maître artisan",
+  "category": "Weapon",
+  "weight": 3.5,
+  "value": 150.0,
+  "gameType": "Generic",
+  "tags": ["épée", "arme", "métal"]
+}
+
+### 3. Créer un équipement D&D spécialisé (avec endpoint dédié)
+POST {{baseUrl}}/api/equipment/dnd?userId={{userId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Épée longue +1",
+  "description": "Une épée longue enchantée avec un bonus magique",
+  "category": "Weapon",
+  "weight": 3.0,
+  "value": 1000.0,
+  "tags": ["épée", "magique", "+1"],
+  "weaponType": "Longsword",
+  "damage": "1d8 + STR",
+  "damageType": "Slashing",
+  "attackBonus": 1,
+  "properties": "Versatile (1d10)",
+  "isWeapon": true,
+  "isMagical": true,
+  "rarity": "Uncommon"
+}
+
+### 4. Récupérer un équipement par ID
+GET {{baseUrl}}/api/equipment/1?userId={{userId}}
+Authorization: Bearer {{token}}
+
+### 5. Rechercher des équipements
+GET {{baseUrl}}/api/equipment/search?q=épée&userId={{userId}}&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 6. Récupérer les équipements par catégorie (armes)
+GET {{baseUrl}}/api/equipment/category/Weapon?userId={{userId}}&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 7. Mettre à jour un équipement (générique)
+PUT {{baseUrl}}/api/equipment/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Épée personnalisée modifiée",
+  "description": "Description mise à jour",
+  "category": "Weapon",
+  "weight": 3.2,
+  "value": 200.0,
+  "gameType": "Generic",
+  "tags": ["épée", "arme", "métal", "modifiée"]
+}
+
+### 8. Supprimer un équipement
+DELETE {{baseUrl}}/api/equipment/1
+Authorization: Bearer {{token}}
+
+### === ÉCHANGES D'ÉQUIPEMENTS ===
+
+### 9. MJ propose un équipement à un joueur
+POST {{baseUrl}}/api/equipment/exchange/offer
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "campaignId": {{campaignId}},
+  "targetPlayerId": 2,
+  "equipmentId": 1,
+  "quantity": 1,
+  "message": "Voici une épée pour votre quête !"
+}
+
+### 10. Joueur consulte ses propositions reçues
+GET {{baseUrl}}/api/equipment/exchange/offers/received?campaignId={{campaignId}}
+Authorization: Bearer {{token}}
+
+### 11. MJ consulte ses propositions envoyées
+GET {{baseUrl}}/api/equipment/exchange/offers/sent?campaignId={{campaignId}}
+Authorization: Bearer {{token}}
+
+### 12. Joueur accepte une proposition
+PUT {{baseUrl}}/api/equipment/exchange/offer/1/respond
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "accepted": true,
+  "responseMessage": "Merci pour cette épée !"
+}
+
+### 13. Proposer un échange entre joueurs
+POST {{baseUrl}}/api/equipment/exchange/trade
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "campaignId": {{campaignId}},
+  "fromCharacterId": {{characterId}},
+  "toPlayerId": 2,
+  "equipmentId": 1,
+  "quantity": 1,
+  "message": "Veux-tu échanger cette épée ?"
+}
+
+### 14. Consulter les échanges d'un joueur
+GET {{baseUrl}}/api/equipment/exchange/trades?campaignId={{campaignId}}
+Authorization: Bearer {{token}}
+
+### 15. Répondre à un échange
+PUT {{baseUrl}}/api/equipment/exchange/trade/1/respond
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "accepted": true
+}
+
+### === INVENTAIRE ===
+
+### 16. Consulter l'inventaire d'un personnage
+GET {{baseUrl}}/api/equipment/exchange/inventory/{{characterId}}
+Authorization: Bearer {{token}}
+
+### 17. Ajouter un équipement à l'inventaire
+POST {{baseUrl}}/api/equipment/exchange/inventory/{{characterId}}/add
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "equipmentId": 1,
+  "quantity": 1,
+  "notes": "Trouvé dans le donjon"
+}
+
+### 18. Équiper un objet
+PUT {{baseUrl}}/api/equipment/exchange/inventory/{{characterId}}/equip
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "equipmentId": 1,
+  "equipped": true
+}
+
+### 19. Déséquiper un objet
+PUT {{baseUrl}}/api/equipment/exchange/inventory/{{characterId}}/equip
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "equipmentId": 1,
+  "equipped": false
+}
