@@ -46,15 +46,4 @@ public class SpellDnd : ASpell
     public string MaterialComponent { get; set; } = string.Empty; // Description des composantes matérielles
 
     public int? HigherLevelDamage { get; set; } // Dégâts supplémentaires par niveau
-
-    // === NOUVELLES PROPRIÉTÉS AJOUTÉES POUR LA PRIORITÉ 2 ===
-    
-    [MaxLength(50)]
-    public string DamageType { get; set; } = string.Empty; // Ex: "Feu", "Froid", "Radiant"
-
-    [MaxLength(50)]
-    public string SaveType { get; set; } = string.Empty; // Ex: "Dextérité", "Sagesse", "Constitution"
-
-    [MaxLength(50)]
-    public string AttackType { get; set; } = string.Empty; // Ex: "Attaque de sort à distance", "Attaque de sort au corps à corps"
 }

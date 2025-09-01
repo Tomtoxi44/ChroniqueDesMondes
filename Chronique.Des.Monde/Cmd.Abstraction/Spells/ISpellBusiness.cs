@@ -1,5 +1,4 @@
-﻿using Cdm.Business.Common.Models.Spells;
-using Cdm.Common.Enums;
+﻿using Cdm.Common.Enums;
 
 namespace Cmd.Abstraction.Spells;
 
@@ -8,43 +7,12 @@ namespace Cmd.Abstraction.Spells;
 /// </summary>
 public interface ISpellBusiness
 {
-    // === MÉTHODES EXISTANTES ===
-    Task<IEnumerable<SpellView>> GetAllSpellsByUserId(int userId, GameType gameType);
-    Task<SpellView> GetSpellById(int id, int userId);
-    Task<SpellView> CreateSpell(SpellRequest request, int userId);
-    Task<SpellView> UpdateSpell(SpellRequest request, int id, int userId);
-    Task DeleteSpell(int id, int userId);
-    Task<IEnumerable<SpellView>> SearchSpells(string searchText, int userId, GameType gameType);
-
-    // === NOUVELLES MÉTHODES SELON DOCUMENTATION ===
-
-    /// <summary>
-    /// Récupère les sorts officiels uniquement (créés par l'administration)
-    /// Visible par tous les utilisateurs
-    /// </summary>
-    Task<IEnumerable<SpellView>> GetOfficialSpellsAsync(GameType gameType);
-
-    /// <summary>
-    /// Récupère les sorts privés d'un utilisateur spécifique uniquement
-    /// Visible uniquement par le créateur
-    /// </summary>
-    Task<IEnumerable<SpellView>> GetUserPrivateSpellsAsync(int userId, GameType gameType);
-
-    /// <summary>
-    /// Vérifie si un utilisateur peut modifier un sort
-    /// (sorts officiels non modifiables, sorts privés modifiables par leur créateur)
-    /// </summary>
-    Task<bool> CanUserModifySpellAsync(int userId, int spellId);
-
-    /// <summary>
-    /// Récupère les sorts par école de magie (D&D uniquement)
-    /// </summary>
-    Task<IEnumerable<SpellView>> GetSpellsBySchoolAsync(string school, int userId, GameType gameType);
-
-    /// <summary>
-    /// Récupère les sorts par niveau (D&D uniquement)
-    /// </summary>
-    Task<IEnumerable<SpellView>> GetSpellsByLevelAsync(int level, int userId, GameType gameType);
+    Task<IEnumerable<ISpellView>> GetAllSpellsByUserId(int userId, GameType gameType);
+    Task<ISpellView> GetSpellById(int spellId, int userId);
+    Task<ISpellView> CreateSpell(SpellRequest spell, int userId);
+    Task<ISpellView> UpdateSpell(SpellRequest spell, int spellId, int userId);
+    Task DeleteSpell(int spellId, int userId);
+    Task<IEnumerable<ISpellView>> SearchSpells(string searchText, int userId, GameType gameType);
 }
 
 /// <summary>

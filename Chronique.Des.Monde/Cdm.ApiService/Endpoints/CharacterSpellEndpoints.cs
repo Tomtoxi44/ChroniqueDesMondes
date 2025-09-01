@@ -220,44 +220,6 @@ public static class CharacterSpellEndpoints
                 return Results.BadRequest(new { error = ex.Message });
             }
         });
-
-        // GET /api/character/{id}/inventory - Inventaire du personnage (NOUVEAU selon doc)
-        characterSpellGroup.MapGet("/../../character/{characterId:int}/inventory", async (
-            int characterId,
-            ClaimsPrincipal user) =>
-        {
-            try
-            {
-                var userId = GetUserIdFromClaims(user);
-                // TODO: Implémenter la récupération d'inventaire
-                // Temporairement retourner un objet vide
-                return Results.Ok(new { message = "Inventaire endpoint disponible - implémentation en cours", characterId });
-            }
-            catch (Exception ex)
-            {
-                return Results.BadRequest(new { error = ex.Message });
-            }
-        });
-
-        // POST /api/character/{id}/inventory/{equipmentId} - Ajouter équipement (NOUVEAU selon doc)
-        characterSpellGroup.MapPost("/../../character/{characterId:int}/inventory/{equipmentId:int}", async (
-            int characterId,
-            int equipmentId,
-            [FromBody] AddToInventoryRequest? request,
-            ClaimsPrincipal user) =>
-        {
-            try
-            {
-                var userId = GetUserIdFromClaims(user);
-                // TODO: Implémenter l'ajout à l'inventaire
-                return Results.Created($"/api/character/{characterId}/inventory/1", 
-                    new { message = "Ajout à l'inventaire - implémentation en cours", characterId, equipmentId });
-            }
-            catch (Exception ex)
-            {
-                return Results.BadRequest(new { error = ex.Message });
-            }
-        });
     }
 
     private static int GetUserIdFromClaims(ClaimsPrincipal user)
@@ -276,4 +238,3 @@ public static class CharacterSpellEndpoints
 public record LearnSpellRequest(string? Notes);
 public record PrepareSpellRequest(bool IsPrepared);
 public record SetSpellSlotRequest(int? SlotLevel);
-public record AddToInventoryRequest(int Quantity, string? Notes);

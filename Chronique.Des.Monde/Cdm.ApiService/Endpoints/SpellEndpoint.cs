@@ -10,7 +10,7 @@ namespace Cdm.ApiService.Endpoints;
 
 /// <summary>
 /// Endpoints pour la gestion des sorts - API générique qui redispatch selon le GameType
-/// Suit exactement le pattern des équipements avec injection par clé
+/// Suit exactement le pattern CharacterEndpoint avec injection par clé
 /// </summary>
 public static class SpellEndpoint
 {
@@ -18,7 +18,7 @@ public static class SpellEndpoint
     {
         var spellGroup = app.MapGroup("/api/spells").RequireAuthorization();
 
-        // GET /api/spells?userId={id}&gameType={type} - Sorts officiels + privés utilisateur (EXISTANT)
+        // GET /api/spells?userId={id}&gameType={type} - Liste des sorts d'un utilisateur
         spellGroup.MapGet("/", async (
             int userId, 
             GameType gameType,
@@ -29,6 +29,7 @@ public static class SpellEndpoint
             {
                 var requestingUserId = GetUserIdFromClaims(user);
                 
+                // Validation : un utilisateur ne peut voir que ses propres sorts
                 if (requestingUserId != userId)
                 {
                     return Results.Forbid();
@@ -43,49 +44,7 @@ public static class SpellEndpoint
             }
         });
 
-        // GET /api/spells/official?gameType={type} - Sorts officiels uniquement (NOUVEAU)
-        spellGroup.MapGet("/official", async (
-            GameType gameType,
-            [FromKeyedServices(DndBusinessExtensions.DndKey)] ISpellBusiness spellBusiness,
-            ClaimsPrincipal user) =>
-        {
-            try
-            {
-                var spells = await spellBusiness.GetOfficialSpellsAsync(gameType);
-                return Results.Ok(spells);
-            }
-            catch (Exception ex)
-            {
-                return Results.BadRequest(new { error = ex.Message });
-            }
-        });
-
-        // GET /api/spells/user?gameType={type}&userId={id} - Sorts privés utilisateur uniquement (NOUVEAU)
-        spellGroup.MapGet("/user", async (
-            GameType gameType,
-            int userId,
-            [FromKeyedServices(DndBusinessExtensions.DndKey)] ISpellBusiness spellBusiness,
-            ClaimsPrincipal user) =>
-        {
-            try
-            {
-                var requestingUserId = GetUserIdFromClaims(user);
-                
-                if (requestingUserId != userId)
-                {
-                    return Results.Forbid();
-                }
-
-                var spells = await spellBusiness.GetUserPrivateSpellsAsync(userId, gameType);
-                return Results.Ok(spells);
-            }
-            catch (Exception ex)
-            {
-                return Results.BadRequest(new { error = ex.Message });
-            }
-        });
-
-        // GET /api/spells/{id}?userId={userId} - Détails d'un sort (EXISTANT)
+        // GET /api/spells/{id}?userId={userId} - Détails d'un sort
         spellGroup.MapGet("/{id:int}", async (
             int id, 
             int userId,
@@ -114,7 +73,7 @@ public static class SpellEndpoint
             }
         });
 
-        // POST /api/spells?userId={id} - Création d'un sort privé utilisateur (EXISTANT mais amélioré)
+        // POST /api/spells?userId={id} - Création d'un sort générique
         spellGroup.MapPost("/", async (
             int userId, 
             [FromBody] SpellRequest request, 
@@ -139,7 +98,7 @@ public static class SpellEndpoint
             }
         });
 
-        // POST /api/spells/dnd?userId={id} - Création D&D avec propriétés spécialisées (EXISTANT)
+        // POST /api/spells/dnd?userId={id} - Création D&D avec propriétés spécialisées
         spellGroup.MapPost("/dnd", async (
             int userId, 
             [FromBody] SpellDndRequest request, 
@@ -165,20 +124,25 @@ public static class SpellEndpoint
                     Tags = request.Tags,
                     SpecializedProperties = new Dictionary<string, object>
                     {
-                        { "Level", request.Level },
                         { "School", request.School },
+                        { "Level", request.Level },
                         { "CastingTime", request.CastingTime },
                         { "Range", request.Range },
-                        { "Components", request.Components },
                         { "Duration", request.Duration },
+                        { "Components", request.Components },
+                        { "AttackRoll", request.AttackRoll ?? "" },
+                        { "Damage", request.Damage ?? "" },
+                        { "SavingThrow", request.SavingThrow ?? "" },
                         { "IsRitual", request.IsRitual },
                         { "RequiresConcentration", request.RequiresConcentration },
-                        { "Damage", request.Damage ?? "" },
-                        { "DamageType", request.DamageType ?? "" },
-                        { "SaveType", request.SaveType ?? "" },
-                        { "AttackType", request.AttackType ?? "" }
+                        { "MaterialComponent", request.MaterialComponent ?? "" }
                     }
                 };
+
+                if (request.HigherLevelDamage.HasValue)
+                {
+                    spellRequest.SpecializedProperties["HigherLevelDamage"] = request.HigherLevelDamage.Value;
+                }
 
                 var spell = await spellBusiness.CreateSpell(spellRequest, userId);
                 return Results.Created($"/api/spells/{spell.Id}", spell);
@@ -189,7 +153,7 @@ public static class SpellEndpoint
             }
         });
 
-        // PUT /api/spells/{id} - Modification d'un sort (EXISTANT)
+        // PUT /api/spells/{id} - Modification d'un sort
         spellGroup.MapPut("/{id:int}", async (
             int id, 
             [FromBody] SpellRequest request, 
@@ -212,7 +176,7 @@ public static class SpellEndpoint
             }
         });
 
-        // DELETE /api/spells/{id} - Suppression d'un sort (EXISTANT)
+        // DELETE /api/spells/{id} - Suppression d'un sort
         spellGroup.MapDelete("/{id:int}", async (
             int id, 
             [FromKeyedServices(DndBusinessExtensions.DndKey)] ISpellBusiness spellBusiness,
@@ -234,7 +198,7 @@ public static class SpellEndpoint
             }
         });
 
-        // GET /api/spells/search?q={text}&userId={id}&gameType={type} - Recherche de sorts (EXISTANT)
+        // GET /api/spells/search?q={text}&userId={id}&gameType={type} - Recherche de sorts
         spellGroup.MapGet("/search", async (
             string q,
             int userId,
