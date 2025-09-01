@@ -1,0 +1,7 @@
+﻿# Ignore configuration files with secrets
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+Cdm.ApiService/appsettings.json
+Cdm.ApiService/appsettings.Development.json
+Cdm.ApiService/appsettings.Production.json

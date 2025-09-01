@@ -34,6 +34,12 @@
 - **Mettre à jour ce fichier** si de nouvelles conventions sont décidées.
 - **Se référer à ce fichier** pour toute question de style ou d’architecture.
 
+## Règles Générales
+
+- Toujours suivre l'architecture du projet existant.
+- Prendre exemple sur l'existant pour toute nouvelle fonctionnalité ou modification.
+- Toujours privilégier la cohérence avec le code et la structure déjà présents.
+
 ---
 
 **Ce fichier sert de référence pour GitHub Copilot et tout développeur du projet.**

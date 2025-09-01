@@ -1,4 +1,5 @@
 ﻿using Cdm.Business.Common.Business.Campaigns;
+using Cdm.Business.Common.Business.Spells;
 using Cdm.Data;
 using Microsoft.EntityFrameworkCore;
 using Cdm.Data.Dnd;
@@ -20,6 +21,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<NpcBusiness>();
         services.AddScoped<UserBusiness>();
         services.AddScoped<InvitationService>();
+        
+        // Services de gestion des sorts
+        services.AddScoped<ISpellService, SpellService>();
         
         // Services métier spécialisés D&D
         services.AddDndBusiness();
