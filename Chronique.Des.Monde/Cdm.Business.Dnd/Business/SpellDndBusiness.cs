@@ -1,5 +1,6 @@
 ﻿using Cdm.Data.Dnd;
 using Cdm.Data.Dnd.Models;
+using Cdm.Data.Models;
 using Cdm.Business.Dnd.Models.Spells;
 using Cdm.Common;
 using Cdm.Common.Enums;

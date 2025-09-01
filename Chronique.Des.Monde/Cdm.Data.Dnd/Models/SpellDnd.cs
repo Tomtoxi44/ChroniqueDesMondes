@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Cdm.Data.Models;
+using Cdm.Data.Dnd.Models;
 
 namespace Cdm.Data.Dnd.Models;
 

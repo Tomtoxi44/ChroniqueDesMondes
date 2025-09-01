@@ -3,6 +3,7 @@ using Cdm.Data.Dnd.Models;
 using Cdm.Data.Models;
 using Cdm.Common.Enums;
 using Microsoft.EntityFrameworkCore;
+using Cdm.Data.Dnd.Models.Configuration;
 
 namespace Cdm.Data.Dnd;
 
@@ -81,7 +82,7 @@ public class DndDbContext : DbContext
             .HasDefaultValueSql("GETUTCDATE()");
 
         // Apply D&D specific configurations
-        modelBuilder.ApplyConfiguration(new CharacterDndConfiguration());
+        // modelBuilder.ApplyConfiguration(new CharacterDndConfiguration());
         modelBuilder.ApplyConfiguration(new SpellDndConfiguration());
 
         // Apply spell base configuration

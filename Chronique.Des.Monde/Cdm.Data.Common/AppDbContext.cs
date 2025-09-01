@@ -2,6 +2,8 @@
 
 using Cdm.Data.Models;
 using Cdm.Data.Models.Configuration;
+using Cdm.Data.Common.Models;
+using Cdm.Data.Common.Models.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 public class AppDbContext : DbContext
