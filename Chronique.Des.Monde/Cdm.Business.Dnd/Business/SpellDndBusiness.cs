@@ -233,6 +233,192 @@ public class SpellDndBusiness : ISpellBusiness
         return spells.Select(this.MapToView).ToList();
     }
 
+    // === NOUVELLES MÉTHODES SELON DOCUMENTATION ===
+    
+    public async Task<IEnumerable<SpellView>> GetOfficialSpellsAsync(GameType gameType)
+    {
+        this.logger.LogInformation("Getting official spells for gameType {GameType}", gameType);
+
+        var query = this.context.SpellsDnd
+            .Where(s => s.IsActive && s.CreatedByUserId == 0 && s.GameType == gameType) // CreatedByUserId = 0 pour officiels
+            .OrderBy(s => s.Level)
+            .ThenBy(s => s.School)
+            .ThenBy(s => s.Name);
+
+        var spells = await query.ToListAsync();
+
+        return spells.Select(spell => new SpellView
+        {
+            Id = spell.Id,
+            Name = spell.Name,
+            Description = spell.Description,
+            ImageUrl = spell.ImageUrl,
+            GameType = spell.GameType,
+            IsPublic = spell.IsPublic,
+            Source = spell.Source.ToString(),
+            CreatedByName = "Officiel", // Sorts officiels
+            Tags = spell.GetTags(),
+            Level = spell.Level,
+            School = spell.School,
+            CastingTime = spell.CastingTime,
+            Range = spell.Range,
+            Components = spell.Components,
+            Duration = spell.Duration,
+            IsRitual = spell.IsRitual,
+            RequiresConcentration = spell.RequiresConcentration,
+            Damage = spell.Damage,
+            DamageType = spell.DamageType,
+            SaveType = spell.SaveType,
+            AttackType = spell.AttackType,
+            CreatedAt = spell.CreatedAt,
+            UpdatedAt = spell.UpdatedAt
+        });
+    }
+
+    public async Task<IEnumerable<SpellView>> GetUserPrivateSpellsAsync(int userId, GameType gameType)
+    {
+        this.logger.LogInformation("Getting private spells for user {UserId} and gameType {GameType}", userId, gameType);
+
+        var query = this.context.SpellsDnd
+            .Where(s => s.IsActive && s.CreatedByUserId == userId && s.GameType == gameType) // Sorts privés de l'utilisateur
+            .OrderBy(s => s.Level)
+            .ThenBy(s => s.School)
+            .ThenBy(s => s.Name);
+
+        var spells = await query.ToListAsync();
+
+        return spells.Select(spell => new SpellView
+        {
+            Id = spell.Id,
+            Name = spell.Name,
+            Description = spell.Description,
+            ImageUrl = spell.ImageUrl,
+            GameType = spell.GameType,
+            IsPublic = spell.IsPublic,
+            Source = spell.Source.ToString(),
+            CreatedByName = "Privé", // TODO: Récupérer le nom réel de l'utilisateur
+            Tags = spell.GetTags(),
+            Level = spell.Level,
+            School = spell.School,
+            CastingTime = spell.CastingTime,
+            Range = spell.Range,
+            Components = spell.Components,
+            Duration = spell.Duration,
+            IsRitual = spell.IsRitual,
+            RequiresConcentration = spell.RequiresConcentration,
+            Damage = spell.Damage,
+            DamageType = spell.DamageType,
+            SaveType = spell.SaveType,
+            AttackType = spell.AttackType,
+            CreatedAt = spell.CreatedAt,
+            UpdatedAt = spell.UpdatedAt
+        });
+    }
+
+    public async Task<bool> CanUserModifySpellAsync(int userId, int spellId)
+    {
+        this.logger.LogInformation("Checking if user {UserId} can modify spell {SpellId}", userId, spellId);
+
+        var spell = await this.context.SpellsDnd
+            .FirstOrDefaultAsync(s => s.Id == spellId);
+
+        if (spell == null)
+        {
+            return false;
+        }
+
+        // Règles de modification selon la documentation :
+        // - Sorts officiels (CreatedByUserId = 0) : NON modifiables
+        // - Sorts privés : Modifiables uniquement par leur créateur
+        return spell.CreatedByUserId == userId && spell.CreatedByUserId != 0;
+    }
+
+    public async Task<IEnumerable<SpellView>> GetSpellsBySchoolAsync(string school, int userId, GameType gameType)
+    {
+        this.logger.LogInformation("Getting spells for school {School}, user {UserId}, gameType {GameType}", 
+            school, userId, gameType);
+
+        var query = this.context.SpellsDnd
+            .Where(s => s.IsActive && 
+                       s.GameType == gameType && 
+                       s.School.ToLower() == school.ToLower() &&
+                       (s.IsPublic || s.CreatedByUserId == userId)) // Officiels + privés de l'utilisateur
+            .OrderBy(s => s.Level)
+            .ThenBy(s => s.Name);
+
+        var spells = await query.ToListAsync();
+
+        return spells.Select(spell => new SpellView
+        {
+            Id = spell.Id,
+            Name = spell.Name,
+            Description = spell.Description,
+            ImageUrl = spell.ImageUrl,
+            GameType = spell.GameType,
+            IsPublic = spell.IsPublic,
+            Source = spell.Source.ToString(),
+            CreatedByName = spell.CreatedByUserId == 0 ? "Officiel" : "Privé",
+            Tags = spell.GetTags(),
+            Level = spell.Level,
+            School = spell.School,
+            CastingTime = spell.CastingTime,
+            Range = spell.Range,
+            Components = spell.Components,
+            Duration = spell.Duration,
+            IsRitual = spell.IsRitual,
+            RequiresConcentration = spell.RequiresConcentration,
+            Damage = spell.Damage,
+            DamageType = spell.DamageType,
+            SaveType = spell.SaveType,
+            AttackType = spell.AttackType,
+            CreatedAt = spell.CreatedAt,
+            UpdatedAt = spell.UpdatedAt
+        });
+    }
+
+    public async Task<IEnumerable<SpellView>> GetSpellsByLevelAsync(int level, int userId, GameType gameType)
+    {
+        this.logger.LogInformation("Getting spells for level {Level}, user {UserId}, gameType {GameType}", 
+            level, userId, gameType);
+
+        var query = this.context.SpellsDnd
+            .Where(s => s.IsActive && 
+                       s.GameType == gameType && 
+                       s.Level == level &&
+                       (s.IsPublic || s.CreatedByUserId == userId)) // Officiels + privés de l'utilisateur
+            .OrderBy(s => s.School)
+            .ThenBy(s => s.Name);
+
+        var spells = await query.ToListAsync();
+
+        return spells.Select(spell => new SpellView
+        {
+            Id = spell.Id,
+            Name = spell.Name,
+            Description = spell.Description,
+            ImageUrl = spell.ImageUrl,
+            GameType = spell.GameType,
+            IsPublic = spell.IsPublic,
+            Source = spell.Source.ToString(),
+            CreatedByName = spell.CreatedByUserId == 0 ? "Officiel" : "Privé",
+            Tags = spell.GetTags(),
+            Level = spell.Level,
+            School = spell.School,
+            CastingTime = spell.CastingTime,
+            Range = spell.Range,
+            Components = spell.Components,
+            Duration = spell.Duration,
+            IsRitual = spell.IsRitual,
+            RequiresConcentration = spell.RequiresConcentration,
+            Damage = spell.Damage,
+            DamageType = spell.DamageType,
+            SaveType = spell.SaveType,
+            AttackType = spell.AttackType,
+            CreatedAt = spell.CreatedAt,
+            UpdatedAt = spell.UpdatedAt
+        });
+    }
+
     private SpellDndView MapToView(SpellDnd spell)
     {
         return new SpellDndView

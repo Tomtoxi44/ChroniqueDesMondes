@@ -1,91 +1,170 @@
-﻿### Tests pour les endpoints Spell API - Pattern CharacterEndpoint
-### Remplace {userId} et {token} par les vraies valeurs
+﻿### Tests pour les endpoints Spells API - Complets selon documentation
+### Remplace {userId}, {spellId} et {token} par les vraies valeurs
 
 @baseUrl = https://localhost:7001
 @userId = 1
+@spellId = 1
 @token = YOUR_JWT_TOKEN_HERE
 
-### 1. Récupérer tous les sorts D&D disponibles pour un utilisateur
+### === GESTION DES SORTS SELON DOCUMENTATION ===
+
+### 1. Récupérer tous les sorts (officiels + privés utilisateur)
 GET {{baseUrl}}/api/spells?userId={{userId}}&gameType=DnD
 Authorization: Bearer {{token}}
 
-### 2. Créer un sort générique
+### 2. NOUVEAU - Récupérer les sorts officiels uniquement
+GET {{baseUrl}}/api/spells/official?gameType=DnD
+Authorization: Bearer {{token}}
+
+### 3. NOUVEAU - Récupérer les sorts privés utilisateur uniquement
+GET {{baseUrl}}/api/spells/user?gameType=DnD&userId={{userId}}
+Authorization: Bearer {{token}}
+
+### 4. Récupérer un sort par ID
+GET {{baseUrl}}/api/spells/{{spellId}}?userId={{userId}}
+Authorization: Bearer {{token}}
+
+### 5. Créer un sort générique privé utilisateur
 POST {{baseUrl}}/api/spells?userId={{userId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "name": "Boule de feu personnalisée",
-  "description": "Une version personnalisée du sort boule de feu",
+  "name": "Sort Personnalisé",
+  "description": "Un sort créé pour ma campagne personnalisée",
   "gameType": "Generic",
-  "tags": ["feu", "dégâts", "zone"]
+  "tags": ["personnel", "campagne", "test"]
 }
 
-### 3. Créer un sort D&D spécialisé (avec endpoint dédié)
+### 6. Créer un sort D&D spécialisé
 POST {{baseUrl}}/api/spells/dnd?userId={{userId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "name": "Missile magique amélioré",
-  "description": "Une version améliorée du missile magique",
+  "name": "Boule de Feu Personnalisée",
+  "description": "Version modifiée de la boule de feu classique",
+  "level": 3,
   "school": "Évocation",
-  "level": 1,
   "castingTime": "1 action",
-  "range": "30 mètres",
+  "range": "45 mètres",
+  "components": "V, S, M (une petite boule de guano de chauve-souris et du soufre)",
   "duration": "Instantané",
-  "components": "V, S",
-  "attackRoll": "Auto-touche",
-  "damage": "1d4 + 1 par missile",
   "isRitual": false,
   "requiresConcentration": false,
-  "tags": ["force", "missile", "auto-touche"]
+  "damage": "8d6",
+  "damageType": "Feu",
+  "saveType": "Dextérité",
+  "tags": ["dnd", "évocation", "feu", "dégâts"]
 }
 
-### 4. Récupérer un sort par ID
-GET {{baseUrl}}/api/spells/1?userId={{userId}}
+### 7. Rechercher des sorts
+GET {{baseUrl}}/api/spells/search?q=feu&userId={{userId}}&gameType=DnD
 Authorization: Bearer {{token}}
 
-### 5. Rechercher des sorts
-GET {{baseUrl}}/api/spells/search?q=missile&userId={{userId}}&gameType=DnD
-Authorization: Bearer {{token}}
-
-### 6. Mettre à jour un sort (générique)
-PUT {{baseUrl}}/api/spells/1
+### 8. Mettre à jour un sort (seulement si créé par l'utilisateur)
+PUT {{baseUrl}}/api/spells/{{spellId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "name": "Boule de feu modifiée",
+  "name": "Sort Modifié",
   "description": "Description mise à jour",
   "gameType": "Generic",
-  "tags": ["feu", "dégâts", "zone", "modifié"]
+  "tags": ["modifié", "test"]
 }
 
-### 7. Mettre à jour un sort D&D (avec propriétés spécialisées)
+### 9. Supprimer un sort (seulement si créé par l'utilisateur)
+DELETE {{baseUrl}}/api/spells/{{spellId}}
+Authorization: Bearer {{token}}
+
+### === ENDPOINTS PERSONNAGES SELON DOCUMENTATION ===
+
+### 10. Récupérer l'inventaire d'un personnage
+GET {{baseUrl}}/api/character/1/inventory
+Authorization: Bearer {{token}}
+
+### 11. Ajouter un équipement à l'inventaire
+POST {{baseUrl}}/api/character/1/inventory/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "quantity": 1,
+  "notes": "Trouvé dans le donjon"
+}
+
+### 12. Récupérer les sorts connus d'un personnage
+GET {{baseUrl}}/api/character/1/spells
+Authorization: Bearer {{token}}
+
+### 13. Apprendre un sort à un personnage
+POST {{baseUrl}}/api/character/1/spells/{{spellId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "notes": "Sort appris en montant de niveau"
+}
+
+### === TESTS DE VALIDATION SELON DOCUMENTATION ===
+
+### 14. Tenter de modifier un sort officiel (doit échouer)
 PUT {{baseUrl}}/api/spells/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "name": "Missile magique super amélioré",
-  "description": "Version encore plus puissante",
-  "gameType": "DnD",
-  "tags": ["force", "missile", "amélioré"],
-  "specializedProperties": {
-    "School": "Évocation",
-    "Level": 2,
-    "CastingTime": "1 action",
-    "Range": "45 mètres",
-    "Duration": "Instantané",
-    "Components": "V, S",
-    "AttackRoll": "Auto-touche",
-    "Damage": "1d6 + 1 par missile",
-    "IsRitual": false,
-    "RequiresConcentration": false
-  }
+  "name": "Sort Officiel Modifié",
+  "description": "Tentative de modification d'un sort officiel"
 }
 
-### 8. Supprimer un sort
-DELETE {{baseUrl}}/api/spells/1
+### 15. Vérifier la source des sorts officiels
+GET {{baseUrl}}/api/spells/official?gameType=DnD
 Authorization: Bearer {{token}}
+
+### 16. Vérifier l'isolation des sorts privés
+GET {{baseUrl}}/api/spells/user?gameType=DnD&userId=999
+Authorization: Bearer {{token}}
+
+### === EXEMPLES DE RÉPONSES ATTENDUES ===
+
+### Sorts officiels :
+# {
+#   "id": 1,
+#   "name": "Projectile Magique",
+#   "source": "Official",
+#   "createdByName": "Officiel",
+#   "isPublic": true,
+#   "level": 1,
+#   "school": "Évocation"
+# }
+
+### Sorts privés :
+# {
+#   "id": 42,
+#   "name": "Mon Sort Personnalisé",
+#   "source": "Private", 
+#   "createdByName": "Privé",
+#   "isPublic": false
+# }
+
+### === VALIDATION DES RÈGLES MÉTIER ===
+
+### 17. Test compatibilité GameType - Sort D&D sur personnage générique (doit échouer)
+POST {{baseUrl}}/api/character/1/spells/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "notes": "Test de compatibilité système"
+}
+
+### 18. Test unicité - Apprendre le même sort deux fois (doit échouer)
+POST {{baseUrl}}/api/character/1/spells/{{spellId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "notes": "Tentative d'apprentissage en double"
+}

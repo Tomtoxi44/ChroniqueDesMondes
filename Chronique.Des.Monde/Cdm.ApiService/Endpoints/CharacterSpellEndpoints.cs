@@ -220,6 +220,93 @@ public static class CharacterSpellEndpoints
                 return Results.BadRequest(new { error = ex.Message });
             }
         });
+
+        // GET /api/character/{id}/inventory - Inventaire du personnage (NOUVEAU selon doc)
+        characterSpellGroup.MapGet("/../../character/{characterId:int}/inventory", async (
+            int characterId,
+            IEquipmentExchangeService equipmentService,
+            ClaimsPrincipal user) =>
+        {
+            try
+            {
+                var userId = GetUserIdFromClaims(user);
+                // TODO: Vérifier que l'utilisateur possède ce personnage
+
+                var inventory = await equipmentService.GetCharacterInventoryAsync(characterId);
+                return Results.Ok(inventory);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        });
+
+        // POST /api/character/{id}/inventory/{equipmentId} - Ajouter équipement (NOUVEAU selon doc)
+        characterSpellGroup.MapPost("/../../character/{characterId:int}/inventory/{equipmentId:int}", async (
+            int characterId,
+            int equipmentId,
+            [FromBody] AddToInventoryRequest? request,
+            IEquipmentExchangeService equipmentService,
+            ClaimsPrincipal user) =>
+        {
+            try
+            {
+                var userId = GetUserIdFromClaims(user);
+                // TODO: Vérifier que l'utilisateur possède ce personnage
+
+                var quantity = request?.Quantity ?? 1;
+                var notes = request?.Notes;
+
+                var inventoryId = await equipmentService.AddEquipmentToInventoryAsync(characterId, equipmentId, quantity, notes);
+                return Results.Created($"/api/character/{characterId}/inventory/{inventoryId}", new { id = inventoryId });
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        });
+
+        // GET /api/character/{id}/spells - Sorts connus du personnage (EXISTANT mais référencé dans doc)
+        characterSpellGroup.MapGet("/", async (
+            int characterId,
+            ICharacterSpellService spellService,
+            ClaimsPrincipal user) =>
+        {
+            try
+            {
+                var userId = GetUserIdFromClaims(user);
+                // TODO: Vérifier que l'utilisateur possède ce personnage
+
+                var spells = await spellService.GetCharacterSpellsAsync(characterId);
+                return Results.Ok(spells);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        });
+
+        // POST /api/character/{id}/spells/{spellId} - Apprendre un sort (EXISTANT mais référencé dans doc)
+        characterSpellGroup.MapPost("/{spellId:int}", async (
+            int characterId,
+            int spellId,
+            [FromBody] LearnSpellRequest? request,
+            ICharacterSpellService spellService,
+            ClaimsPrincipal user) =>
+        {
+            try
+            {
+                var userId = GetUserIdFromClaims(user);
+                // TODO: Vérifier que l'utilisateur possède ce personnage
+
+                var characterSpell = await spellService.AddSpellToCharacterAsync(characterId, spellId, request?.Notes);
+                return Results.Created($"/api/characters/{characterId}/spells/{spellId}", characterSpell);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        });
     }
 
     private static int GetUserIdFromClaims(ClaimsPrincipal user)
@@ -238,3 +325,4 @@ public static class CharacterSpellEndpoints
 public record LearnSpellRequest(string? Notes);
 public record PrepareSpellRequest(bool IsPrepared);
 public record SetSpellSlotRequest(int? SlotLevel);
+public record AddToInventoryRequest(int Quantity, string? Notes);
