@@ -21,6 +21,9 @@ public static class EndpointMappingExtensions
         app.MapEquipmentEndpoints();
         app.MapEquipmentExchangeEndpoints();
 
+        // Mapping des endpoints d'attribution sorts/équipements aux personnages
+        app.MapCharacterSpellEndpoints();
+
         return app;
     }
 }
