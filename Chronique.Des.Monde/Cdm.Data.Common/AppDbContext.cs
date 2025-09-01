@@ -27,6 +27,12 @@ public class AppDbContext : DbContext
     // Spell system DbSets (classe de base)
     public DbSet<ASpell> Spells { get; set; }
 
+    // Equipment system DbSets (classe de base)
+    public DbSet<AEquipment> Equipment { get; set; }
+    public DbSet<EquipmentOffer> EquipmentOffers { get; set; }
+    public DbSet<EquipmentTrade> EquipmentTrades { get; set; }
+    public DbSet<CharacterInventory> CharacterInventory { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -45,5 +51,11 @@ public class AppDbContext : DbContext
 
         // Apply spell system configurations (classe de base)
         modelBuilder.ApplyConfiguration(new ASpellConfiguration());
+
+        // Apply equipment system configurations (classe de base)
+        modelBuilder.ApplyConfiguration(new AEquipmentConfiguration());
+        modelBuilder.ApplyConfiguration(new EquipmentOfferConfiguration());
+        modelBuilder.ApplyConfiguration(new EquipmentTradeConfiguration());
+        modelBuilder.ApplyConfiguration(new CharacterInventoryConfiguration());
     }
 }

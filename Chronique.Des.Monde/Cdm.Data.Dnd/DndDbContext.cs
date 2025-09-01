@@ -22,70 +22,19 @@ public class DndDbContext : DbContext
     // D&D specific DbSets
     public DbSet<CharacterDnd> CharactersDnd { get; set; }
     public DbSet<SpellDnd> SpellsDnd { get; set; }
+    public DbSet<EquipmentDnd> EquipmentDnd { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Apply common configurations
-        modelBuilder.ApplyConfiguration(new Cdm.Data.Models.Configuration.UserConfiguration());
-        modelBuilder.ApplyConfiguration(new Cdm.Data.Models.Configuration.CampaignConfiguration());
-        modelBuilder.ApplyConfiguration(new Cdm.Data.Models.Configuration.ChapterConfiguration());
-        modelBuilder.ApplyConfiguration(new Cdm.Data.Models.Configuration.ContentBlockConfiguration());
-
-        // Configure inheritance for characters
-        modelBuilder.Entity<ACharacter>()
-            .HasDiscriminator<string>("Discriminator")
-            .HasValue<CharacterDnd>("CharacterDnd");
-
-        // Configure Character specific properties for NPCs
-        modelBuilder.Entity<ACharacter>()
-            .HasIndex(c => c.ChapterId)
-            .HasDatabaseName("IX_Characters_ChapterId");
-
-        modelBuilder.Entity<ACharacter>()
-            .HasIndex(c => c.IsNpc)
-            .HasDatabaseName("IX_Characters_IsNpc");
-
-        modelBuilder.Entity<ACharacter>()
-            .HasIndex(c => c.IsHostile)
-            .HasDatabaseName("IX_Characters_IsHostile");
-
-        modelBuilder.Entity<ACharacter>()
-            .HasIndex(c => c.GameType)
-            .HasDatabaseName("IX_Characters_GameType");
-
-        modelBuilder.Entity<ACharacter>()
-            .HasIndex(c => c.IsSystemCharacter)
-            .HasDatabaseName("IX_Characters_IsSystemCharacter");
-
-        // Configure GameType as enum
-        modelBuilder.Entity<ACharacter>()
-            .Property(c => c.GameType)
-            .HasConversion<int>();
-
-        // Configure defaults
-        modelBuilder.Entity<ACharacter>()
-            .Property(c => c.IsNpc)
-            .HasDefaultValue(false);
-
-        modelBuilder.Entity<ACharacter>()
-            .Property(c => c.IsHostile)
-            .HasDefaultValue(false);
-
-        modelBuilder.Entity<ACharacter>()
-            .Property(c => c.IsSystemCharacter)
-            .HasDefaultValue(false);
-
-        modelBuilder.Entity<ACharacter>()
-            .Property(c => c.CreatedAt)
-            .HasDefaultValueSql("GETUTCDATE()");
-
         // Apply D&D specific configurations
         // modelBuilder.ApplyConfiguration(new CharacterDndConfiguration());
         modelBuilder.ApplyConfiguration(new SpellDndConfiguration());
+        modelBuilder.ApplyConfiguration(new EquipmentDndConfiguration());
 
-        // Apply spell base configuration
+        // Apply base configurations
         modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.ASpellConfiguration());
+        modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.AEquipmentConfiguration());
     }
 }
