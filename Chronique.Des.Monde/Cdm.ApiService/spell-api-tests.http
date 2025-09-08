@@ -1,91 +1,187 @@
-﻿### Tests pour les endpoints Spell API - Pattern CharacterEndpoint
-### Remplace {userId} et {token} par les vraies valeurs
+﻿### Tests pour les endpoints Spells API - Complets selon documentation Priorité 2
+### Remplace {userId}, {spellId} et {token} par les vraies valeurs
 
 @baseUrl = https://localhost:7001
 @userId = 1
+@spellId = 1
 @token = YOUR_JWT_TOKEN_HERE
 
-### 1. Récupérer tous les sorts D&D disponibles pour un utilisateur
+### === GESTION DES SORTS SELON DOCUMENTATION ===
+
+### 1. Récupérer tous les sorts (officiels + privés utilisateur)
 GET {{baseUrl}}/api/spells?userId={{userId}}&gameType=DnD
 Authorization: Bearer {{token}}
 
-### 2. Créer un sort générique
+### 2. NOUVEAU - Récupérer les sorts officiels uniquement (sans authentification)
+GET {{baseUrl}}/api/spells/official?gameType=DnD
+
+### 3. NOUVEAU - Récupérer les sorts privés utilisateur uniquement
+GET {{baseUrl}}/api/spells/user?gameType=DnD&userId={{userId}}
+Authorization: Bearer {{token}}
+
+### 4. NOUVEAU - Récupérer les sorts par école de magie (D&D)
+GET {{baseUrl}}/api/spells/school/évocation?userId={{userId}}&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 5. NOUVEAU - Récupérer les sorts par niveau (D&D)
+GET {{baseUrl}}/api/spells/level/3?userId={{userId}}&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 6. Récupérer un sort par ID
+GET {{baseUrl}}/api/spells/{{spellId}}?userId={{userId}}
+Authorization: Bearer {{token}}
+
+### 7. Créer un sort générique privé utilisateur
 POST {{baseUrl}}/api/spells?userId={{userId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "name": "Boule de feu personnalisée",
-  "description": "Une version personnalisée du sort boule de feu",
+  "name": "Sort Personnalisé",
+  "description": "Un sort créé pour ma campagne personnalisée",
   "gameType": "Generic",
-  "tags": ["feu", "dégâts", "zone"]
+  "tags": ["personnel", "campagne", "test"]
 }
 
-### 3. Créer un sort D&D spécialisé (avec endpoint dédié)
+### 8. Créer un sort D&D spécialisé
 POST {{baseUrl}}/api/spells/dnd?userId={{userId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "name": "Missile magique amélioré",
-  "description": "Une version améliorée du missile magique",
+  "name": "Boule de Feu Personnalisée",
+  "description": "Version modifiée de la boule de feu classique",
   "school": "Évocation",
-  "level": 1,
+  "level": 3,
   "castingTime": "1 action",
-  "range": "30 mètres",
+  "range": "45 mètres",
   "duration": "Instantané",
-  "components": "V, S",
-  "attackRoll": "Auto-touche",
-  "damage": "1d4 + 1 par missile",
+  "components": "V, S, M (une petite boule de guano de chauve-souris et du soufre)",
+  "attackRoll": "1d20 + modificateur Intelligence",
+  "damage": "8d6",
+  "savingThrow": "Dextérité",
   "isRitual": false,
   "requiresConcentration": false,
-  "tags": ["force", "missile", "auto-touche"]
+  "materialComponent": "Guano de chauve-souris et soufre",
+  "higherLevelDamage": 1,
+  "tags": ["dnd", "évocation", "feu", "dégâts"]
 }
 
-### 4. Récupérer un sort par ID
-GET {{baseUrl}}/api/spells/1?userId={{userId}}
+### 9. Rechercher des sorts
+GET {{baseUrl}}/api/spells/search?q=feu&userId={{userId}}&gameType=DnD
 Authorization: Bearer {{token}}
 
-### 5. Rechercher des sorts
-GET {{baseUrl}}/api/spells/search?q=missile&userId={{userId}}&gameType=DnD
-Authorization: Bearer {{token}}
-
-### 6. Mettre à jour un sort (générique)
-PUT {{baseUrl}}/api/spells/1
+### 10. Mettre à jour un sort (seulement si créé par l'utilisateur)
+PUT {{baseUrl}}/api/spells/{{spellId}}
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "name": "Boule de feu modifiée",
+  "name": "Sort Modifié",
   "description": "Description mise à jour",
   "gameType": "Generic",
-  "tags": ["feu", "dégâts", "zone", "modifié"]
+  "tags": ["modifié", "test"]
 }
 
-### 7. Mettre à jour un sort D&D (avec propriétés spécialisées)
+### 11. Supprimer un sort (seulement si créé par l'utilisateur)
+DELETE {{baseUrl}}/api/spells/{{spellId}}
+Authorization: Bearer {{token}}
+
+### === TESTS DE VALIDATION SELON DOCUMENTATION ===
+
+### 12. Tester la source des sorts officiels (doit montrer Source: "Official")
+GET {{baseUrl}}/api/spells/official?gameType=DnD
+
+### 13. Tester l'isolation des sorts privés (doit échouer pour un autre utilisateur)
+GET {{baseUrl}}/api/spells/user?gameType=DnD&userId=999
+Authorization: Bearer {{token}}
+
+### 14. Tester les sorts par école - Évocation
+GET {{baseUrl}}/api/spells/school/évocation?userId={{userId}}&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 15. Tester les sorts par école - Enchantement
+GET {{baseUrl}}/api/spells/school/enchantement?userId={{userId}}&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 16. Tester les sorts niveau 0 (Cantrips)
+GET {{baseUrl}}/api/spells/level/0?userId={{userId}}&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 17. Tester les sorts niveau 1
+GET {{baseUrl}}/api/spells/level/1?userId={{userId}}&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 18. Tester les sorts niveau 9 (sorts les plus puissants)
+GET {{baseUrl}}/api/spells/level/9?userId={{userId}}&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 19. Tenter de modifier un sort officiel (doit échouer)
 PUT {{baseUrl}}/api/spells/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "name": "Missile magique super amélioré",
-  "description": "Version encore plus puissante",
-  "gameType": "DnD",
-  "tags": ["force", "missile", "amélioré"],
-  "specializedProperties": {
-    "School": "Évocation",
-    "Level": 2,
-    "CastingTime": "1 action",
-    "Range": "45 mètres",
-    "Duration": "Instantané",
-    "Components": "V, S",
-    "AttackRoll": "Auto-touche",
-    "Damage": "1d6 + 1 par missile",
-    "IsRitual": false,
-    "RequiresConcentration": false
-  }
+  "name": "Sort Officiel Modifié",
+  "description": "Tentative de modification d'un sort officiel"
 }
 
-### 8. Supprimer un sort
-DELETE {{baseUrl}}/api/spells/1
-Authorization: Bearer {{token}}
+### === EXEMPLES DE RÉPONSES ATTENDUES ===
+
+### Sorts officiels (GET /api/spells/official) :
+# {
+#   "id": 1,
+#   "name": "Projectile Magique",
+#   "source": "Official",
+#   "createdByName": "Administration",
+#   "isPublic": true,
+#   "level": 1,
+#   "school": "Évocation",
+#   "createdByUserId": 0
+# }
+
+### Sorts privés (GET /api/spells/user) :
+# {
+#   "id": 42,
+#   "name": "Mon Sort Personnalisé",
+#   "source": "Private", 
+#   "createdByName": "NomUtilisateur",
+#   "isPublic": false,
+#   "createdByUserId": 123
+# }
+
+### Sorts par école (GET /api/spells/school/évocation) :
+# [
+#   {
+#     "name": "Projectile Magique",
+#     "school": "Évocation",
+#     "level": 1,
+#     "damage": "1d4+1"
+#   },
+#   {
+#     "name": "Boule de Feu",
+#     "school": "Évocation", 
+#     "level": 3,
+#     "damage": "8d6"
+#   }
+# ]
+
+### === VALIDATION DES RÈGLES MÉTIER ===
+
+### 20. Test écoles D&D valides
+# Écoles officielles D&D 5e :
+# - Abjuration (protection, bannissement)
+# - Invocation (création, téléportation)
+# - Divination (révélation d'informations)
+# - Enchantement (contrôle mental)
+# - Évocation (énergie et force)
+# - Illusion (tromperie des sens)
+# - Nécromancie (énergie négative, morts-vivants)
+# - Transmutation (transformation)
+
+### 21. Test niveaux D&D valides
+# Niveaux officiels D&D 5e :
+# - Niveau 0 : Cantrips (sorts mineurs, utilisables à volonté)
+# - Niveaux 1-9 : Sorts nécessitant des emplacements de sorts
+# - Progression typique : Niveau 1 accessible dès niveau 1 de personnage
+# - Niveau 9 accessible uniquement aux hauts niveaux (17+)

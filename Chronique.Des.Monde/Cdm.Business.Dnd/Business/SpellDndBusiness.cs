@@ -233,6 +233,103 @@ public class SpellDndBusiness : ISpellBusiness
         return spells.Select(this.MapToView).ToList();
     }
 
+    // === NOUVELLES MÉTHODES PRIORITÉ 2 ===
+
+    public async Task<IEnumerable<ISpellView>> GetOfficialSpellsAsync(GameType gameType)
+    {
+        this.logger.LogInformation("Getting official spells for gameType {GameType}", gameType);
+
+        var query = this.context.SpellsDnd
+            .Where(s => s.IsActive && 
+                       s.CreatedByUserId == 0 && // 0 = Sorts officiels créés par l'administration
+                       s.GameType == gameType)
+            .OrderBy(s => s.Level)
+            .ThenBy(s => s.School)
+            .ThenBy(s => s.Name);
+
+        var spells = await query.ToListAsync();
+        return spells.Select(this.MapToView).ToList();
+    }
+
+    public async Task<IEnumerable<ISpellView>> GetUserPrivateSpellsAsync(int userId, GameType gameType)
+    {
+        this.logger.LogInformation("Getting private spells for user {UserId} and gameType {GameType}", userId, gameType);
+
+        var query = this.context.SpellsDnd
+            .Where(s => s.IsActive && 
+                       s.CreatedByUserId == userId && // Sorts privés de l'utilisateur spécifique
+                       s.GameType == gameType)
+            .OrderBy(s => s.Level)
+            .ThenBy(s => s.School)
+            .ThenBy(s => s.Name);
+
+        var spells = await query.ToListAsync();
+        return spells.Select(this.MapToView).ToList();
+    }
+
+    public async Task<bool> CanUserModifySpellAsync(int userId, int spellId)
+    {
+        this.logger.LogInformation("Checking if user {UserId} can modify spell {SpellId}", userId, spellId);
+
+        var spell = await this.context.SpellsDnd
+            .Where(s => s.Id == spellId)
+            .FirstOrDefaultAsync();
+
+        if (spell == null)
+        {
+            return false; // Sort n'existe pas
+        }
+
+        // Règles selon documentation :
+        // - Sorts officiels (CreatedByUserId = 0) : NON modifiables par les utilisateurs
+        // - Sorts privés : Modifiables uniquement par leur créateur
+        return spell.CreatedByUserId == userId && spell.CreatedByUserId != 0;
+    }
+
+    public async Task<IEnumerable<ISpellView>> GetSpellsBySchoolAsync(string school, int userId, GameType gameType)
+    {
+        this.logger.LogInformation("Getting spells for school {School}, user {UserId}, gameType {GameType}", 
+            school, userId, gameType);
+
+        if (string.IsNullOrWhiteSpace(school))
+        {
+            return new List<ISpellView>();
+        }
+
+        var query = this.context.SpellsDnd
+            .Where(s => s.IsActive && 
+                       s.GameType == gameType && 
+                       s.School.ToLower() == school.ToLower() &&
+                       (s.IsPublic || s.CreatedByUserId == userId)) // Sorts officiels + privés de l'utilisateur
+            .OrderBy(s => s.Level)
+            .ThenBy(s => s.Name);
+
+        var spells = await query.ToListAsync();
+        return spells.Select(this.MapToView).ToList();
+    }
+
+    public async Task<IEnumerable<ISpellView>> GetSpellsByLevelAsync(int level, int userId, GameType gameType)
+    {
+        this.logger.LogInformation("Getting spells for level {Level}, user {UserId}, gameType {GameType}", 
+            level, userId, gameType);
+
+        if (level < 0 || level > 9)
+        {
+            throw new ArgumentOutOfRangeException(nameof(level), "Le niveau de sort doit être entre 0 (cantrips) et 9");
+        }
+
+        var query = this.context.SpellsDnd
+            .Where(s => s.IsActive && 
+                       s.GameType == gameType && 
+                       s.Level == level &&
+                       (s.IsPublic || s.CreatedByUserId == userId)) // Sorts officiels + privés de l'utilisateur
+            .OrderBy(s => s.School)
+            .ThenBy(s => s.Name);
+
+        var spells = await query.ToListAsync();
+        return spells.Select(this.MapToView).ToList();
+    }
+
     private SpellDndView MapToView(SpellDnd spell)
     {
         return new SpellDndView
