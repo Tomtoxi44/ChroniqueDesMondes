@@ -1,0 +1,146 @@
+﻿### Tests pour les calculs automatiques D&D 5e
+### Remplace {token} par ton JWT token
+
+@baseUrl = https://localhost:7001
+@token = YOUR_JWT_TOKEN_HERE
+
+### === CALCULS AUTOMATIQUES D&D 5e ===
+
+### 1. Statistiques de lancement de sorts - Magicien niveau 5
+GET {{baseUrl}}/api/dnd/character/1/spellcasting-stats
+Authorization: Bearer {{token}}
+
+### 2. Toutes les statistiques calculées - Rôdeur niveau 8
+GET {{baseUrl}}/api/dnd/character/2/all-stats
+Authorization: Bearer {{token}}
+
+### 3. Calculateur manuel - Magicien niveau 5, Intelligence 18
+POST {{baseUrl}}/api/dnd/calculate/spell-attack
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "characterClass": "magicien",
+  "characterLevel": 5,
+  "abilityScore": 18
+}
+
+### 4. Calculateur manuel - Clerc niveau 3, Sagesse 16
+POST {{baseUrl}}/api/dnd/calculate/spell-attack
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "characterClass": "clerc",
+  "characterLevel": 3,
+  "abilityScore": 16
+}
+
+### 5. Calculateur manuel - Paladin niveau 7, Charisme 14
+POST {{baseUrl}}/api/dnd/calculate/spell-attack
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "characterClass": "paladin",
+  "characterLevel": 7,
+  "abilityScore": 14
+}
+
+### 6. Test avec classe non-lanceur de sorts (doit échouer)
+POST {{baseUrl}}/api/dnd/calculate/spell-attack
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "characterClass": "guerrier",
+  "characterLevel": 5,
+  "abilityScore": 16
+}
+
+### === EXEMPLES DE RÉSULTATS ATTENDUS ===
+
+### Magicien niveau 5, Intelligence 18 :
+# - Modificateur Intelligence : +4 (18-10)/2
+# - Bonus de maîtrise : +3 (niveau 5)
+# - Bonus d'attaque de sort : +7 (4+3)
+# - DD de sauvegarde : 15 (8+4+3)
+# - Niveau de sort max : 3
+
+### Clerc niveau 3, Sagesse 16 :
+# - Modificateur Sagesse : +3 (16-10)/2
+# - Bonus de maîtrise : +2 (niveau 3)
+# - Bonus d'attaque de sort : +5 (3+2)
+# - DD de sauvegarde : 13 (8+3+2)
+# - Niveau de sort max : 2
+
+### Paladin niveau 7, Charisme 14 :
+# - Modificateur Charisme : +2 (14-10)/2
+# - Bonus de maîtrise : +3 (niveau 7)
+# - Bonus d'attaque de sort : +5 (2+3)
+# - DD de sauvegarde : 13 (8+2+3)
+# - Niveau de sort max : 4
+
+### === TESTS D'INTÉGRATION AVEC CARACTÉRISTIQUES AVANCÉES ===
+
+### 7. Test avec bonus additionnels (objets magiques)
+POST {{baseUrl}}/api/dnd/calculate/spell-attack
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "characterClass": "ensorceleur",
+  "characterLevel": 10,
+  "abilityScore": 22
+}
+
+### Résultat attendu pour Ensorceleur niveau 10, Charisme 22 :
+# - Modificateur Charisme : +6 (22-10)/2
+# - Bonus de maîtrise : +4 (niveau 10)
+# - Bonus d'attaque de sort : +10 (6+4)
+# - DD de sauvegarde : 18 (8+6+4)
+# - Niveau de sort max : 5
+
+### 8. Test niveau maximum
+POST {{baseUrl}}/api/dnd/calculate/spell-attack
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "characterClass": "magicien",
+  "characterLevel": 20,
+  "abilityScore": 20
+}
+
+### Résultat attendu pour Magicien niveau 20, Intelligence 20 :
+# - Modificateur Intelligence : +5 (20-10)/2
+# - Bonus de maîtrise : +6 (niveau 20)
+# - Bonus d'attaque de sort : +11 (5+6)
+# - DD de sauvegarde : 19 (8+5+6)
+# - Niveau de sort max : 9
+
+### === VALIDATION DES CALCULS D&D OFFICIELS ===
+
+### Ces résultats sont conformes au System Reference Document D&D 5e :
+# 
+# Bonus de maîtrise par niveau :
+# - Niveaux 1-4 : +2
+# - Niveaux 5-8 : +3
+# - Niveaux 9-12 : +4
+# - Niveaux 13-16 : +5
+# - Niveaux 17-20 : +6
+#
+# Modificateurs de caractéristique :
+# - Score 8-9 : -1
+# - Score 10-11 : +0
+# - Score 12-13 : +1
+# - Score 14-15 : +2
+# - Score 16-17 : +3
+# - Score 18-19 : +4
+# - Score 20-21 : +5
+# - Score 22-23 : +6 (objets magiques)
+#
+# Formules de calcul :
+# - Bonus d'attaque de sort = modificateur + bonus de maîtrise
+# - DD de sauvegarde = 8 + modificateur + bonus de maîtrise
+# - Niveau de sort max dépend du niveau de classe du lanceur

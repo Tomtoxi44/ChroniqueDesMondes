@@ -5,6 +5,8 @@ using Cmd.Abstraction.Spells;
 using Cmd.Abstraction.Equipment;
 using Cdm.Business.Dnd.Business;
 using Microsoft.Extensions.DependencyInjection;
+using Cdm.Business.Dnd.Services;
+using Cmd.Abstraction.Characters;
 
 public static class DndBusinessExtensions
 {
@@ -20,6 +22,9 @@ public static class DndBusinessExtensions
 
         // Services d'équipements D&D
         services.AddKeyedTransient<IEquipmentBusiness, EquipmentDndBusiness>(DndKey);
+
+        // Service d'injection de données officielles
+        services.AddDndDataSeeder();
 
         return services;
     }

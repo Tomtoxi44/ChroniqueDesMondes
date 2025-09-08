@@ -1,0 +1,119 @@
+﻿### Tests pour les endpoints Priorité 3A&B - Personnages et Échanges
+### Remplace {userId}, {characterId} et {token} par les vraies valeurs
+
+@baseUrl = https://localhost:7001
+@userId = 1
+@characterId = 1
+@token = YOUR_JWT_TOKEN_HERE
+
+### === ENDPOINTS PERSONNAGES - INVENTAIRE ===
+
+### 1. Récupérer l'inventaire d'un personnage
+GET {{baseUrl}}/api/character/{{characterId}}/inventory
+Authorization: Bearer {{token}}
+
+### 2. Ajouter un équipement à l'inventaire (version simplifiée)
+POST {{baseUrl}}/api/character/{{characterId}}/inventory
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "equipmentName": "Épée +1",
+  "quantity": 1
+}
+
+### === ENDPOINTS PERSONNAGES - SORTS (EXISTANTS) ===
+
+### 3. Récupérer les sorts du personnage
+GET {{baseUrl}}/api/characters/{{characterId}}/spells
+Authorization: Bearer {{token}}
+
+### 4. Récupérer les sorts préparés du personnage
+GET {{baseUrl}}/api/characters/{{characterId}}/spells/prepared
+Authorization: Bearer {{token}}
+
+### 5. Apprendre un sort au personnage
+POST {{baseUrl}}/api/characters/{{characterId}}/spells/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "notes": "Sort appris en montant de niveau"
+}
+
+### 6. Préparer/dépréparer un sort
+PUT {{baseUrl}}/api/characters/{{characterId}}/spells/1/prepare
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "isPrepared": true
+}
+
+### === EXEMPLES DE RÉPONSES ATTENDUES ===
+
+### Inventaire (GET /api/character/{id}/inventory) :
+# {
+#   "characterId": 1,
+#   "totalWeight": 15.5,
+#   "maxWeight": 50.0,
+#   "items": [
+#     {
+#       "id": 1,
+#       "name": "Épée longue",
+#       "quantity": 1,
+#       "equipped": true
+#     },
+#     {
+#       "id": 2,
+#       "name": "Armure de cuir", 
+#       "quantity": 1,
+#       "equipped": true
+#     },
+#     {
+#       "id": 3,
+#       "name": "Potion de soin",
+#       "quantity": 3,
+#       "equipped": false
+#     }
+#   ]
+# }
+
+### Ajout d'équipement (POST /api/character/{id}/inventory) :
+# {
+#   "id": 1234,
+#   "characterId": 1,
+#   "equipmentName": "Épée +1",
+#   "quantity": 1,
+#   "message": "Équipement ajouté à l'inventaire"
+# }
+
+### === VALIDATION DES RÈGLES MÉTIER ===
+
+### 7. Test d'accès - Inventaire d'un autre personnage (doit échouer)
+GET {{baseUrl}}/api/character/999/inventory
+Authorization: Bearer {{token}}
+
+### 8. Test d'ajout - Quantité négative (doit échouer)
+POST {{baseUrl}}/api/character/{{characterId}}/inventory
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "equipmentName": "Objet invalide",
+  "quantity": -1
+}
+
+### === NOTES D'IMPLÉMENTATION ===
+
+### Les endpoints suivants sont prêts mais nécessitent encore l'implémentation des services :
+# - Validation que l'utilisateur possède le personnage
+# - Service d'inventaire complet (poids, valeur, équipement)
+# - Calculs de capacité et d'encombrement
+# - Persistance en base de données
+
+### Les endpoints échanges (Priorité 3B) nécessitent :
+# - Service de validation des campagnes
+# - Service d'échange entre joueurs
+# - Notifications des propositions
+# - Historique des transactions

@@ -1,0 +1,139 @@
+﻿### Tests pour les endpoints Administration D&D - Injection de données officielles
+### Remplace {token} par un vrai token d'administrateur
+
+@baseUrl = https://localhost:7001
+@adminToken = YOUR_ADMIN_JWT_TOKEN_HERE
+
+### === INJECTION DE DONNÉES OFFICIELLES D&D ===
+
+### 1. Injecter les sorts officiels D&D 5e
+POST {{baseUrl}}/api/admin/dnd/seed/spells
+Authorization: Bearer {{adminToken}}
+
+### 2. Injecter toutes les données officielles D&D 5e
+POST {{baseUrl}}/api/admin/dnd/seed/all
+Authorization: Bearer {{adminToken}}
+
+### 3. Statistiques des données officielles
+GET {{baseUrl}}/api/admin/dnd/stats
+Authorization: Bearer {{adminToken}}
+
+### 4. Reset des données officielles (DANGER - non implémenté)
+DELETE {{baseUrl}}/api/admin/dnd/reset
+Authorization: Bearer {{adminToken}}
+
+### === VALIDATION APRÈS INJECTION ===
+
+### 5. Vérifier les sorts officiels injectés
+GET {{baseUrl}}/api/spells/official?gameType=DnD
+
+### 6. Rechercher des sorts spécifiques injectés
+GET {{baseUrl}}/api/spells/search?q=projectile&userId=1&gameType=DnD
+Authorization: Bearer {{adminToken}}
+
+### 7. Vérifier les sorts par école
+GET {{baseUrl}}/api/spells/school/évocation?userId=1&gameType=DnD
+Authorization: Bearer {{adminToken}}
+
+### 8. Vérifier les sorts par niveau
+GET {{baseUrl}}/api/spells/level/3?userId=1&gameType=DnD
+Authorization: Bearer {{adminToken}}
+
+### === EXEMPLES DE RÉPONSES ATTENDUES ===
+
+### Injection réussie (POST /api/admin/dnd/seed/spells) :
+# {
+#   "message": "Sorts officiels D&D 5e injectés avec succès",
+#   "seededBy": 1,
+#   "timestamp": "2024-01-15T10:30:00Z"
+# }
+
+### Statistiques (GET /api/admin/dnd/stats) :
+# {
+#   "officialSpells": 10,
+#   "officialEquipment": 0,
+#   "lastSeeded": "2024-01-15T10:30:00Z",
+#   "version": "SRD 5.1"
+# }
+
+### Sorts officiels après injection (GET /api/spells/official) :
+# [
+#   {
+#     "id": 1,
+#     "name": "Projectile magique",
+#     "description": "Vous créez trois dards scintillants d'énergie magique...",
+#     "school": "Évocation",
+#     "level": 1,
+#     "damage": "3d4+3",
+#     "damageType": "Force",
+#     "source": "Official",
+#     "createdByName": "Administration",
+#     "tags": ["évocation", "force", "projectile", "automatique"]
+#   },
+#   {
+#     "id": 2,
+#     "name": "Lumière",
+#     "description": "Vous touchez un objet qui ne fait pas plus de 3 mètres...",
+#     "school": "Évocation", 
+#     "level": 0,
+#     "source": "Official",
+#     "tags": ["évocation", "lumière", "cantrip", "utilitaire"]
+#   },
+#   {
+#     "id": 3,
+#     "name": "Boule de feu",
+#     "description": "Un rayon brillant jaillit de votre doigt tendu...",
+#     "school": "Évocation",
+#     "level": 3,
+#     "damage": "8d6",
+#     "damageType": "Feu",
+#     "saveType": "Dextérité",
+#     "source": "Official",
+#     "tags": ["évocation", "feu", "zone", "dégâts", "classique"]
+#   }
+# ]
+
+### === VALIDATION DES RÈGLES MÉTIER ===
+
+### 9. Test double injection (ne doit pas créer de doublons)
+POST {{baseUrl}}/api/admin/dnd/seed/spells
+Authorization: Bearer {{adminToken}}
+
+### 10. Test accès non-admin (doit échouer)
+POST {{baseUrl}}/api/admin/dnd/seed/spells
+Authorization: Bearer INVALID_TOKEN
+
+### === SORTS OFFICIELS INJECTÉS (RÉFÉRENCE) ===
+
+### Les sorts suivants seront disponibles après injection :
+
+### Cantrips (Niveau 0) :
+# - Lumière (Évocation) - Émet de la lumière
+# - Prestidigitation (Transmutation) - Tours de magie mineurs
+
+### Niveau 1 :
+# - Projectile magique (Évocation) - 3d4+3 dégâts de force automatiques  
+# - Soins (Évocation) - 1d8+MOD points de vie récupérés
+# - Bouclier (Abjuration) - +5 CA en réaction
+
+### Niveau 2 :
+# - Toile d'araignée (Invocation) - Zone d'entrave
+
+### Niveau 3 :
+# - Boule de feu (Évocation) - 8d6 dégâts de feu en zone
+# - Vol (Transmutation) - Vitesse de vol de 18m
+
+### Niveau 4 :
+# - Polymorph (Transmutation) - Transformation de créature
+
+### Niveau 9 :
+# - Souhait (Invocation) - Le sort le plus puissant
+
+### === CONFORMITÉ SYSTEM REFERENCE DOCUMENT ===
+
+### Tous les sorts injectés sont conformes au SRD 5.1 de D&D 5e :
+# - Descriptions officielles
+# - Mécaniques exactes (dégâts, sauvegardes, etc.)
+# - Écoles de magie correctes
+# - Composantes et durées officielles
+# - Progression par niveaux supérieurs

@@ -1,0 +1,41 @@
+﻿### Test rapide des endpoints d'injection D&D - Version simplifiée
+### Remplace {token} par un vrai token
+
+@baseUrl = https://localhost:7001
+@token = YOUR_JWT_TOKEN_HERE
+
+### === TEST D'INJECTION SIMPLIFIÉE ===
+
+### 1. Injecter les sorts officiels D&D 5e (version simplifiée)
+POST {{baseUrl}}/api/admin/dnd/seed/spells
+Authorization: Bearer {{token}}
+
+### 2. Vérifier les sorts officiels après injection
+GET {{baseUrl}}/api/spells/official?gameType=DnD
+
+### 3. Statistiques après injection
+GET {{baseUrl}}/api/admin/dnd/stats
+Authorization: Bearer {{token}}
+
+### === VALIDATION RAPIDE ===
+
+### 4. Rechercher "Projectile magique" (doit être trouvé après injection)
+GET {{baseUrl}}/api/spells/search?q=projectile&userId=1&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 5. Sorts d'Évocation (doit contenir Projectile magique, Lumière, Boule de feu)
+GET {{baseUrl}}/api/spells/school/évocation?userId=1&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 6. Sorts niveau 1 (doit contenir Projectile magique, Soins, Bouclier)
+GET {{baseUrl}}/api/spells/level/1?userId=1&gameType=DnD
+Authorization: Bearer {{token}}
+
+### === RÉSULTAT ATTENDU ===
+
+### Après injection, 5 sorts officiels doivent être disponibles :
+# 1. Projectile magique (Évocation, Niveau 1) - 3d4+3 dégâts
+# 2. Lumière (Évocation, Niveau 0) - Cantrip utilitaire
+# 3. Boule de feu (Évocation, Niveau 3) - 8d6 dégâts de feu
+# 4. Soins (Évocation, Niveau 1) - 1d8+MOD soins
+# 5. Bouclier (Abjuration, Niveau 1) - +5 CA en réaction

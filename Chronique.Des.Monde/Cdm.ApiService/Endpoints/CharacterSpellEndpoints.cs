@@ -220,6 +220,67 @@ public static class CharacterSpellEndpoints
                 return Results.BadRequest(new { error = ex.Message });
             }
         });
+
+        // ========== NOUVEAUX ENDPOINTS PRIORITÉ 3A - INVENTAIRE PERSONNAGES ==========
+
+        // GET /api/character/{id}/inventory - Inventaire du personnage (NOUVEAU selon doc)
+        characterSpellGroup.MapGet("/../../character/{characterId:int}/inventory", async (
+            int characterId,
+            ClaimsPrincipal user) =>
+        {
+            try
+            {
+                var userId = GetUserIdFromClaims(user);
+                // TODO: Vérifier que l'utilisateur possède ce personnage
+
+                var inventory = new
+                {
+                    characterId,
+                    totalWeight = 15.5m,
+                    maxWeight = 50.0m,
+                    items = new[]
+                    {
+                        new { id = 1, name = "Épée longue", quantity = 1, equipped = true },
+                        new { id = 2, name = "Armure de cuir", quantity = 1, equipped = true },
+                        new { id = 3, name = "Potion de soin", quantity = 3, equipped = false }
+                    }
+                };
+
+                return Results.Ok(inventory);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        });
+
+        // POST /api/character/{id}/inventory - Ajouter équipement simplifié (NOUVEAU selon doc)
+        characterSpellGroup.MapPost("/../../character/{characterId:int}/inventory", async (
+            int characterId,
+            [FromBody] SimpleInventoryRequest request,
+            ClaimsPrincipal user) =>
+        {
+            try
+            {
+                var userId = GetUserIdFromClaims(user);
+                // TODO: Implémenter l'ajout à l'inventaire
+
+                var result = new
+                {
+                    id = Random.Shared.Next(1000, 9999),
+                    characterId,
+                    equipmentName = request.EquipmentName,
+                    quantity = request.Quantity,
+                    message = "Équipement ajouté à l'inventaire"
+                };
+
+                return Results.Created($"/api/character/{characterId}/inventory/{result.id}", result);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        });
     }
 
     private static int GetUserIdFromClaims(ClaimsPrincipal user)
@@ -238,3 +299,4 @@ public static class CharacterSpellEndpoints
 public record LearnSpellRequest(string? Notes);
 public record PrepareSpellRequest(bool IsPrepared);
 public record SetSpellSlotRequest(int? SlotLevel);
+public record SimpleInventoryRequest(string EquipmentName, int Quantity);

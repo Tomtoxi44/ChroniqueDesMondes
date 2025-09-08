@@ -223,6 +223,103 @@ public static class SpellEndpoint
                 return Results.BadRequest(new { error = ex.Message });
             }
         });
+
+        // ========== NOUVEAUX ENDPOINTS PRIORITÉ 2 ==========
+
+        // GET /api/spells/official?gameType={type} - Sorts officiels uniquement (NOUVEAU selon doc)
+        spellGroup.MapGet("/official", async (
+            GameType gameType,
+            [FromKeyedServices(DndBusinessExtensions.DndKey)] ISpellBusiness spellBusiness) =>
+        {
+            try
+            {
+                // Les sorts officiels sont visibles par tous (pas besoin d'authentification utilisateur)
+                var spells = await spellBusiness.GetOfficialSpellsAsync(gameType);
+                return Results.Ok(spells);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        });
+
+        // GET /api/spells/user?gameType={type}&userId={id} - Sorts privés utilisateur uniquement (NOUVEAU selon doc)
+        spellGroup.MapGet("/user", async (
+            GameType gameType,
+            int userId,
+            [FromKeyedServices(DndBusinessExtensions.DndKey)] ISpellBusiness spellBusiness,
+            ClaimsPrincipal user) =>
+        {
+            try
+            {
+                var requestingUserId = GetUserIdFromClaims(user);
+                
+                // Validation : un utilisateur ne peut voir que ses propres sorts privés
+                if (requestingUserId != userId)
+                {
+                    return Results.Forbid();
+                }
+
+                var spells = await spellBusiness.GetUserPrivateSpellsAsync(userId, gameType);
+                return Results.Ok(spells);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        });
+
+        // GET /api/spells/school/{school}?userId={id}&gameType={type} - Sorts par école (D&D uniquement)
+        spellGroup.MapGet("/school/{school}", async (
+            string school,
+            int userId,
+            GameType gameType,
+            [FromKeyedServices(DndBusinessExtensions.DndKey)] ISpellBusiness spellBusiness,
+            ClaimsPrincipal user) =>
+        {
+            try
+            {
+                var requestingUserId = GetUserIdFromClaims(user);
+                
+                if (requestingUserId != userId)
+                {
+                    return Results.Forbid();
+                }
+
+                var spells = await spellBusiness.GetSpellsBySchoolAsync(school, userId, gameType);
+                return Results.Ok(spells);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        });
+
+        // GET /api/spells/level/{level}?userId={id}&gameType={type} - Sorts par niveau (D&D uniquement)
+        spellGroup.MapGet("/level/{level:int}", async (
+            int level,
+            int userId,
+            GameType gameType,
+            [FromKeyedServices(DndBusinessExtensions.DndKey)] ISpellBusiness spellBusiness,
+            ClaimsPrincipal user) =>
+        {
+            try
+            {
+                var requestingUserId = GetUserIdFromClaims(user);
+                
+                if (requestingUserId != userId)
+                {
+                    return Results.Forbid();
+                }
+
+                var spells = await spellBusiness.GetSpellsByLevelAsync(level, userId, gameType);
+                return Results.Ok(spells);
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        });
     }
 
     private static int GetUserIdFromClaims(ClaimsPrincipal user)
