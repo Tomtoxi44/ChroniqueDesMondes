@@ -10,48 +10,51 @@
 POST {{baseUrl}}/api/admin/dnd/seed/spells
 Authorization: Bearer {{adminToken}}
 
-### 2. Injecter toutes les données officielles D&D 5e
+### 2. NOUVEAU - Injecter les équipements officiels D&D 5e
+POST {{baseUrl}}/api/admin/dnd/seed/equipment
+Authorization: Bearer {{adminToken}}
+
+### 3. Injecter toutes les données officielles D&D 5e (sorts + équipements)
 POST {{baseUrl}}/api/admin/dnd/seed/all
 Authorization: Bearer {{adminToken}}
 
-### 3. Statistiques des données officielles
+### 4. Statistiques des données officielles
 GET {{baseUrl}}/api/admin/dnd/stats
 Authorization: Bearer {{adminToken}}
 
-### 4. Reset des données officielles (DANGER - non implémenté)
+### 5. Reset des données officielles (DANGER - non implémenté)
 DELETE {{baseUrl}}/api/admin/dnd/reset
 Authorization: Bearer {{adminToken}}
 
 ### === VALIDATION APRÈS INJECTION ===
 
-### 5. Vérifier les sorts officiels injectés
+### 6. Vérifier les sorts officiels injectés
 GET {{baseUrl}}/api/spells/official?gameType=DnD
 
-### 6. Rechercher des sorts spécifiques injectés
+### 7. NOUVEAU - Vérifier les équipements officiels injectés (TODO: créer l'endpoint)
+# GET {{baseUrl}}/api/equipment/official?gameType=DnD
+
+### 8. Rechercher des sorts spécifiques injectés
 GET {{baseUrl}}/api/spells/search?q=projectile&userId=1&gameType=DnD
 Authorization: Bearer {{adminToken}}
 
-### 7. Vérifier les sorts par école
+### 9. Vérifier les sorts par école
 GET {{baseUrl}}/api/spells/school/évocation?userId=1&gameType=DnD
-Authorization: Bearer {{adminToken}}
-
-### 8. Vérifier les sorts par niveau
-GET {{baseUrl}}/api/spells/level/3?userId=1&gameType=DnD
 Authorization: Bearer {{adminToken}}
 
 ### === EXEMPLES DE RÉPONSES ATTENDUES ===
 
-### Injection réussie (POST /api/admin/dnd/seed/spells) :
+### Injection équipements réussie (POST /api/admin/dnd/seed/equipment) :
 # {
-#   "message": "Sorts officiels D&D 5e injectés avec succès",
+#   "message": "Équipements officiels D&D 5e injectés avec succès",
 #   "seededBy": 1,
 #   "timestamp": "2024-01-15T10:30:00Z"
 # }
 
-### Statistiques (GET /api/admin/dnd/stats) :
+### Statistiques mises à jour (GET /api/admin/dnd/stats) :
 # {
-#   "officialSpells": 10,
-#   "officialEquipment": 0,
+#   "officialSpells": 5,
+#   "officialEquipment": 10,
 #   "lastSeeded": "2024-01-15T10:30:00Z",
 #   "version": "SRD 5.1"
 # }
@@ -129,11 +132,31 @@ Authorization: Bearer INVALID_TOKEN
 ### Niveau 9 :
 # - Souhait (Invocation) - Le sort le plus puissant
 
+### === ÉQUIPEMENTS OFFICIELS INJECTÉS (RÉFÉRENCE) ===
+
+### Armes officielles :
+# - Épée longue (1d8 tranchant, polyvalente 1d10)
+# - Arc long (1d8 perforant, portée 45/180, deux mains)
+# - Dague (1d4 perforant, finesse, légère, lancer)
+
+### Armures officielles :
+# - Armure de cuir (CA 11 + Dex, armure légère)
+# - Cotte de mailles (CA 14 + Dex max 2, désavantage discrétion)
+# - Harnois (CA 18, Force 15 requise, armure lourde)
+
+### Boucliers :
+# - Bouclier (+2 CA, 6 livres)
+
+### Objets magiques :
+# - Épée longue +1 (arme magique, +1 attaque/dégâts)
+
+### Consommables :
+# - Potion de soins (2d4+2 PV, usage unique)
+
 ### === CONFORMITÉ SYSTEM REFERENCE DOCUMENT ===
 
-### Tous les sorts injectés sont conformes au SRD 5.1 de D&D 5e :
-# - Descriptions officielles
-# - Mécaniques exactes (dégâts, sauvegardes, etc.)
-# - Écoles de magie correctes
-# - Composantes et durées officielles
-# - Progression par niveaux supérieurs
+### Tous les équipements injectés sont conformes au SRD 5.1 :
+# - Statistiques officielles (CA, dégâts, poids, valeur)
+# - Propriétés d'armes correctes
+# - Classifications d'armures exactes
+# - Objets magiques avec règles appropriées

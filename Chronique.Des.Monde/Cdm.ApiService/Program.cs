@@ -6,6 +6,7 @@ using Cdm.Data.Dnd;
 using Cdm.Migrations;
 using Cdm.ServiceDefaults;
 using Cdm.ApiService.Extensions;
+using Cdm.ApiService.Services;
 using Cdm.Data;
 
 namespace Cdm.ApiService;
@@ -25,6 +26,9 @@ public class Program
         // Add business services et database services
         builder.Services.AddBusinessServices();
         builder.Services.AddDatabaseServices(builder.Configuration);
+
+        // ✅ NOUVEAU : Service d'injection automatique des données D&D au démarrage
+        builder.Services.AddDndAutoDataSeeding();
 
         var jwtSettings = builder.Configuration.GetSection("JwtSettings");
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

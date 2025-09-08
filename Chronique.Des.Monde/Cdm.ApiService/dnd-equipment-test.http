@@ -1,0 +1,71 @@
+﻿### Test rapide des équipements D&D - Injection et validation
+### Remplace {token} par un vrai token
+
+@baseUrl = https://localhost:7001
+@token = YOUR_JWT_TOKEN_HERE
+
+### === TEST D'INJECTION ÉQUIPEMENTS ===
+
+### 1. Injecter les équipements officiels D&D 5e
+POST {{baseUrl}}/api/admin/dnd/seed/equipment
+Authorization: Bearer {{token}}
+
+### 2. Injecter TOUT (sorts + équipements)
+POST {{baseUrl}}/api/admin/dnd/seed/all
+Authorization: Bearer {{token}}
+
+### 3. Statistiques après injection complète
+GET {{baseUrl}}/api/admin/dnd/stats
+Authorization: Bearer {{token}}
+
+### === VALIDATION RAPIDE ===
+
+### 4. Test double injection équipements (ne doit pas créer de doublons)
+POST {{baseUrl}}/api/admin/dnd/seed/equipment
+Authorization: Bearer {{token}}
+
+### === RÉSULTAT ATTENDU ===
+
+### Après injection, 10 équipements officiels doivent être disponibles :
+
+### ARMES (3) :
+# 1. Épée longue - 1d8 tranchant, polyvalente (1d10), 3 lbs, 15 po
+# 2. Arc long - 1d8 perforant, portée 45/180, lourde, deux mains, 2 lbs, 50 po  
+# 3. Dague - 1d4 perforant, finesse, légère, lancer 6/18, 1 lb, 2 po
+
+### ARMURES (3) :
+# 4. Armure de cuir - CA 11 + Dex, armure légère, 10 lbs, 10 po
+# 5. Cotte de mailles - CA 14 + Dex (max 2), désavantage discrétion, 25 lbs, 75 po
+# 6. Harnois - CA 18, Force 15, désavantage discrétion, 65 lbs, 1500 po
+
+### BOUCLIERS (1) :
+# 7. Bouclier - +2 CA, 6 lbs, 10 po
+
+### OBJETS MAGIQUES (1) :
+# 8. Épée longue +1 - 1d8 tranchant, +1 attaque/dégâts, peu commun, 3 lbs, 1000 po
+
+### CONSOMMABLES (1) :
+# 9. Potion de soins - 2d4+2 PV, usage unique, 0.5 lb, 50 po
+
+### === RÉPONSES ATTENDUES ===
+
+### Injection réussie :
+# {
+#   "message": "Équipements officiels D&D 5e injectés avec succès",
+#   "seededBy": 1,
+#   "timestamp": "2024-01-15T10:30:00Z"
+# }
+
+### Double injection (doit être ignorée) :
+# {
+#   "message": "Official equipment already exist (10 items), skipping seeding"
+# }
+
+### Statistiques complètes :
+# {
+#   "officialSpells": 5,
+#   "officialEquipment": 10,
+#   "totalOfficialItems": 15,
+#   "lastSeeded": "2024-01-15T10:30:00Z",
+#   "version": "SRD 5.1"
+# }
