@@ -17,8 +17,11 @@ public static class EndpointMappingExtensions
         // Endpoints de calculs D&D
         app.MapDndCalculatorEndpoints();
         
-        // Endpoints d'administration D&D (NOUVEAU)
+        // Endpoints d'administration D&D
         app.MapDndAdminEndpoints();
+
+        // Endpoints de combat ⚔️
+        app.MapCombatEndpoints();
 
         return app;
     }
