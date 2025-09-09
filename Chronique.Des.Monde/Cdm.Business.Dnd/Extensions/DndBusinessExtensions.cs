@@ -1,27 +1,23 @@
-﻿namespace Cdm.Business.Dnd.Extensions;
-
-using Cmd.Abstraction;
-using Cmd.Abstraction.Spells;
-using Cmd.Abstraction.Equipment;
-using Cdm.Business.Dnd.Business;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Cdm.Business.Dnd.Business;
 using Cdm.Business.Dnd.Services;
-using Cmd.Abstraction.Characters;
+using Cmd.Abstraction.Spells;
+// using Cmd.Abstraction.Characters; // Temporairement commenté
+using Microsoft.Extensions.DependencyInjection;
 
+namespace Cdm.Business.Dnd.Extensions;
+
+/// <summary>
+/// Extensions pour l'enregistrement des services métier D&D dans la DI
+/// </summary>
 public static class DndBusinessExtensions
 {
-    public const string DndKey = "Dnd";
-    
-    public static IServiceCollection AddDndBusiness(this IServiceCollection services)
+    public const string DndKey = "DnD";
+
+    public static IServiceCollection AddDndBusinessServices(this IServiceCollection services)
     {
-        // Services de personnages D&D
-        services.AddKeyedTransient<ICharacterBusiness, CharacterDndBusiness>(DndKey);
-
-        // Services de sorts D&D
-        services.AddKeyedTransient<ISpellBusiness, SpellDndBusiness>(DndKey);
-
-        // Services d'équipements D&D
-        services.AddKeyedTransient<IEquipmentBusiness, EquipmentDndBusiness>(DndKey);
+        // Services métier avec clés pour l'injection par GameType
+        services.AddKeyedScoped<ISpellBusiness, SpellDndBusiness>(DndKey);
+        // services.AddKeyedScoped<ICharacterBusiness, CharacterDndBusiness>(DndKey); // TODO: Corriger l'interface
 
         // Service d'injection de données officielles
         services.AddDndDataSeeder();

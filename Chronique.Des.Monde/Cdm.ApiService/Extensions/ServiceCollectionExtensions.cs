@@ -32,7 +32,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEquipmentExchangeService, EquipmentExchangeService>();
         
         // Services métier spécialisés D&D
-        services.AddDndBusiness();
+        services.AddDndBusinessServices();
 
         // Services communs
         services.AddScoped<IEmailService, AzureEmailService>();

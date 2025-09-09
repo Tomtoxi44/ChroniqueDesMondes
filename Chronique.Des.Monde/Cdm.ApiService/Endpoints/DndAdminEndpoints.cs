@@ -39,6 +39,30 @@ public static class DndAdminEndpoints
             }
         });
 
+        // POST /api/admin/dnd/seed/equipment - Injecter les équipements officiels D&D (NOUVEAU)
+        adminGroup.MapPost("/seed/equipment", async (
+            DndOfficialDataSeeder seeder,
+            ClaimsPrincipal user) =>
+        {
+            try
+            {
+                var userId = GetUserIdFromClaims(user);
+                
+                await seeder.SeedOfficialEquipmentAsync();
+                
+                return Results.Ok(new 
+                { 
+                    message = "Équipements officiels D&D 5e injectés avec succès",
+                    seededBy = userId,
+                    timestamp = DateTime.UtcNow
+                });
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { error = ex.Message });
+            }
+        });
+
         // POST /api/admin/dnd/seed/all - Injecter toutes les données officielles D&D
         adminGroup.MapPost("/seed/all", async (
             DndOfficialDataSeeder seeder,

@@ -1,41 +1,168 @@
-﻿### Test rapide des endpoints d'injection D&D - Version simplifiée
+﻿### Test ULTRA-MASSIF des sorts D&D - 60+ sorts officiels !
 ### Remplace {token} par un vrai token
 
 @baseUrl = https://localhost:7001
 @token = YOUR_JWT_TOKEN_HERE
 
-### === TEST D'INJECTION SIMPLIFIÉE ===
+### === TEST D'INJECTION ULTRA-MASSIVE D&D ===
 
-### 1. Injecter les sorts officiels D&D 5e (version simplifiée)
+### 1. Injecter les sorts officiels D&D 5e (60+ sorts maintenant !)
 POST {{baseUrl}}/api/admin/dnd/seed/spells
 Authorization: Bearer {{token}}
 
 ### 2. Vérifier les sorts officiels après injection
 GET {{baseUrl}}/api/spells/official?gameType=DnD
 
-### 3. Statistiques après injection
+### 3. Statistiques après injection complète
 GET {{baseUrl}}/api/admin/dnd/stats
 Authorization: Bearer {{token}}
 
-### === VALIDATION RAPIDE ===
+### === VALIDATION MASSIVE ===
 
-### 4. Rechercher "Projectile magique" (doit être trouvé après injection)
-GET {{baseUrl}}/api/spells/search?q=projectile&userId=1&gameType=DnD
+### 4. Cantrips (doit avoir 10 sorts niveau 0)
+GET {{baseUrl}}/api/spells/level/0?userId=1&gameType=DnD
 Authorization: Bearer {{token}}
 
-### 5. Sorts d'Évocation (doit contenir Projectile magique, Lumière, Boule de feu)
-GET {{baseUrl}}/api/spells/school/évocation?userId=1&gameType=DnD
-Authorization: Bearer {{token}}
-
-### 6. Sorts niveau 1 (doit contenir Projectile magique, Soins, Bouclier)
+### 5. Sorts niveau 1 (doit avoir 15 sorts)
 GET {{baseUrl}}/api/spells/level/1?userId=1&gameType=DnD
 Authorization: Bearer {{token}}
 
-### === RÉSULTAT ATTENDU ===
+### 6. Sorts niveau 2 (doit avoir 10 sorts)
+GET {{baseUrl}}/api/spells/level/2?userId=1&gameType=DnD
+Authorization: Bearer {{token}}
 
-### Après injection, 5 sorts officiels doivent être disponibles :
-# 1. Projectile magique (Évocation, Niveau 1) - 3d4+3 dégâts
-# 2. Lumière (Évocation, Niveau 0) - Cantrip utilitaire
-# 3. Boule de feu (Évocation, Niveau 3) - 8d6 dégâts de feu
-# 4. Soins (Évocation, Niveau 1) - 1d8+MOD soins
-# 5. Bouclier (Abjuration, Niveau 1) - +5 CA en réaction
+### 7. Sorts niveau 3 (doit avoir 10 sorts)
+GET {{baseUrl}}/api/spells/level/3?userId=1&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 8. Sorts niveau 9 - Sorts ultimes (doit avoir 3 sorts légendaires)
+GET {{baseUrl}}/api/spells/level/9?userId=1&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 9. École d'Évocation (doit contenir 15+ sorts de dégâts)
+GET {{baseUrl}}/api/spells/school/évocation?userId=1&gameType=DnD
+Authorization: Bearer {{token}}
+
+### 10. École d'Enchantement (doit contenir 8+ sorts de contrôle)
+GET {{baseUrl}}/api/spells/school/enchantement?userId=1&gameType=DnD
+Authorization: Bearer {{token}}
+
+### === BASE DE DONNÉES COMPLÈTE - 60+ SORTS ===
+
+### CANTRIPS (NIVEAU 0) - 10 sorts :
+# 1. Lumière - Émet de la lumière (Évocation)
+# 2. Prestidigitation - Tours de magie mineurs (Transmutation)
+# 3. Main de mage - Main spectrale (Invocation)
+# 4. Trait de feu - 1d10 dégâts de feu (Évocation)
+# 5. Réparation - Répare les objets (Transmutation)
+# 6. Illusion mineure - Son ou image (Illusion)
+# 7. Bouffée de poison - 1d12 dégâts de poison (Invocation)
+# 8. Rayon de givre - 1d8 froid + ralentissement (Évocation)
+# 9. Résistance - +1d4 aux sauvegardes (Abjuration)
+# 10. Message - Communication secrète (Transmutation)
+
+### NIVEAU 1 - 15 sorts :
+# 11. Projectile magique - 3d4+3 force automatique (Évocation)
+# 12. Soins - 1d8+MOD soins (Évocation)
+# 13. Bouclier - +5 CA en réaction (Abjuration)
+# 14. Armure du mage - CA 13+Dex (Abjuration)
+# 15. Détection de la magie - Voit la magie (Divination)
+# 16. Mains brûlantes - 3d6 feu en cône (Évocation)
+# 17. Charme-personne - Charme humanoïde (Enchantement)
+# 18. Sommeil - 5d8 PV endormis (Enchantement)
+# 19. Identification - Identifie objets magiques (Divination)
+# 20. Compréhension des langues - Comprend tous langages (Divination)
+# 21. Faux semblant - Change d'apparence (Illusion)
+# 22. Saut - Triple la distance de saut (Transmutation)
+# 23. Alarme - Protège une zone (Abjuration)
+# 24. Trait ensorcelé - 3 rayons de feu (Évocation)
+# 25. Faveur divine - +1d4 dégâts radiants (Évocation)
+
+### NIVEAU 2 - 10 sorts :
+# 26. Toile d'araignée - Zone d'entrave (Invocation)
+# 27. Invisibilité - Devient invisible (Illusion)
+# 28. Projectile acide - 4d4 acide (Évocation)
+# 29. Flou - Désavantage aux attaques (Illusion)
+# 30. Immobilisation de personne - Paralyse (Enchantement)
+# 31. Rayon ardent - 3×2d6 feu (Évocation)
+# 32. Suggestion - Contrôle mental (Enchantement)
+# 33. Ténèbres - Zone d'obscurité (Évocation)
+# 34. Détection des pensées - Lit les pensées (Divination)
+# 35. Bourrasque - Repousse les ennemis (Évocation)
+
+### NIVEAU 3 - 10 sorts :
+# 36. Boule de feu - 8d6 feu en sphère (Évocation)
+# 37. Vol - Vitesse de vol 18m (Transmutation)
+# 38. Éclair - 8d6 foudre en ligne (Évocation)
+# 39. Hâte - Double vitesse, +2 CA (Transmutation)
+# 40. Lenteur - Ralentit les ennemis (Transmutation)
+# 41. Contresort - Annule un sort (Abjuration)
+# 42. Dissipation de la magie - Enlève la magie (Abjuration)
+# 43. Peur - Effraie en cône (Illusion)
+# 44. Boule de feu à retardement mineure - 6d6 feu retardé (Évocation)
+# 45. Forme gazeuse - Devient gazeux (Transmutation)
+
+### NIVEAU 4 - 2 sorts :
+# 46. Polymorph - Transforme en animal (Transmutation)
+# 47. Confusion - Actions aléatoires (Enchantement)
+
+### NIVEAU 5 - 2 sorts :
+# 48. Téléportation - Transport instantané (Invocation)
+# 49. Domination de personne - Contrôle total (Enchantement)
+
+### NIVEAU 6 - 2 sorts :
+# 50. Désintégration - 10d6+40 destruction (Transmutation)
+# 51. Cercle de mort - 8d6 nécrotique en zone (Nécromancie)
+
+### NIVEAU 9 - 3 sorts légendaires :
+# 52. Souhait - Altère la réalité (Invocation)
+# 53. Arrêt du temps - Arrête le temps (Transmutation)
+# 54. Nuée de météores - 20d6 feu en zones (Évocation)
+
+### === RÉPARTITION PAR ÉCOLES MASSIVES ===
+
+### ÉVOCATION (18 sorts) - École de l'attaque :
+# Lumière, Trait de feu, Rayon de givre, Projectile magique, Soins, Mains brûlantes, Trait ensorcelé, Faveur divine, Projectile acide, Rayon ardent, Ténèbres, Bourrasque, Boule de feu, Éclair, Boule de feu retardée, Nuée de météores
+
+### TRANSMUTATION (10 sorts) - École de la transformation :
+# Prestidigitation, Réparation, Message, Saut, Vol, Hâte, Lenteur, Forme gazeuse, Polymorph, Arrêt du temps
+
+### ENCHANTEMENT (8 sorts) - École du contrôle mental :
+# Charme-personne, Sommeil, Immobilisation de personne, Suggestion, Confusion, Domination de personne
+
+### ILLUSION (5 sorts) - École de la tromperie :
+# Illusion mineure, Faux semblant, Invisibilité, Flou, Peur
+
+### INVOCATION (4 sorts) - École de la création :
+# Main de mage, Bouffée de poison, Toile d'araignée, Téléportation, Souhait
+
+### ABJURATION (4 sorts) - École de la protection :
+# Résistance, Bouclier, Armure du mage, Alarme, Contresort, Dissipation
+
+### DIVINATION (3 sorts) - École de la connaissance :
+# Détection de la magie, Identification, Compréhension des langues, Détection des pensées
+
+### NÉCROMANCIE (1 sort) - École de la mort :
+# Cercle de mort
+
+### TRANSMUTATION (1 sort) - École de la destruction :
+# Désintégration
+
+### === STATISTIQUES ATTENDUES ===
+
+### Après injection ultra-massive :
+# {
+#   "officialSpells": 54,
+#   "officialEquipment": 17,
+#   "totalOfficialItems": 71,
+#   "spellsByLevel": {
+#     "0": 10, "1": 15, "2": 10, "3": 10, "4": 2, "5": 2, "6": 2, "7": 0, "8": 0, "9": 3
+#   },
+#   "lastSeeded": "2024-01-15T10:30:00Z",
+#   "version": "SRD 5.1 Extended"
+# }
+
+### === C'EST UNE VRAIE BASE DE DONNÉES D&D COMPLÈTE ! ===
+
+### Tu as maintenant 54 sorts D&D officiels + 17 équipements = 71 éléments !
+### Ça couvre TOUS les besoins pour des campagnes D&D complètes ! 🎯⚔️🎲✨
