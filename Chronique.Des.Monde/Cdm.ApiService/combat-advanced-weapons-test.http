@@ -1,0 +1,289 @@
+﻿### 🔥 TESTS DU SYSTÈME DE COMBAT D&D - ATTAQUES D'ARMES AVANCÉES ⚔️
+### Nouveauté: Intégration avec tes 33 équipements officiels !
+
+@baseUrl = https://localhost:7240/api
+@combatBaseUrl = {{baseUrl}}/combat
+
+### ============================================================================
+### 🎯 PHASE 1: DÉMARRAGE D'UN COMBAT AVEC ÉQUIPEMENTS RÉELS
+### ============================================================================
+
+### 1. Démarrer un combat D&D avec participants équipés
+POST {{combatBaseUrl}}/start
+Content-Type: application/json
+
+{
+  "sessionId": "test-session-advanced-weapons",
+  "chapterId": 1,
+  "name": "Combat Test Avancé - Attaques d'Armes",
+  "gameType": 1,
+  "participants": [
+    {
+      "participantType": "player",
+      "characterId": 1,
+      "customName": "Thomas le Guerrier",
+      "position": "front_line"
+    },
+    {
+      "participantType": "player", 
+      "characterId": 2,
+      "customName": "Lisa la Magicienne",
+      "position": "back_line"
+    },
+    {
+      "participantType": "npc",
+      "customName": "Gobelin Bandit",
+      "customStats": {
+        "hitPoints": 14,
+        "armorClass": 13,
+        "speed": 9
+      },
+      "position": "melee_range"
+    },
+    {
+      "participantType": "npc",
+      "customName": "Gobelin Archer",
+      "customStats": {
+        "hitPoints": 10,
+        "armorClass": 12,
+        "speed": 9
+      },
+      "position": "ranged"
+    }
+  ],
+  "environment": {
+    "terrain": "forest_clearing",
+    "lighting": "dim",
+    "features": ["fallen_logs", "dense_undergrowth"]
+  },
+  "settings": {
+    "turnTimeLimit": "00:02:00",
+    "showInitiativeToPlayers": true,
+    "allowLateJoin": true
+  }
+}
+
+### ============================================================================
+### 🎲 PHASE 2: LANCEMENT D'INITIATIVES
+### ============================================================================
+
+### 2a. Initiative pour Thomas (Guerrier) - Dextérité moyenne
+POST {{combatBaseUrl}}/{{combatId}}/initiative
+Content-Type: application/json
+
+{
+  "participantId": {{thomasId}},
+  "initiativeRoll": 16
+}
+
+### 2b. Initiative pour Lisa (Magicienne) - Dextérité élevée  
+POST {{combatBaseUrl}}/{{combatId}}/initiative
+Content-Type: application/json
+
+{
+  "participantId": {{lisaId}},
+  "initiativeRoll": 18
+}
+
+### 2c. Initiative pour Gobelin Bandit
+POST {{combatBaseUrl}}/{{combatId}}/initiative
+Content-Type: application/json
+
+{
+  "participantId": {{gobelin1Id}},
+  "initiativeRoll": 12
+}
+
+### 2d. Initiative pour Gobelin Archer
+POST {{combatBaseUrl}}/{{combatId}}/initiative
+Content-Type: application/json
+
+{
+  "participantId": {{gobelin2Id}},
+  "initiativeRoll": 14
+}
+
+### 3. Démarrer la phase de combat
+POST {{combatBaseUrl}}/{{combatId}}/start-phase
+
+### ============================================================================
+### ⚔️ PHASE 3: ATTAQUES D'ARMES AVANCÉES AVEC TES ÉQUIPEMENTS
+### ============================================================================
+
+### 4a. THOMAS ATTAQUE AVEC ÉPÉE LONGUE (ID 19) - Arme polyvalente D&D
+# Épée longue: 1d8 (ou 1d10 à 2 mains) + Force, Polyvalente
+POST {{combatBaseUrl}}/{{combatId}}/actions
+Content-Type: application/json
+
+{
+  "actionType": "weapon_attack",
+  "actionName": "Attaque à l'épée longue", 
+  "actorId": {{thomasId}},
+  "targetId": {{gobelin1Id}},
+  "equipmentId": 19,
+  "diceRolls": [17, 6]
+}
+
+### 4b. GOBELIN CONTRE-ATTAQUE AVEC CIMETERRE (ID 22) - Finesse
+# Cimeterre: 1d6 + DEX (Finesse), Léger
+POST {{combatBaseUrl}}/{{combatId}}/actions
+Content-Type: application/json
+
+{
+  "actionType": "weapon_attack",
+  "actionName": "Attaque au cimeterre",
+  "actorId": {{gobelin1Id}},
+  "targetId": {{thomasId}},
+  "equipmentId": 22,
+  "diceRolls": [15, 4]
+}
+
+### 4c. LISA ATTAQUE AVEC DAGUE (ID 9) - Arme de magicien
+# Dague: 1d4 + Force/DEX (Finesse), Légère, Lancer
+POST {{combatBaseUrl}}/{{combatId}}/actions
+Content-Type: application/json
+
+{
+  "actionType": "weapon_attack", 
+  "actionName": "Attaque à la dague",
+  "actorId": {{lisaId}},
+  "targetId": {{gobelin2Id}},
+  "equipmentId": 9,
+  "diceRolls": [12, 2]
+}
+
+### 4d. THOMAS ATTAQUE CRITIQUE AVEC ESPADON (ID 23) - Arme lourde 2 mains
+# Espadon: 2d6 + Force, Lourde, Deux mains
+POST {{combatBaseUrl}}/{{combatId}}/actions
+Content-Type: application/json
+
+{
+  "actionType": "weapon_attack",
+  "actionName": "Attaque critique à l'espadon",
+  "actorId": {{thomasId}},
+  "targetId": {{gobelin1Id}},
+  "equipmentId": 23,
+  "diceRolls": [20, 6, 5, 4, 3]
+}
+
+### ============================================================================
+### 🏹 PHASE 4: ATTAQUES À DISTANCE AVEC ARMES SPÉCIALISÉES
+### ============================================================================
+
+### 5a. GOBELIN ARCHER avec ARC LONG (ID 28) - Arme lourde distance
+# Arc long: 1d8 + DEX, Lourde, Deux mains, Munitions (45/180m)
+POST {{combatBaseUrl}}/{{combatId}}/actions
+Content-Type: application/json
+
+{
+  "actionType": "weapon_attack",
+  "actionName": "Tir à l'arc long",
+  "actorId": {{gobelin2Id}},
+  "targetId": {{lisaId}},
+  "equipmentId": 28,
+  "diceRolls": [16, 7]
+}
+
+### 5b. LISA LANCE SA DAGUE (Propriété Lancer)
+# Dague lancée: 1d4 + Force/DEX, Portée 6/18m
+POST {{combatBaseUrl}}/{{combatId}}/actions
+Content-Type: application/json
+
+{
+  "actionType": "weapon_attack",
+  "actionName": "Lancer de dague",
+  "actorId": {{lisaId}},
+  "targetId": {{gobelin1Id}},
+  "equipmentId": 9,
+  "diceRolls": [14, 3],
+  "position": "ranged_attack"
+}
+
+### ============================================================================
+### 🔨 PHASE 5: ARMES SPÉCIALES ET PROPRIÉTÉS AVANCÉES
+### ============================================================================
+
+### 6a. THOMAS avec MARTEAU DE GUERRE (ID 24) - Polyvalent
+# Marteau de guerre: 1d8 (ou 1d10 à 2 mains) + Force, Polyvalente
+POST {{combatBaseUrl}}/{{combatId}}/actions
+Content-Type: application/json
+
+{
+  "actionType": "weapon_attack",
+  "actionName": "Marteau de guerre à deux mains",
+  "actorId": {{thomasId}},
+  "targetId": {{gobelin2Id}},
+  "equipmentId": 24,
+  "diceRolls": [18, 8]
+}
+
+### 6b. Test MAILLET (ID 25) - Arme lourde massive
+# Maillet: 2d6 + Force, Lourde, Deux mains
+POST {{combatBaseUrl}}/{{combatId}}/actions
+Content-Type: application/json
+
+{
+  "actionType": "weapon_attack",
+  "actionName": "Coup de maillet dévastateur",
+  "actorId": {{thomasId}},
+  "targetId": {{gobelin1Id}},
+  "equipmentId": 25,
+  "diceRolls": [19, 6, 5]
+}
+
+### ============================================================================
+### 📊 PHASE 6: VÉRIFICATIONS ET ÉTAT DU COMBAT
+### ============================================================================
+
+### 7a. Vérifier l'état actuel du combat
+GET {{combatBaseUrl}}/{{combatId}}
+
+### 7b. Vérifier si Thomas peut agir
+GET {{combatBaseUrl}}/{{combatId}}/can-act/{{thomasId}}
+
+### 7c. Obtenir les actions disponibles pour Lisa
+GET {{combatBaseUrl}}/participants/{{lisaId}}/actions
+
+### 7d. Avancer au tour suivant
+POST {{combatBaseUrl}}/{{combatId}}/advance-turn
+
+### ============================================================================
+### 🏁 PHASE 7: FIN DE COMBAT ET NETTOYAGE
+### ============================================================================
+
+### 8a. Terminer le combat avec vainqueur
+POST {{combatBaseUrl}}/{{combatId}}/end
+Content-Type: application/json
+
+{
+  "winner": "Joueurs"
+}
+
+### ============================================================================
+### 📋 VARIABLES POUR LES TESTS (À REMPLIR APRÈS DÉMARRAGE)
+### ============================================================================
+
+# @combatId = [ID du combat créé]
+# @thomasId = [ID de Thomas]
+# @lisaId = [ID de Lisa] 
+# @gobelin1Id = [ID du Gobelin Bandit]
+# @gobelin2Id = [ID du Gobelin Archer]
+
+### ============================================================================
+### 📈 RÉSULTATS ATTENDUS
+### ============================================================================
+
+# ✅ Descriptions détaillées avec:
+#    - Nom de l'arme utilisée (Épée longue, Cimeterre, etc.)
+#    - Formules de dés correctes (1d8, 2d6, etc.)
+#    - Types de dégâts réels (Tranchant, Perforant, Contondant)
+#    - Propriétés d'armes appliquées (Finesse, Polyvalente, Lourde)
+#    - Calculs D&D 5e automatiques
+#    - Coups critiques avec doublement des dés
+#    - Gestion des PV et états des participants
+
+# 🎯 Exemple de sortie attendue:
+# "⚔️ Thomas attaque Gobelin Bandit avec Épée longue !
+#  🎲 Jet d'attaque: 1d20+5 = 17 (touche CA 13)
+#  ⚡ Dégâts: 1d8+3 = 6 dégâts tranchants
+#  🩸 Gobelin Bandit: 8/14 PV restants"

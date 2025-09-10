@@ -2,6 +2,9 @@
 using Cdm.Business.Common.Business.Spells;
 using Cdm.Business.Common.Business.Characters;
 using Cdm.Business.Common.Business.Equipment;
+using Cdm.Business.Common.Interfaces.Combat;
+using Cdm.Business.Common.Services.Combat;
+using Cdm.Business.Dnd.Services.Combat;
 using Cdm.Data;
 using Microsoft.EntityFrameworkCore;
 using Cdm.Data.Dnd;
@@ -31,6 +34,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICharacterSpellService, CharacterSpellService>();
         services.AddScoped<IEquipmentExchangeService, EquipmentExchangeService>();
         
+        // Services de combat ⚔️
+        services.AddCombatServices();
+        
         // Services métier spécialisés D&D
         services.AddDndBusinessServices();
 
@@ -38,6 +44,22 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEmailService, AzureEmailService>();
         services.AddScoped<JwtService>();
         services.AddScoped<PasswordService>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Ajoute tous les services de combat (moteur, dés, initiative, calculateurs)
+    /// </summary>
+    public static IServiceCollection AddCombatServices(this IServiceCollection services)
+    {
+        // Services de combat principaux
+        services.AddScoped<ICombatEngine, CombatEngine>();
+        services.AddScoped<IDiceRoller, DiceRoller>();
+        services.AddScoped<IInitiativeManager, InitiativeManager>();
+        
+        // Calculateur spécialisé D&D (optionnel selon le contexte)
+        services.AddScoped<IDndCombatCalculator, DndCombatCalculator>();
 
         return services;
     }
