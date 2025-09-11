@@ -3,13 +3,18 @@ using Cdm.Web.Components;
 using Cdm.Web.Services.Authentication;
 using Cdm.Web.Services.Api;
 using Cdm.Web.Services.Character;
+using Cdm.Web.Services.Theme;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container AVANT Aspire pour éviter les conflits
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// 🎨 Add MudBlazor services
+builder.Services.AddMudServices();
 
 // Ajouter les contrôleurs pour l'authentification
 builder.Services.AddControllers();
@@ -71,12 +76,16 @@ builder.Services.AddHttpClient<ICharacterService, CharacterService>("CharacterSe
     };
 });
 
-// Add custom services with new namespaces (Theme service supprimé)
+// Add custom services
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IApiService, ApiService>();
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IThemeService, ThemeService>();
 builder.Services.AddHttpContextAccessor();
+
+// 📡 Add SignalR (préparation Phase 2)
+builder.Services.AddSignalR();
 
 // Add service defaults & Aspire client integrations APRÈS notre configuration
 builder.AddServiceDefaults();

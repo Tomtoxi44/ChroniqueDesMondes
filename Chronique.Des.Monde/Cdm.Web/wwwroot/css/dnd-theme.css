@@ -1,0 +1,295 @@
+﻿/* 🎨 CSS Thème D&D pour MudBlazor - Variables principales */
+:root {
+    /* 🔥 Couleurs primaires D&D */
+    --cdm-blood-red: #8B0000;
+    --cdm-ancient-gold: #DAA520;
+    --cdm-forest-green: #228B22;
+    --cdm-deep-brown: #2D1B0B;
+    --cdm-parchment: #F4E4BC;
+    --cdm-steel-gray: #4F4F4F;
+    --cdm-flame-orange: #FF6B35;
+    --cdm-mystic-purple: #6A5ACD;
+    
+    /* 🌟 Effets et transitions */
+    --cdm-transition: all 0.3s ease;
+    --cdm-shadow: 0 4px 8px rgba(45, 27, 11, 0.2);
+    --cdm-glow: 0 0 20px rgba(218, 165, 32, 0.3);
+    
+    /* 📱 Responsive breakpoints */
+    --cdm-mobile: 576px;
+    --cdm-tablet: 768px;
+    --cdm-desktop: 992px;
+    --cdm-wide: 1200px;
+}
+
+/* 🏰 AppBar personnalisé */
+.cdm-appbar {
+    background: linear-gradient(135deg, var(--cdm-deep-brown) 0%, #1a0f08 100%);
+    border-bottom: 2px solid var(--cdm-ancient-gold);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cdm-appbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.cdm-appbar-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.cdm-appbar-title {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    color: var(--cdm-ancient-gold) !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 🏰 Drawer (Menu latéral) */
+.cdm-drawer .mud-drawer-content {
+    background: linear-gradient(180deg, var(--cdm-parchment) 0%, #f0e6d2 100%);
+    border-right: 2px solid var(--cdm-ancient-gold);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 🎯 Boutons D&D */
+.cdm-button {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: var(--cdm-transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.cdm-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.cdm-button:hover::before {
+    left: 100%;
+}
+
+.cdm-button-primary {
+    background: linear-gradient(135deg, var(--cdm-blood-red) 0%, #a00000 100%);
+    box-shadow: var(--cdm-shadow);
+}
+
+.cdm-button-secondary {
+    background: linear-gradient(135deg, var(--cdm-ancient-gold) 0%, #ffdf00 100%);
+    color: var(--cdm-deep-brown) !important;
+    box-shadow: var(--cdm-shadow);
+}
+
+.cdm-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* 📜 Cartes D&D */
+.cdm-card {
+    background: var(--cdm-parchment);
+    border: 1px solid var(--cdm-ancient-gold);
+    border-radius: 12px;
+    position: relative;
+    transition: var(--cdm-transition);
+    overflow: hidden;
+}
+
+.cdm-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--cdm-ancient-gold), var(--cdm-blood-red), var(--cdm-ancient-gold));
+}
+
+.cdm-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--cdm-glow);
+}
+
+.cdm-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1rem 0.5rem;
+    border-bottom: 1px solid rgba(218, 165, 32, 0.2);
+}
+
+.cdm-card-icon {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cdm-ancient-gold);
+    color: var(--cdm-deep-brown);
+    border-radius: 8px;
+    box-shadow: var(--cdm-shadow);
+}
+
+.cdm-card-title {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    color: var(--cdm-deep-brown);
+}
+
+.cdm-card-content {
+    padding: 1rem;
+}
+
+.cdm-card-footer {
+    padding: 0.5rem 1rem 1rem;
+    border-top: 1px solid rgba(218, 165, 32, 0.2);
+}
+
+/* 🎲 Spinners et animations */
+.cdm-spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+}
+
+.cdm-dice-spinner {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.cdm-dice {
+    font-size: 2rem;
+    animation: diceRoll 1s infinite ease-in-out;
+}
+
+.cdm-dice-d20 {
+    animation-delay: 0s;
+}
+
+.cdm-dice-d6 {
+    animation-delay: 0.2s;
+}
+
+.cdm-dice-d8 {
+    animation-delay: 0.4s;
+}
+
+@keyframes diceRoll {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(90deg) scale(1.1); }
+    50% { transform: rotate(180deg) scale(1.2); }
+    75% { transform: rotate(270deg) scale(1.1); }
+}
+
+.cdm-portal-spinner {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.cdm-portal-ring {
+    position: absolute;
+    border: 2px solid var(--cdm-mystic-purple);
+    border-radius: 50%;
+    opacity: 0.6;
+}
+
+.cdm-portal-ring-1 {
+    width: 60px;
+    height: 60px;
+    animation: portalSpin 2s linear infinite;
+}
+
+.cdm-portal-ring-2 {
+    width: 40px;
+    height: 40px;
+    top: 10px;
+    left: 10px;
+    animation: portalSpin 1.5s linear infinite reverse;
+}
+
+.cdm-portal-ring-3 {
+    width: 20px;
+    height: 20px;
+    top: 20px;
+    left: 20px;
+    animation: portalSpin 1s linear infinite;
+}
+
+.cdm-portal-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    animation: glow 1s ease-in-out infinite alternate;
+}
+
+@keyframes portalSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes glow {
+    from { filter: drop-shadow(0 0 5px var(--cdm-mystic-purple)); }
+    to { filter: drop-shadow(0 0 15px var(--cdm-mystic-purple)); }
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 768px) {
+    .cdm-appbar-title {
+        display: none;
+    }
+    
+    .cdm-card {
+        margin: 0.5rem 0;
+    }
+    
+    .cdm-card-header {
+        padding: 0.75rem;
+    }
+    
+    .cdm-card-content {
+        padding: 0.75rem;
+    }
+}
+
+/* 🌙 Mode sombre spécifique */
+.mud-theme-dark .cdm-card {
+    background: var(--cdm-deep-brown);
+    border-color: var(--cdm-ancient-gold);
+    color: var(--cdm-parchment);
+}
+
+.mud-theme-dark .cdm-card-title {
+    color: var(--cdm-parchment);
+}
+
+/* 🎯 Utilitaires */
+.cdm-text-shadow {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.cdm-glow {
+    box-shadow: var(--cdm-glow);
+}
+
+.cdm-transition {
+    transition: var(--cdm-transition);
+}

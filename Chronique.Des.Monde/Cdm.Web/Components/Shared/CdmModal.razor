@@ -1,0 +1,85 @@
+﻿@using MudBlazor
+
+@* Modal D&D immersive avec animations *@
+<MudDialog>
+    <DialogContent>
+        <div class="cdm-modal cdm-modal-@(ModalType.ToString().ToLower())">
+            
+            @if (ShowHeader)
+            {
+                <div class="cdm-modal-header">
+                    @if (!string.IsNullOrEmpty(Icon))
+                    {
+                        <div class="cdm-modal-icon">@Icon</div>
+                    }
+                    
+                    <div class="cdm-modal-title-section">
+                        @if (!string.IsNullOrEmpty(Title))
+                        {
+                            <MudText Typo="Typo.h5" Class="cdm-modal-title">@Title</MudText>
+                        }
+                        @if (!string.IsNullOrEmpty(Subtitle))
+                        {
+                            <MudText Typo="Typo.body2" Class="cdm-modal-subtitle">@Subtitle</MudText>
+                        }
+                    </div>
+                    
+                    @if (ShowCloseButton)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Close" 
+                                      OnClick="@CloseModal" 
+                                      Class="cdm-modal-close" />
+                    }
+                </div>
+            }
+            
+            <div class="cdm-modal-body">
+                @if (ChildContent != null)
+                {
+                    @ChildContent
+                }
+            </div>
+            
+            @if (ActionsContent != null)
+            {
+                <div class="cdm-modal-actions">
+                    @ActionsContent
+                </div>
+            }
+            
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private MudDialogInstance? MudDialog { get; set; }
+    
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Subtitle { get; set; }
+    [Parameter] public string? Icon { get; set; }
+    [Parameter] public CdmModalType ModalType { get; set; } = CdmModalType.Default;
+    [Parameter] public bool ShowHeader { get; set; } = true;
+    [Parameter] public bool ShowCloseButton { get; set; } = true;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? ActionsContent { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    
+    private async Task CloseModal()
+    {
+        await OnClose.InvokeAsync();
+        MudDialog?.Close();
+    }
+}
+
+@code {
+    public enum CdmModalType
+    {
+        Default,        // Modal standard
+        Character,      // Création/édition personnage
+        Combat,         // Actions de combat
+        Spell,          // Lancement de sort
+        Equipment,      // Gestion équipement
+        Confirmation,   // Confirmation d'action
+        Error          // Erreur/Alerte
+    }
+}

@@ -5,30 +5,44 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
-    <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
-    <link rel="stylesheet" href="@Assets["css/themes.css"]" />
-    <link rel="stylesheet" href="@Assets["css/auth.css"]" />
-    <link rel="stylesheet" href="@Assets["css/pages-common.css"]" />
-    <link rel="stylesheet" href="@Assets["app.css"]" />
-    <link rel="stylesheet" href="@Assets["Cdm.Web.styles.css"]" />
     
-    <!-- Google Fonts pour le thème JDR -->
+    @* 🎨 MudBlazor CSS *@
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    
+    @* 🔮 Google Fonts pour le thème D&D fantasy *@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    @* 🎨 CSS custom pour thème D&D *@
+    <link rel="stylesheet" href="@Assets["css/dnd-theme.css"]" />
+    <link rel="stylesheet" href="@Assets["css/combat-animations.css"]" />
+    <link rel="stylesheet" href="@Assets["app.css"]" />
+    <link rel="stylesheet" href="@Assets["Cdm.Web.styles.css"]" />
     
     <ImportMap />
     <link rel="icon" type="image/webp" href="/Icons/Icon_cdm.webp" />
     <HeadOutlet />
+    
+    <title>Chronique des Mondes - VTT D&D</title>
 </head>
 
-<body data-theme="dark-fantasy">
+<body>
+    @* 🎨 MudThemeProvider avec notre thème D&D *@
+    <MudThemeProvider Theme="DndTheme.Theme" IsDarkMode="true" />
+    <MudDialogProvider />
+    <MudSnackbarProvider />
+    
     <Routes />
     
-    <!-- Canvas for particle effects -->
+    @* 🎲 Canvas pour effets de particules (dés, sorts, etc.) *@
     <canvas id="particles-canvas" style="position: fixed; top: 0; left: 0; z-index: -1; pointer-events: none;"></canvas>
     
+    @* 🎨 MudBlazor JS *@
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="_framework/blazor.web.js"></script>
+    <script src="@Assets["js/dnd-effects.js"]"></script>
     <script src="@Assets["js/app.js"]"></script>
 </body>
 

@@ -1,0 +1,149 @@
+﻿@using MudBlazor
+
+<div class="cdm-nav-menu">
+    
+    @* 🏰 Header du menu avec logo *@
+    <div class="cdm-nav-header">
+        <div class="cdm-nav-brand">
+            <img src="/Icons/Icon_cdm.webp" alt="CDM" class="cdm-nav-logo" />
+            <div class="cdm-nav-title-section">
+                <MudText Typo="Typo.h6" Class="cdm-nav-title">Chronique</MudText>
+                <MudText Typo="Typo.body2" Class="cdm-nav-subtitle">des Mondes</MudText>
+            </div>
+        </div>
+    </div>
+
+    <MudDivider Class="my-2" />
+
+    @* 🏠 Navigation principale *@
+    <div class="cdm-nav-section">
+        <MudText Typo="Typo.caption" Class="cdm-nav-section-title">NAVIGATION</MudText>
+        
+        <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
+            Accueil
+        </MudNavLink>
+        
+        <MudNavLink Href="/stats" Icon="@Icons.Material.Filled.BarChart">
+            Statistiques
+        </MudNavLink>
+
+        <MudNavLink Href="/design-system" Icon="@Icons.Material.Filled.Palette">
+            🎨 Design System
+        </MudNavLink>
+    </div>
+
+    @* ⚔️ Mes Aventures *@
+    <div class="cdm-nav-section">
+        <MudText Typo="Typo.caption" Class="cdm-nav-section-title">MES AVENTURES</MudText>
+        
+        <MudNavLink Href="/characters" Icon="@Icons.Material.Filled.Person">
+            Personnages
+        </MudNavLink>
+        
+        <MudNavLink Href="/campaigns" Icon="@Icons.Material.Filled.Map">
+            Campagnes
+        </MudNavLink>
+        
+        <MudNavLink Href="/dice" Icon="@Icons.Material.Filled.Casino">
+            Lanceur de Dés
+        </MudNavLink>
+    </div>
+
+    @* 🔮 Combat (Nouveau!) *@
+    <div class="cdm-nav-section">
+        <MudText Typo="Typo.caption" Class="cdm-nav-section-title">⚔️ COMBAT</MudText>
+        
+        <MudNavLink Href="/combat" Icon="@Icons.Material.Filled.Sports">
+            Sessions de Combat
+        </MudNavLink>
+        
+        <MudNavLink Href="/combat/create" Icon="@Icons.Material.Filled.Add">
+            Nouveau Combat
+        </MudNavLink>
+    </div>
+
+    @* 🛠️ Outils *@
+    <div class="cdm-nav-section">
+        <MudText Typo="Typo.caption" Class="cdm-nav-section-title">OUTILS</MudText>
+        
+        <MudNavLink Href="/spells" Icon="@Icons.Material.Filled.AutoFixHigh">
+            Sorts
+        </MudNavLink>
+        
+        <MudNavLink Href="/equipment" Icon="@Icons.Material.Filled.Shield">
+            Équipements
+        </MudNavLink>
+        
+        <MudNavLink Href="/bestiary" Icon="@Icons.Material.Filled.Pets">
+            Bestiaire
+        </MudNavLink>
+    </div>
+
+    @* 🎲 Status du système (Debug) *@
+    <div class="cdm-nav-footer">
+        <MudPaper Class="pa-2 mt-4" Elevation="1">
+            <MudText Typo="Typo.caption" Align="Align.Center">
+                🎮 VTT D&D v1.0
+            </MudText>
+            <MudText Typo="Typo.caption" Align="Align.Center" Class="mud-text-secondary">
+                Combat System Active
+            </MudText>
+        </MudPaper>
+    </div>
+
+</div>
+
+<style>
+.cdm-nav-menu {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.cdm-nav-header {
+    padding: 1rem;
+}
+
+.cdm-nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.cdm-nav-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+}
+
+.cdm-nav-title-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.cdm-nav-title {
+    line-height: 1.2;
+    font-weight: 600;
+}
+
+.cdm-nav-subtitle {
+    line-height: 1;
+    opacity: 0.8;
+}
+
+.cdm-nav-section {
+    margin: 0.5rem 0;
+}
+
+.cdm-nav-section-title {
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+}
+
+.cdm-nav-footer {
+    margin-top: auto;
+    padding: 1rem;
+}
+</style>

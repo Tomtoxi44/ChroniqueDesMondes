@@ -1,0 +1,58 @@
+﻿@using MudBlazor
+@inject IJSRuntime JS
+
+@* Spinner D&D avec dés qui roulent *@
+<div class="cdm-spinner-container">
+    
+    @if (SpinnerType == CdmSpinnerType.Dice)
+    {
+        <div class="cdm-dice-spinner">
+            <div class="cdm-dice cdm-dice-d20">🎲</div>
+            <div class="cdm-dice cdm-dice-d6">⚀</div>
+            <div class="cdm-dice cdm-dice-d8">⚃</div>
+        </div>
+    }
+    else if (SpinnerType == CdmSpinnerType.Portal)
+    {
+        <div class="cdm-portal-spinner">
+            <div class="cdm-portal-ring cdm-portal-ring-1"></div>
+            <div class="cdm-portal-ring cdm-portal-ring-2"></div>
+            <div class="cdm-portal-ring cdm-portal-ring-3"></div>
+            <div class="cdm-portal-center">🔮</div>
+        </div>
+    }
+    else
+    {
+        <MudProgressCircular Color="Color.Primary" Size="@Size" Indeterminate="true" />
+    }
+    
+    @if (!string.IsNullOrEmpty(LoadingText))
+    {
+        <MudText Typo="Typo.body2" Class="cdm-spinner-text">@LoadingText</MudText>
+    }
+    
+</div>
+
+@code {
+    [Parameter] public CdmSpinnerType SpinnerType { get; set; } = CdmSpinnerType.Dice;
+    [Parameter] public Size Size { get; set; } = Size.Medium;
+    [Parameter] public string? LoadingText { get; set; }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && SpinnerType == CdmSpinnerType.Dice)
+        {
+            // Ajouter des effets sonores de dés
+            await JS.InvokeVoidAsync("playDiceRollSound");
+        }
+    }
+}
+
+@code {
+    public enum CdmSpinnerType
+    {
+        Standard,   // Spinner MudBlazor standard
+        Dice,       // Dés qui roulent
+        Portal      // Portail magique
+    }
+}

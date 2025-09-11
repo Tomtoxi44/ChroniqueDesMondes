@@ -1,0 +1,177 @@
+﻿@page "/design-system"
+@using MudBlazor
+
+<PageTitle>Design System D&D</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large">
+    
+    @* 🎨 Header de démonstration *@
+    <MudPaper Class="pa-6 mb-4" Elevation="3">
+        <MudText Typo="Typo.h3" GutterBottom="true" Class="cdm-text-shadow">
+            🎨 Design System D&D
+        </MudText>
+        <MudText Typo="Typo.body1">
+            Démonstration des composants avec le thème Chronique des Mondes
+        </MudText>
+    </MudPaper>
+
+    <MudGrid>
+        
+        @* 🔘 Démonstration des boutons *@
+        <MudItem xs="12" md="6">
+            <CdmCard Title="Boutons D&D" Icon="🗡️" CardType="CdmCard.CdmCardType.Default">
+                <MudStack Spacing="3">
+                    <CdmButton Text="Attaque Principale" ButtonType="CdmButton.CdmButtonType.Primary" StartIcon="@Icons.Material.Filled.LocalFireDepartment" />
+                    <CdmButton Text="Action Secondaire" ButtonType="CdmButton.CdmButtonType.Secondary" StartIcon="@Icons.Material.Filled.Star" />
+                    <CdmButton Text="Action Dangereuse" ButtonType="CdmButton.CdmButtonType.Danger" StartIcon="@Icons.Material.Filled.Warning" />
+                    <CdmButton Text="Action Positive" ButtonType="CdmButton.CdmButtonType.Success" StartIcon="@Icons.Material.Filled.Check" />
+                    <CdmButton Text="Action Discrète" ButtonType="CdmButton.CdmButtonType.Ghost" StartIcon="@Icons.Material.Filled.Visibility" />
+                </MudStack>
+            </CdmCard>
+        </MudItem>
+
+        @* 📊 Démonstration des cartes *@
+        <MudItem xs="12" md="6">
+            <CdmCard Title="Types de Cartes" Icon="📜" CardType="CdmCard.CdmCardType.Character">
+                <MudStack Spacing="2">
+                    
+                    <CdmCard Title="Personnage" Icon="⚔️" CardType="CdmCard.CdmCardType.Character" Elevation="1">
+                        <MudText Typo="Typo.body2">Elfe Rôdeur - Niveau 5</MudText>
+                        <FooterContent>
+                            <CdmButton Text="Voir" ButtonType="CdmButton.CdmButtonType.Ghost" Size="Size.Small" />
+                        </FooterContent>
+                    </CdmCard>
+
+                    <CdmCard Title="Sort" Icon="✨" CardType="CdmCard.CdmCardType.Spell" Elevation="1">
+                        <MudText Typo="Typo.body2">Boule de Feu - Niveau 3</MudText>
+                        <FooterContent>
+                            <CdmButton Text="Lancer" ButtonType="CdmButton.CdmButtonType.Danger" Size="Size.Small" />
+                        </FooterContent>
+                    </CdmCard>
+
+                </MudStack>
+            </CdmCard>
+        </MudItem>
+
+        @* 🎲 Démonstration des spinners *@
+        <MudItem xs="12" md="4">
+            <CdmCard Title="Animations D&D" Icon="🎲" CardType="CdmCard.CdmCardType.Combat">
+                <MudStack Spacing="4" AlignItems="AlignItems.Center">
+                    
+                    <div>
+                        <MudText Typo="Typo.h6" Align="Align.Center" GutterBottom="true">Dés Magiques</MudText>
+                        <CdmSpinner SpinnerType="CdmSpinner.CdmSpinnerType.Dice" LoadingText="Lancement des dés..." />
+                    </div>
+
+                    <div>
+                        <MudText Typo="Typo.h6" Align="Align.Center" GutterBottom="true">Portail Mystique</MudText>
+                        <CdmSpinner SpinnerType="CdmSpinner.CdmSpinnerType.Portal" LoadingText="Invocation..." />
+                    </div>
+
+                </MudStack>
+            </CdmCard>
+        </MudItem>
+
+        @* 🎨 Palette de couleurs *@
+        <MudItem xs="12" md="8">
+            <CdmCard Title="Palette de Couleurs" Icon="🎨" CardType="CdmCard.CdmCardType.Default">
+                <MudGrid>
+                    <MudItem xs="6" sm="3">
+                        <MudPaper Class="pa-4 text-center" Style="background-color: #8B0000; color: white;">
+                            <MudText Typo="Typo.body2">Rouge Sang</MudText>
+                            <MudText Typo="Typo.caption">#8B0000</MudText>
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem xs="6" sm="3">
+                        <MudPaper Class="pa-4 text-center" Style="background-color: #DAA520; color: #2D1B0B;">
+                            <MudText Typo="Typo.body2">Or Ancien</MudText>
+                            <MudText Typo="Typo.caption">#DAA520</MudText>
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem xs="6" sm="3">
+                        <MudPaper Class="pa-4 text-center" Style="background-color: #228B22; color: white;">
+                            <MudText Typo="Typo.body2">Vert Forêt</MudText>
+                            <MudText Typo="Typo.caption">#228B22</MudText>
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem xs="6" sm="3">
+                        <MudPaper Class="pa-4 text-center" Style="background-color: #6A5ACD; color: white;">
+                            <MudText Typo="Typo.body2">Violet Mystique</MudText>
+                            <MudText Typo="Typo.caption">#6A5ACD</MudText>
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
+            </CdmCard>
+        </MudItem>
+
+        @* 📊 Démo barres de vie *@
+        <MudItem xs="12">
+            <CdmCard Title="Barres de Vie Animées" Icon="❤️" CardType="CdmCard.CdmCardType.Combat">
+                <MudStack Spacing="3">
+                    
+                    <div>
+                        <MudText Typo="Typo.body2" GutterBottom="true">Thomas le Guerrier (100% PV)</MudText>
+                        <div class="health-bar-container">
+                            <div class="health-bar full" style="width: 100%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <MudText Typo="Typo.body2" GutterBottom="true">Lisa la Rôdeuse (75% PV)</MudText>
+                        <div class="health-bar-container">
+                            <div class="health-bar high" style="width: 75%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <MudText Typo="Typo.body2" GutterBottom="true">Marc le Mage (50% PV)</MudText>
+                        <div class="health-bar-container">
+                            <div class="health-bar medium" style="width: 50%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <MudText Typo="Typo.body2" GutterBottom="true">Emma la Clerc (25% PV)</MudText>
+                        <div class="health-bar-container">
+                            <div class="health-bar low" style="width: 25%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <MudText Typo="Typo.body2" GutterBottom="true">Alex le Barbare (10% PV - Critique!)</MudText>
+                        <div class="health-bar-container">
+                            <div class="health-bar critical" style="width: 10%"></div>
+                        </div>
+                    </div>
+
+                </MudStack>
+
+                <FooterContent>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Info" OnClick="@SimulateDamage">
+                        🎲 Simuler des Dégâts
+                    </MudButton>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Success" OnClick="@SimulateHealing" Class="ml-2">
+                        💚 Simuler des Soins
+                    </MudButton>
+                </FooterContent>
+                
+            </CdmCard>
+        </MudItem>
+
+    </MudGrid>
+
+</MudContainer>
+
+@code {
+    private async Task SimulateDamage()
+    {
+        // TODO: Implémenter avec JavaScript
+        await Task.Delay(100);
+    }
+
+    private async Task SimulateHealing()
+    {
+        // TODO: Implémenter avec JavaScript
+        await Task.Delay(100);
+    }
+}
