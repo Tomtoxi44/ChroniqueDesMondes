@@ -21,6 +21,7 @@ builder.Services.AddHttpContextAccessor();
 // Configuration HttpClient pour l'API
 var apiBaseUrl = builder.Configuration.GetValue<string>("ApiSettings:BaseUrl") ?? "https://localhost:7428";
 
+// HttpClient pour les services API avec authentification
 builder.Services.AddHttpClient<ICharacterApiService, CharacterApiService>(client =>
 {
     client.BaseAddress = new Uri(apiBaseUrl);
@@ -33,7 +34,14 @@ builder.Services.AddHttpClient<ICombatApiService, CombatApiService>(client =>
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
-// Services d'authentification existants
+// HttpClient pour le service d'authentification JWT
+builder.Services.AddHttpClient<IJwtAuthService, JwtAuthService>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
+// Services d'authentification (garder l'ancien pour compatibilité)
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -50,8 +58,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization();
 
 // Services applicatifs
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<IApiService, ApiService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>(); // Ancien service (compatibilité)
+builder.Services.AddScoped<IApiService, ApiService>(); // Ancien service (compatibilité)
 
 var app = builder.Build();
 
@@ -71,8 +79,9 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-Console.WriteLine($"🌃 Chronique des Mondes - API Integration Mode");
+Console.WriteLine($"🌃 Chronique des Mondes - API Integration + JWT Auth");
 Console.WriteLine($"📍 Frontend: http://localhost:5222");
 Console.WriteLine($"🔌 API Backend: {apiBaseUrl}");
+Console.WriteLine($"🔐 JWT Authentication: Enabled");
 
 app.Run();

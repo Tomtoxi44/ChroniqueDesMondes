@@ -1,4 +1,4 @@
-﻿@page "/login"
+﻿@page "/register"
 @layout EmptyLayout
 @using Cdm.Web.Models.Api
 @using Cdm.Web.Services.Authentication
@@ -6,7 +6,7 @@
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
 
-<PageTitle>Connexion - Chronique des Mondes</PageTitle>
+<PageTitle>Inscription - Chronique des Mondes</PageTitle>
 
 <div class="login-container">
     <MudPaper Class="login-card" Elevation="10">
@@ -19,35 +19,54 @@
                 Chronique des Mondes
             </MudText>
             <MudText Typo="Typo.body1" Style="color: #B0B0B0;">
-                Connectez-vous à votre aventure
+                Créez votre compte aventurier
             </MudText>
         </div>
 
-        @* Formulaire de connexion *@
-        <EditForm Model="@_loginModel" OnValidSubmit="@HandleLogin">
+        @* Formulaire d'inscription *@
+        <EditForm Model="@_registerModel" OnValidSubmit="@HandleRegister">
             <DataAnnotationsValidator />
             
+            @* Champ Nom d'utilisateur *@
+            <MudTextField @bind-Value="_registerModel.UserName"
+                         Label="Nom d'utilisateur"
+                         Variant="Variant.Outlined"
+                         FullWidth="true"
+                         Class="mb-4"
+                         For="@(() => _registerModel.UserName)"
+                         StartIcon="@Icons.Material.Filled.Person" />
+
             @* Champ Email *@
-            <MudTextField @bind-Value="_loginModel.Email"
+            <MudTextField @bind-Value="_registerModel.Email"
                          Label="Adresse email"
                          Variant="Variant.Outlined"
                          FullWidth="true"
                          Class="mb-4"
                          InputType="InputType.Email"
-                         For="@(() => _loginModel.Email)"
+                         For="@(() => _registerModel.Email)"
                          StartIcon="@Icons.Material.Filled.Email" />
 
             @* Champ Mot de passe *@
-            <MudTextField @bind-Value="_loginModel.Password"
+            <MudTextField @bind-Value="_registerModel.Password"
                          Label="Mot de passe"
                          Variant="Variant.Outlined"
                          FullWidth="true"
                          Class="mb-4"
                          InputType="@(_showPassword ? InputType.Text : InputType.Password)"
-                         For="@(() => _loginModel.Password)"
+                         For="@(() => _registerModel.Password)"
                          StartIcon="@Icons.Material.Filled.Lock"
                          EndIcon="@(_showPassword ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility)"
                          OnEndIconClick="@(() => _showPassword = !_showPassword)" />
+
+            @* Champ Confirmation mot de passe *@
+            <MudTextField @bind-Value="_registerModel.ConfirmPassword"
+                         Label="Confirmer le mot de passe"
+                         Variant="Variant.Outlined"
+                         FullWidth="true"
+                         Class="mb-4"
+                         InputType="@(_showPassword ? InputType.Text : InputType.Password)"
+                         For="@(() => _registerModel.ConfirmPassword)"
+                         StartIcon="@Icons.Material.Filled.Lock" />
 
             @* Messages d'erreur/succès *@
             @if (!string.IsNullOrEmpty(_errorMessage))
@@ -64,7 +83,7 @@
                 </MudAlert>
             }
 
-            @* Bouton de connexion *@
+            @* Bouton d'inscription *@
             <MudButton ButtonType="ButtonType.Submit"
                       Variant="Variant.Filled"
                       Color="Color.Primary"
@@ -72,26 +91,26 @@
                       Size="Size.Large"
                       Class="mb-4"
                       Disabled="@_isLoading"
-                      StartIcon="@(_isLoading ? Icons.Material.Filled.HourglassTop : Icons.Material.Filled.Login)">
+                      StartIcon="@(_isLoading ? Icons.Material.Filled.HourglassTop : Icons.Material.Filled.PersonAdd)">
                 
                 @if (_isLoading)
                 {
-                    <span>Connexion en cours...</span>
+                    <span>Création en cours...</span>
                 }
                 else
                 {
-                    <span>Se connecter</span>
+                    <span>Créer le compte</span>
                 }
             </MudButton>
 
         </EditForm>
 
-        @* Lien vers l'inscription *@
+        @* Lien vers la connexion *@
         <div class="text-center mt-4">
             <MudText Typo="Typo.body2" Style="color: #B0B0B0;">
-                Pas encore de compte ?
-                <MudLink Href="/register" Color="Color.Primary">
-                    Créer un compte
+                Déjà un compte ?
+                <MudLink Href="/login" Color="Color.Primary">
+                    Se connecter
                 </MudLink>
             </MudText>
         </div>
@@ -100,7 +119,7 @@
         <MudDivider Class="my-4" />
         <MudAlert Severity="Severity.Info" Dense="true">
             <MudText Typo="Typo.caption">
-                <strong>Test API :</strong> Utilisez n'importe quel email et mot de passe pour tester l'intégration backend.
+                <strong>Test API :</strong> L'inscription crée un compte temporaire pour tester l'intégration backend.
             </MudText>
         </MudAlert>
 
@@ -108,7 +127,7 @@
 </div>
 
 @code {
-    private LoginModel _loginModel = new();
+    private RegisterModel _registerModel = new();
     private bool _showPassword = false;
     private bool _isLoading = false;
     private string _errorMessage = "";
@@ -123,7 +142,7 @@
         }
     }
 
-    private async Task HandleLogin()
+    private async Task HandleRegister()
     {
         _isLoading = true;
         _errorMessage = "";
@@ -132,27 +151,35 @@
 
         try
         {
-            var request = new LoginRequest
+            // Validation des mots de passe
+            if (_registerModel.Password != _registerModel.ConfirmPassword)
             {
-                Email = _loginModel.Email,
-                Password = _loginModel.Password
+                _errorMessage = "Les mots de passe ne correspondent pas";
+                return;
+            }
+
+            var request = new RegisterRequest
+            {
+                UserName = _registerModel.UserName,
+                Email = _registerModel.Email,
+                Password = _registerModel.Password
             };
 
-            var response = await AuthService.LoginAsync(request);
+            var response = await AuthService.RegisterAsync(request);
 
             if (response.Success)
             {
-                _successMessage = "Connexion réussie ! Redirection...";
-                Snackbar.Add("✅ Connexion réussie !", Severity.Success);
+                _successMessage = "Compte créé avec succès ! Redirection...";
+                Snackbar.Add("✅ Compte créé avec succès !", Severity.Success);
                 
                 StateHasChanged();
-                await Task.Delay(1000); // Petit délai pour l'UX
+                await Task.Delay(1500); // Petit délai pour l'UX
                 
                 Navigation.NavigateTo("/", replace: true);
             }
             else
             {
-                _errorMessage = response.Error ?? "Erreur de connexion";
+                _errorMessage = response.Error ?? "Erreur lors de la création du compte";
                 Snackbar.Add($"❌ {_errorMessage}", Severity.Error);
             }
         }
@@ -160,7 +187,7 @@
         {
             _errorMessage = "Une erreur technique s'est produite";
             Snackbar.Add("💥 Erreur technique", Severity.Error);
-            Console.WriteLine($"Erreur login: {ex.Message}");
+            Console.WriteLine($"Erreur registration: {ex.Message}");
         }
         finally
         {
@@ -169,14 +196,21 @@
         }
     }
 
-    public class LoginModel
+    public class RegisterModel
     {
+        [Required(ErrorMessage = "Le nom d'utilisateur est requis")]
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "Le nom d'utilisateur doit contenir entre 3 et 50 caractères")]
+        public string UserName { get; set; } = "";
+
         [Required(ErrorMessage = "L'adresse email est requise")]
         [EmailAddress(ErrorMessage = "Format d'email invalide")]
         public string Email { get; set; } = "";
 
         [Required(ErrorMessage = "Le mot de passe est requis")]
-        [MinLength(6, ErrorMessage = "Le mot de passe doit contenir au moins 6 caractères")]
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "Le mot de passe doit contenir au moins 6 caractères")]
         public string Password { get; set; } = "";
+
+        [Required(ErrorMessage = "La confirmation du mot de passe est requise")]
+        public string ConfirmPassword { get; set; } = "";
     }
 }

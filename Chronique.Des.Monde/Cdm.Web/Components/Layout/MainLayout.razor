@@ -46,10 +46,17 @@
                             API Backend
                         </MudNavLink>
                     </MudNavGroup>
+
+                    <MudDivider Class="my-4" />
                     
-                    <MudNavLink Href="/login" Icon="@Icons.Material.Filled.Login">
-                        Connexion
-                    </MudNavLink>
+                    <MudNavGroup Text="Authentification" Icon="@Icons.Material.Filled.Login" Expanded="true">
+                        <MudNavLink Href="/login" Icon="@Icons.Material.Filled.Login">
+                            Connexion JWT
+                        </MudNavLink>
+                        <MudNavLink Href="/register" Icon="@Icons.Material.Filled.PersonAdd">
+                            Inscription
+                        </MudNavLink>
+                    </MudNavGroup>
                 </MudNavMenu>
             </div>
 

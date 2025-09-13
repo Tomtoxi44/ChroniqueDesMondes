@@ -9,6 +9,9 @@ public static class EndpointMappingExtensions
 {
     public static WebApplication MapAllEndpoints(this WebApplication app)
     {
+        // 🔐 Endpoints d'authentification (NOUVEAU)
+        app.MapAuthEndpoints();
+        
         // Endpoints principaux
         app.MapSpellEndpoints();
         app.MapCharacterSpellEndpoints();
