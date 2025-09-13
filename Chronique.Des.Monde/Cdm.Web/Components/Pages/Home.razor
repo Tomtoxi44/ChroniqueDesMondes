@@ -1,66 +1,107 @@
 ﻿@page "/"
-@using Cdm.Web.Services.Authentication
-@inject IAuthenticationService AuthService
-@inject NavigationManager Navigation
 
-<PageTitle>Chronique des Mondes</PageTitle>
+<PageTitle>Chronique des Mondes - Design System Demo</PageTitle>
 
-<div class="home-container animate-fade-in">
-    <div class="hero-section">
-        <div class="hero-content">
-            <img src="/images/icon_cdm.svg" alt="Chronique des Mondes" class="hero-logo animate-pulse" />
-            <h1 class="hero-title">Chronique des Mondes</h1>
-            <p class="hero-subtitle">Plongez dans l'univers des jeux de rôle</p>
+<MudContainer MaxWidth="MaxWidth.Large" Class="pa-6">
+    
+    @* Hero Section avec style D&D *@
+    <MudPaper Class="pa-8 mb-6 text-center" Elevation="4" Style="background: linear-gradient(135deg, var(--cdm-deep-brown) 0%, #1a0f08 100%); color: var(--cdm-parchment);">
+        <MudText Typo="Typo.h2" Class="mb-4" Style="font-family: 'Cinzel', serif; color: var(--cdm-ancient-gold);">
+            🏰 Chronique des Mondes
+        </MudText>
+        <MudText Typo="Typo.h5" Class="mb-4">
+            VTT D&D de Nouvelle Génération
+        </MudText>
+        <MudText Typo="Typo.body1" Class="mb-6">
+            Découvrez notre nouveau système de design avec thème D&D immersif
+        </MudText>
+        
+        <MudStack Row Justify="Justify.Center" Spacing="4">
+            <MudButton Href="/design-system" 
+                      Variant="Variant.Filled" 
+                      Color="Color.Primary" 
+                      Size="Size.Large"
+                      StartIcon="@Icons.Material.Filled.Palette">
+                🎨 Voir le Design System
+            </MudButton>
             
-            @if (AuthService.IsAuthenticated)
-            {
-                <div class="welcome-section animate-slide-right">
-                    <h2>Bienvenue, Aventurier !</h2>
-                    <p>Votre quête peut commencer...</p>
-                    <div class="action-buttons">
-                        <a href="/adventures" class="btn btn-primary">Mes Aventures</a>
-                        <a href="/characters" class="btn btn-secondary">Mes Personnages</a>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <div class="auth-section animate-slide-left">
-                    <p class="auth-message">Connectez-vous pour commencer votre aventure</p>
-                    <div class="auth-buttons">
-                        <a href="/login" class="btn btn-primary">Se connecter</a>
-                        <a href="/register" class="btn btn-secondary">Créer un compte</a>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
+            <MudButton Href="/combat" 
+                      Variant="Variant.Outlined" 
+                      Color="Color.Secondary" 
+                      Size="Size.Large"
+                      StartIcon="@Icons.Material.Filled.Sports">
+                ⚔️ Interface Combat (Bientôt)
+            </MudButton>
+        </MudStack>
+    </MudPaper>
 
-    <div class="features-section">
-        <div class="features-grid">
-            <div class="feature-card card animate-fade-in">
-                <div class="feature-icon">⚔️</div>
-                <h3>Gestion des Personnages</h3>
-                <p>Créez et gérez vos personnages avec tous leurs détails, équipements et statistiques.</p>
+    @* Features Grid *@
+    <MudGrid>
+        <MudItem xs="12" md="6" lg="3">
+            <MudPaper Class="pa-4 text-center h-100" Elevation="2">
+                <MudIcon Icon="@Icons.Material.Filled.Person" Style="font-size: 3rem;" Color="Color.Primary" Class="mb-3" />
+                <MudText Typo="Typo.h6" GutterBottom="true">Personnages D&D</MudText>
+                <MudText Typo="Typo.body2">Créez et gérez vos héros avec toutes leurs statistiques</MudText>
+            </MudPaper>
+        </MudItem>
+        
+        <MudItem xs="12" md="6" lg="3">
+            <MudPaper Class="pa-4 text-center h-100" Elevation="2">
+                <MudIcon Icon="@Icons.Material.Filled.Sports" Style="font-size: 3rem;" Color="Color.Error" Class="mb-3" />
+                <MudText Typo="Typo.h6" GutterBottom="true">Combat Temps Réel</MudText>
+                <MudText Typo="Typo.body2">Système de combat avancé avec 33 équipements</MudText>
+            </MudPaper>
+        </MudItem>
+        
+        <MudItem xs="12" md="6" lg="3">
+            <MudPaper Class="pa-4 text-center h-100" Elevation="2">
+                <MudIcon Icon="@Icons.Material.Filled.AutoFixHigh" Style="font-size: 3rem;" Color="Color.Secondary" Class="mb-3" />
+                <MudText Typo="Typo.h6" GutterBottom="true">74 Sorts D&D</MudText>
+                <MudText Typo="Typo.body2">Bibliothèque complète de sorts D&D 5e</MudText>
+            </MudPaper>
+        </MudItem>
+        
+        <MudItem xs="12" md="6" lg="3">
+            <MudPaper Class="pa-4 text-center h-100" Elevation="2">
+                <MudIcon Icon="@Icons.Material.Filled.Casino" Style="font-size: 3rem;" Color="Color.Success" Class="mb-3" />
+                <MudText Typo="Typo.h6" GutterBottom="true">Système de Dés</MudText>
+                <MudText Typo="Typo.body2">Dés virtuels avec animations immersives</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    @* Status Section *@
+    <MudAlert Severity="Severity.Info" Class="mt-6">
+        <MudText Typo="Typo.body1">
+            <strong>🚀 Mode Démo Activé :</strong> 
+            Vous visualisez la <strong>Phase 1</strong> de notre roadmap frontend. 
+            Le design system D&D est maintenant opérationnel avec MudBlazor !
+        </MudText>
+    </MudAlert>
+
+    @* Progress *@
+    <MudPaper Class="pa-4 mt-4" Elevation="2">
+        <MudText Typo="Typo.h6" Class="mb-3">📈 Progression du Développement</MudText>
+        
+        <MudStack Spacing="2">
+            <div>
+                <MudText Typo="Typo.body2">Phase 1 - Design System Moderne</MudText>
+                <MudProgressLinear Value="100" Color="Color.Success" Class="mt-1" />
+                <MudText Typo="Typo.caption" Class="mud-text-secondary">✅ Terminée : MudBlazor + Thème D&D</MudText>
             </div>
             
-            <div class="feature-card card animate-fade-in">
-                <div class="feature-icon">🗺️</div>
-                <h3>Campagnes Épiques</h3>
-                <p>Organisez vos campagnes, suivez l'évolution de l'histoire et les quêtes accomplies.</p>
+            <div>
+                <MudText Typo="Typo.body2">Phase 2 - Interface Combat Temps Réel</MudText>
+                <MudProgressLinear Value="0" Color="Color.Primary" Class="mt-1" />
+                <MudText Typo="Typo.caption" Class="mud-text-secondary">🔄 Prochaine : SignalR + Dashboard MJ</MudText>
             </div>
             
-            <div class="feature-card card animate-fade-in">
-                <div class="feature-icon">🎲</div>
-                <h3>Système de Dés</h3>
-                <p>Lancez des dés virtuels pour tous vos tests et combats avec un système complet.</p>
+            <div>
+                <MudText Typo="Typo.body2">Phase 3 - UX Immersive & Animations</MudText>
+                <MudProgressLinear Value="0" Color="Color.Warning" Class="mt-1" />
+                <MudText Typo="Typo.caption" Class="mud-text-secondary">⏳ En attente</MudText>
             </div>
-            
-            <div class="feature-card card animate-fade-in">
-                <div class="feature-icon">📚</div>
-                <h3>Bibliothèque de Règles</h3>
-                <p>Accédez à une vaste bibliothèque de règles, sorts et équipements pour D&D 5e.</p>
-            </div>
-        </div>
-    </div>
-</div>
+        </MudStack>
+    </MudPaper>
+
+</MudContainer>

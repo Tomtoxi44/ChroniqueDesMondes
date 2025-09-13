@@ -1,10 +1,14 @@
 ﻿@using MudBlazor
 @inherits LayoutComponentBase
+@* Temporary: Comment out auth for demo
 @using Cdm.Web.Services.Authentication
+*@
 @inject IThemeService ThemeService
 
 <MudLayout>
-    @if (AuthService.IsAuthenticated)
+    @* 🔧 TEMPORARY: Always show authenticated layout for demo *@
+    @* @if (AuthService.IsAuthenticated) *@
+    @if (true)
     {
         @* 🏰 AppBar avec thème D&D *@
         <MudAppBar Elevation="2" Class="cdm-appbar">
@@ -28,27 +32,25 @@
                           OnClick="@ToggleTheme"
                           Title="@(ThemeService.IsDarkMode ? "Mode Clair" : "Mode Sombre")" />
             
-            @* 👤 Menu utilisateur *@
+            @* 👤 Menu utilisateur - Temporary demo user *@
             <MudMenu Icon="@Icons.Material.Filled.AccountCircle" 
                     Color="Color.Inherit" 
                     AnchorOrigin="Origin.BottomLeft"
                     TransformOrigin="Origin.TopLeft">
                 <MudMenuItem>
                     <div class="cdm-user-info">
-                        <MudText Typo="Typo.body2">Bienvenue, Aventurier !</MudText>
+                        <MudText Typo="Typo.body2">🎨 Mode Démo - Design System</MudText>
                     </div>
                 </MudMenuItem>
                 <MudDivider />
                 <MudMenuItem>
-                    <form method="post" action="/auth/logout" style="width: 100%;">
-                        <MudButton ButtonType="ButtonType.Submit" 
-                                  Variant="Variant.Text" 
-                                  Color="Color.Error"
-                                  StartIcon="@Icons.Material.Filled.Logout"
-                                  FullWidth="true">
-                            Déconnexion
-                        </MudButton>
-                    </form>
+                    <MudButton Variant="Variant.Text" 
+                              Color="Color.Info"
+                              StartIcon="@Icons.Material.Filled.Palette"
+                              FullWidth="true"
+                              Href="/design-system">
+                        Voir Design System
+                    </MudButton>
                 </MudMenuItem>
             </MudMenu>
         </MudAppBar>

@@ -37,58 +37,28 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddAuthorization();
 
-// Configuration URL AVANT les HttpClients
-var apiBaseUrl = "https://localhost:7428"; // URL fixe pour développement
-
-Console.WriteLine($"🔧 Configuration API Base URL: {apiBaseUrl}");
-
-// Configure HttpClient for API calls - CONFIGURATION FORCÉE
-builder.Services.AddHttpClient<IApiService, ApiService>("ApiServiceClient", client =>
-{
-    client.BaseAddress = new Uri(apiBaseUrl);
-    client.DefaultRequestHeaders.Add("Accept", "application/json");
-    client.Timeout = TimeSpan.FromSeconds(30);
-
-    Console.WriteLine($"✅ HttpClient configuré pour ApiService avec BaseAddress: {client.BaseAddress}");
-})
-.ConfigurePrimaryHttpMessageHandler(() =>
-{
-    return new HttpClientHandler()
-    {
-        ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-    };
-});
-
-// Configure HttpClient for Character Service
-builder.Services.AddHttpClient<ICharacterService, CharacterService>("CharacterServiceClient", client =>
-{
-    client.BaseAddress = new Uri(apiBaseUrl);
-    client.DefaultRequestHeaders.Add("Accept", "application/json");
-    client.Timeout = TimeSpan.FromSeconds(30);
-
-    Console.WriteLine($"✅ HttpClient configuré pour CharacterService avec BaseAddress: {client.BaseAddress}");
-})
-.ConfigurePrimaryHttpMessageHandler(() =>
-{
-    return new HttpClientHandler()
-    {
-        ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-    };
-});
-
-// Add custom services
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<IApiService, ApiService>();
-builder.Services.AddScoped<ICharacterService, CharacterService>();
-builder.Services.AddScoped<IJwtService, JwtService>();
+// 🎨 Theme service for D&D
 builder.Services.AddScoped<IThemeService, ThemeService>();
+
+// 🔧 TEMPORARY: Comment out API services for demo
+// Configuration URL AVANT les HttpClients
+// var apiBaseUrl = "https://localhost:7428"; // URL fixe pour développement
+
+Console.WriteLine($"🎨 Mode Design System - API désactivée temporairement");
+
+// 🔧 TEMPORARY: Mock services instead of real API
+// builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+// builder.Services.AddScoped<IApiService, ApiService>();
+// builder.Services.AddScoped<ICharacterService, CharacterService>();
+// builder.Services.AddScoped<IJwtService, JwtService>();
+
 builder.Services.AddHttpContextAccessor();
 
 // 📡 Add SignalR (préparation Phase 2)
 builder.Services.AddSignalR();
 
 // Add service defaults & Aspire client integrations APRÈS notre configuration
-builder.AddServiceDefaults();
+// builder.AddServiceDefaults(); // Temporarily disabled
 
 var app = builder.Build();
 
@@ -100,8 +70,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-app.UseAuthorization();
+// 🔧 TEMPORARY: Comment out auth for demo
+// app.UseAuthentication();
+// app.UseAuthorization();
 
 app.UseAntiforgery();
 
@@ -115,6 +86,9 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-app.MapDefaultEndpoints();
+// app.MapDefaultEndpoints(); // Temporarily disabled
+
+Console.WriteLine($"🚀 Application démarrée en mode Design System");
+Console.WriteLine($"📍 Accédez à : http://localhost:5222/design-system");
 
 app.Run();
