@@ -1,66 +1,102 @@
 ﻿@page "/"
-@using Cdm.Web.Services.Authentication
-@inject IAuthenticationService AuthService
-@inject NavigationManager Navigation
 
-<PageTitle>Chronique des Mondes</PageTitle>
+<PageTitle>Accueil - Chronique des Mondes</PageTitle>
 
-<div class="home-container animate-fade-in">
-    <div class="hero-section">
-        <div class="hero-content">
-            <img src="/images/icon_cdm.svg" alt="Chronique des Mondes" class="hero-logo animate-pulse" />
-            <h1 class="hero-title">Chronique des Mondes</h1>
-            <p class="hero-subtitle">Plongez dans l'univers des jeux de rôle</p>
-            
-            @if (AuthService.IsAuthenticated)
-            {
-                <div class="welcome-section animate-slide-right">
-                    <h2>Bienvenue, Aventurier !</h2>
-                    <p>Votre quête peut commencer...</p>
-                    <div class="action-buttons">
-                        <a href="/adventures" class="btn btn-primary">Mes Aventures</a>
-                        <a href="/characters" class="btn btn-secondary">Mes Personnages</a>
-                    </div>
+<div class="fade-in page-content">
+
+    @* Hero section moderne *@
+    <MudPaper Class="pa-8 mb-6" Elevation="4" Style="background: linear-gradient(135deg, #1A1A1A 0%, #2A2A2A 100%);">
+        <MudGrid AlignItems="Center.Center">
+            <MudItem xs="12" md="8">
+                <MudText Typo="Typo.h5" Class="mb-4" Color="Color.Secondary">
+                    Gestion moderne de vos personnages D&D
+                </MudText>
+                <MudText Typo="Typo.body1" Style="color: #B0B0B0; max-width: 600px;">
+                    Une interface simple et élégante pour gérer vos aventures et personnages de jeu de rôle.
+                    Design moderne, thème sombre, données fictives pour démonstration.
+                </MudText>
+                
+                <div class="mt-6">
+                    <MudButton Href="/characters" 
+                              Variant="Variant.Filled" 
+                              Color="Color.Primary" 
+                              Size="Size.Large"
+                              StartIcon="@Icons.Material.Filled.Person">
+                        Voir les Personnages
+                    </MudButton>
+                    
+                    <MudButton Href="/login" 
+                              Variant="Variant.Outlined" 
+                              Color="Color.Secondary" 
+                              Size="Size.Large"
+                              StartIcon="@Icons.Material.Filled.Login"
+                              Class="ml-4">
+                        Se Connecter
+                    </MudButton>
                 </div>
-            }
-            else
-            {
-                <div class="auth-section animate-slide-left">
-                    <p class="auth-message">Connectez-vous pour commencer votre aventure</p>
-                    <div class="auth-buttons">
-                        <a href="/login" class="btn btn-primary">Se connecter</a>
-                        <a href="/register" class="btn btn-secondary">Créer un compte</a>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
+            </MudItem>
+            <MudItem xs="12" md="4" Class="text-center">
+                <MudIcon Icon="@Icons.Material.Filled.AutoStories" 
+                        Style="font-size: 8rem; color: #4A90E2; opacity: 0.8;" />
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
 
-    <div class="features-section">
-        <div class="features-grid">
-            <div class="feature-card card animate-fade-in">
-                <div class="feature-icon">⚔️</div>
-                <h3>Gestion des Personnages</h3>
-                <p>Créez et gérez vos personnages avec tous leurs détails, équipements et statistiques.</p>
-            </div>
-            
-            <div class="feature-card card animate-fade-in">
-                <div class="feature-icon">🗺️</div>
-                <h3>Campagnes Épiques</h3>
-                <p>Organisez vos campagnes, suivez l'évolution de l'histoire et les quêtes accomplies.</p>
-            </div>
-            
-            <div class="feature-card card animate-fade-in">
-                <div class="feature-icon">🎲</div>
-                <h3>Système de Dés</h3>
-                <p>Lancez des dés virtuels pour tous vos tests et combats avec un système complet.</p>
-            </div>
-            
-            <div class="feature-card card animate-fade-in">
-                <div class="feature-icon">📚</div>
-                <h3>Bibliothèque de Règles</h3>
-                <p>Accédez à une vaste bibliothèque de règles, sorts et équipements pour D&D 5e.</p>
-            </div>
-        </div>
-    </div>
+    @* Stats/Features rapides *@
+    <MudGrid>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4 text-center cdm-card">
+                <MudIcon Icon="@Icons.Material.Filled.Person" Color="Color.Primary" Style="font-size: 2.5rem;" />
+                <MudText Typo="Typo.h4" Class="mt-2 mb-1">12</MudText>
+                <MudText Typo="Typo.body2" Style="color: #B0B0B0;">Personnages</MudText>
+            </MudPaper>
+        </MudItem>
+        
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4 text-center cdm-card">
+                <MudIcon Icon="@Icons.Material.Filled.Campaign" Color="Color.Secondary" Style="font-size: 2.5rem;" />
+                <MudText Typo="Typo.h4" Class="mt-2 mb-1">4</MudText>
+                <MudText Typo="Typo.body2" Style="color: #B0B0B0;">Campagnes</MudText>
+            </MudPaper>
+        </MudItem>
+        
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4 text-center cdm-card">
+                <MudIcon Icon="@Icons.Material.Filled.AutoFixHigh" Color="Color.Tertiary" Style="font-size: 2.5rem;" />
+                <MudText Typo="Typo.h4" Class="mt-2 mb-1">74</MudText>
+                <MudText Typo="Typo.body2" Style="color: #B0B0B0;">Sorts</MudText>
+            </MudPaper>
+        </MudItem>
+        
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4 text-center cdm-card">
+                <MudIcon Icon="@Icons.Material.Filled.Shield" Color="Color.Warning" Style="font-size: 2.5rem;" />
+                <MudText Typo="Typo.h4" Class="mt-2 mb-1">33</MudText>
+                <MudText Typo="Typo.body2" Style="color: #B0B0B0;">Équipements</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    @* Section récente activité *@
+    <MudPaper Class="pa-6 mt-6" Elevation="2">
+        <MudText Typo="Typo.h5" Class="mb-4">Activité Récente</MudText>
+        
+        <MudList>
+            <MudListItem Icon="@Icons.Material.Filled.PersonAdd" IconColor="Color.Success">
+                <MudText>Thomas le Guerrier a été créé</MudText>
+                <MudText Typo="Typo.caption" Style="color: #666;">Il y a 2 heures</MudText>
+            </MudListItem>
+            <MudDivider />
+            <MudListItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Info">
+                <MudText>Lisa la Rôdeuse - Niveau 5 → 6</MudText>
+                <MudText Typo="Typo.caption" Style="color: #666;">Il y a 1 jour</MudText>
+            </MudListItem>
+            <MudDivider />
+            <MudListItem Icon="@Icons.Material.Filled.Campaign" IconColor="Color.Warning">
+                <MudText>Campagne "Les Mines Perdues" terminée</MudText>
+                <MudText Typo="Typo.caption" Style="color: #666;">Il y a 3 jours</MudText>
+            </MudListItem>
+        </MudList>
+    </MudPaper>
+
 </div>

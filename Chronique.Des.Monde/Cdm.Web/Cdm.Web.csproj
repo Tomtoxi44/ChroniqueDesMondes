@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -10,10 +10,18 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="9.0.8" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+    
+    <!-- 🎨 MudBlazor pour Design System moderne -->
+    <PackageReference Include="MudBlazor" Version="6.11.2" />
+    <PackageReference Include="MudBlazor.ThemeManager" Version="1.0.8" />
+    
+    <!-- 📡 SignalR pour temps réel (préparation Phase 2) -->
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Cdm.ServiceDefaults\Cdm.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\Cdm.Business.Common\Cdm.Business.Common.csproj" />
   </ItemGroup>
 
 </Project>

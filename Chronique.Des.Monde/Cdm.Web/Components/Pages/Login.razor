@@ -1,56 +1,98 @@
 ﻿@page "/login"
-@using Cdm.Web.Services.Authentication
-@using Microsoft.AspNetCore.WebUtilities
+@layout EmptyLayout
 
 <PageTitle>Connexion - Chronique des Mondes</PageTitle>
 
-<div class="login-container animate-fade-in">
-    <div class="login-card card">
-        <div class="login-header">
-            <img src="/Icons/Icon_cdm.webp" alt="Chronique des Mondes" class="logo animate-pulse" />
-            <h1 class="login-title">Chronique des Mondes</h1>
-            <p class="login-subtitle">Entrez dans l'aventure</p>
+<div class="login-container">
+    <MudPaper Class="login-card" Elevation="8">
+        
+        <div class="text-center mb-6">
+            <MudIcon Icon="@Icons.Material.Filled.AutoStories" 
+                    Style="font-size: 4rem; color: #4A90E2; margin-bottom: 16px;" />
+            <MudText Typo="Typo.h4" Style="font-weight: 300; margin-bottom: 8px;">
+                Chronique des Mondes
+            </MudText>
+            <MudText Typo="Typo.body1" Style="color: #B0B0B0;">
+                Connectez-vous à votre compte
+            </MudText>
         </div>
 
-        <div class="login-form">
-            <!-- Utilisation d'un form HTML classique pour éviter les problèmes de headers -->
-            <form method="post" action="/auth/login">
-                @if (!string.IsNullOrEmpty(errorMessage))
-                {
-                    <div class="alert alert-error animate-fade-in">
-                        @errorMessage
-                    </div>
-                }
+        <EditForm Model="@_loginModel" OnValidSubmit="@HandleLogin">
+            <DataAnnotationsValidator />
+            
+            <MudTextField @bind-Value="_loginModel.Email"
+                         Label="Email"
+                         Variant="Variant.Outlined"
+                         InputType="InputType.Email"
+                         Icon="@Icons.Material.Filled.Email"
+                         Required="true"
+                         Class="mb-4" />
+            
+            <MudTextField @bind-Value="_loginModel.Password"
+                         Label="Mot de passe"
+                         Variant="Variant.Outlined"
+                         InputType="InputType.Password"
+                         Icon="@Icons.Material.Filled.Lock"
+                         Required="true"
+                         Class="mb-6" />
 
-                <div class="form-group">
-                    <label class="form-label" for="username">Adresse email</label>
-                    <input type="email" name="username" class="form-control" id="username" placeholder="votre@email.com" required />
-                </div>
+            <MudButton ButtonType="ButtonType.Submit"
+                      Variant="Variant.Filled"
+                      Color="Color.Primary"
+                      FullWidth="true"
+                      Size="Size.Large"
+                      StartIcon="@Icons.Material.Filled.Login"
+                      Class="mb-4">
+                Se Connecter
+            </MudButton>
 
-                <div class="form-group">
-                    <label class="form-label" for="password">Mot de passe</label>
-                    <input type="password" name="password" class="form-control" id="password" placeholder="Votre mot de passe" required />
-                </div>
+        </EditForm>
 
-                <div class="form-group remember-me">
-                    <label class="checkbox-label">
-                        <input type="checkbox" name="rememberMe" />
-                        <span class="checkmark"></span>
-                        Se souvenir de moi
-                    </label>
-                </div>
+        <MudDivider Class="my-4" />
 
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary login-btn">
-                        <span>Se connecter</span>
-                    </button>
-                </div>
-            </form>
-
-            <div class="login-footer">
-                <p>Pas encore de compte ?</p>
-                <a href="/register" class="btn btn-secondary">Créer un compte</a>
-            </div>
+        <div class="text-center">
+            <MudText Typo="Typo.body2" Style="color: #666;">
+                Données fictives pour démonstration
+            </MudText>
+            <MudText Typo="Typo.caption" Style="color: #666;">
+                Utilisez n'importe quel email/mot de passe
+            </MudText>
         </div>
-    </div>
+
+        <div class="mt-4 text-center">
+            <MudButton Href="/" 
+                      Variant="Variant.Text" 
+                      Color="Color.Secondary"
+                      StartIcon="@Icons.Material.Filled.ArrowBack">
+                Retour à l'accueil
+            </MudButton>
+        </div>
+
+    </MudPaper>
 </div>
+
+@code {
+    private LoginModel _loginModel = new();
+
+    private async Task HandleLogin()
+    {
+        // Simulation - accepte toute combinaison
+        await Task.Delay(500); // Simulation latence
+        
+        // Redirection vers l'accueil
+        Navigation.NavigateTo("/");
+    }
+
+    public class LoginModel
+    {
+        [Required(ErrorMessage = "L'email est requis")]
+        [EmailAddress(ErrorMessage = "Format d'email invalide")]
+        public string Email { get; set; } = "";
+
+        [Required(ErrorMessage = "Le mot de passe est requis")]
+        [MinLength(4, ErrorMessage = "Au moins 4 caractères")]
+        public string Password { get; set; } = "";
+    }
+}
+
+@inject NavigationManager Navigation

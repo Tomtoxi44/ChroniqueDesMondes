@@ -1,61 +1,66 @@
-﻿@inherits LayoutComponentBase
-@using Cdm.Web.Services.Authentication
+﻿@using MudBlazor
+@inherits LayoutComponentBase
 
-<div class="page" data-theme="dark-fantasy">
-    @if (AuthService.IsAuthenticated)
-    {
-        <div class="sidebar @(isSidebarOpen ? "open" : "")" @onclick="CloseSidebar">
-            <NavMenu />
-        </div>
+<div class="cdm-layout">
+    <MudLayout>
+        
+        @* AppBar moderne *@
+        <MudAppBar Elevation="0" Class="cdm-appbar">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" 
+                          Color="Color.Inherit" 
+                          Edge="Edge.Start" 
+                          OnClick="@ToggleDrawer" />
+            
+            <MudText Typo="Typo.h6" Class="ml-3">
+                Chronique des Mondes
+            </MudText>
+            
+            <MudSpacer />
+            
+            @* User info simple *@
+            <MudChip Icon="@Icons.Material.Filled.Person" Color="Color.Primary" Variant="Variant.Text">
+                Utilisateur
+            </MudChip>
 
-        <main>
-            <div class="top-row px-4">
-                <!-- Toggle mobile menu -->
-                <button class="mobile-menu-toggle" @onclick="ToggleSidebar" aria-label="Ouvrir le menu">
-                    <span class="hamburger-line"></span>
-                    <span class="hamburger-line"></span>
-                    <span class="hamburger-line"></span>
-                </button>
+        </MudAppBar>
 
-                <div class="user-info">
-                    <span>Bienvenue, Aventurier !</span>
-                    <!-- Utilisation d'un form pour la déconnexion -->
-                    <form method="post" action="/auth/logout" style="display: inline;">
-                        <button type="submit" class="btn btn-outline logout-btn">
-                            Déconnexion
-                        </button>
-                    </form>
-                </div>
+        @* Drawer avec navigation simple *@
+        <MudDrawer @bind-Open="@_drawerOpen" 
+                   ClipMode="DrawerClipMode.Always" 
+                   Elevation="0"
+                   Class="cdm-drawer">
+            
+            <div class="pa-4">
+                <MudText Typo="Typo.h6" Class="mb-4">Navigation</MudText>
+                
+                <MudNavMenu>
+                    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
+                        Accueil
+                    </MudNavLink>
+                    <MudNavLink Href="/characters" Icon="@Icons.Material.Filled.Person">
+                        Personnages
+                    </MudNavLink>
+                    <MudNavLink Href="/login" Icon="@Icons.Material.Filled.Login">
+                        Connexion
+                    </MudNavLink>
+                </MudNavMenu>
             </div>
 
-            <article class="content px-4">
-                @Body
-            </article>
-        </main>
-    }
-    else
-    {
-        <main class="full-width">
-            <article class="content">
-                @Body
-            </article>
-        </main>
-    }
+        </MudDrawer>
+
+        @* Contenu principal *@
+        <MudMainContent Class="cdm-main-content">
+            @Body
+        </MudMainContent>
+
+    </MudLayout>
 </div>
 
 @code {
-    private bool isSidebarOpen = false;
+    private bool _drawerOpen = true;
 
-    private void ToggleSidebar()
+    private void ToggleDrawer()
     {
-        isSidebarOpen = !isSidebarOpen;
-    }
-
-    private void CloseSidebar()
-    {
-        if (isSidebarOpen)
-        {
-            isSidebarOpen = false;
-        }
+        _drawerOpen = !_drawerOpen;
     }
 }
