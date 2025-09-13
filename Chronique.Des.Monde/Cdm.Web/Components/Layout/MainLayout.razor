@@ -37,9 +37,16 @@
                     <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
                         Accueil
                     </MudNavLink>
-                    <MudNavLink Href="/characters" Icon="@Icons.Material.Filled.Person">
-                        Personnages
-                    </MudNavLink>
+                    
+                    <MudNavGroup Text="Personnages" Icon="@Icons.Material.Filled.Person" Expanded="true">
+                        <MudNavLink Href="/characters" Icon="@Icons.Material.Filled.PersonOutline">
+                            Fictifs (Démo)
+                        </MudNavLink>
+                        <MudNavLink Href="/characters-api" Icon="@Icons.Material.Filled.Api">
+                            API Backend
+                        </MudNavLink>
+                    </MudNavGroup>
+                    
                     <MudNavLink Href="/login" Icon="@Icons.Material.Filled.Login">
                         Connexion
                     </MudNavLink>

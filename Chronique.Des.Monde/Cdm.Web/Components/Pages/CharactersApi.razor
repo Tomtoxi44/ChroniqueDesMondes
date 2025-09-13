@@ -1,0 +1,299 @@
+﻿@page "/characters-api"
+@using Cdm.Web.Models.Api
+@using Cdm.Web.Services.Characters
+@inject ICharacterApiService CharacterApiService
+@inject ISnackbar Snackbar
+
+<PageTitle>Personnages - API</PageTitle>
+
+<div class="fade-in page-content">
+
+    @* Header avec actions *@
+    <div class="d-flex justify-space-between align-center mb-6">
+        <div>
+            <MudText Typo="Typo.h3" Style="font-weight: 300;">
+                Mes Personnages (API)
+            </MudText>
+            <MudText Typo="Typo.body1" Style="color: #B0B0B0;">
+                Gestion connectée au backend API
+            </MudText>
+        </div>
+
+        <MudStack Row Spacing="2">
+            <MudButton Variant="Variant.Outlined"
+                      Color="Color.Secondary"
+                      StartIcon="@Icons.Material.Filled.Refresh"
+                      OnClick="@LoadCharactersAsync"
+                      Disabled="@_isLoading">
+                Actualiser
+            </MudButton>
+            
+            <MudButton Variant="Variant.Filled" 
+                      Color="Color.Primary" 
+                      StartIcon="@Icons.Material.Filled.Add"
+                      Size="Size.Large"
+                      OnClick="@CreateCharacterPlaceholder"
+                      Disabled="@_isLoading">
+                Nouveau Personnage
+            </MudButton>
+        </MudStack>
+    </div>
+
+    @* État de chargement *@
+    @if (_isLoading)
+    {
+        <div class="text-center pa-8">
+            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
+            <MudText Class="mt-4">Chargement des personnages...</MudText>
+        </div>
+    }
+    else if (_hasError)
+    {
+        <MudAlert Severity="Severity.Error" Class="mb-6">
+            <MudText>❌ Erreur lors du chargement des personnages depuis l'API.</MudText>
+            <MudText Typo="Typo.caption" Class="mt-2">
+                Vérifiez que l'API backend est démarrée sur https://localhost:7428
+            </MudText>
+            <MudButton Variant="Variant.Text" 
+                      Color="Color.Error" 
+                      StartIcon="@Icons.Material.Filled.Refresh"
+                      OnClick="@LoadCharactersAsync"
+                      Class="mt-2">
+                Réessayer
+            </MudButton>
+        </MudAlert>
+    }
+    else if (!_characters.Any())
+    {
+        @* Message si aucun personnage *@
+        <MudPaper Class="pa-8 text-center" Elevation="2">
+            <MudIcon Icon="@Icons.Material.Filled.PersonOff" 
+                    Style="font-size: 4rem; color: #666; margin-bottom: 16px;" />
+            <MudText Typo="Typo.h5" Class="mb-2">Aucun personnage</MudText>
+            <MudText Typo="Typo.body1" Style="color: #B0B0B0;" Class="mb-4">
+                Créez votre premier héros via l'API pour commencer l'aventure
+            </MudText>
+            <MudButton Variant="Variant.Filled" 
+                      Color="Color.Primary" 
+                      StartIcon="@Icons.Material.Filled.Add"
+                      OnClick="@CreateCharacterPlaceholder">
+                Créer un Personnage
+            </MudButton>
+        </MudPaper>
+    }
+    else
+    {
+        @* Grille des personnages *@
+        <MudGrid>
+            @foreach (var character in _characters)
+            {
+                <MudItem xs="12" sm="6" md="4">
+                    <MudPaper Class="character-card">
+                        
+                        @* Avatar et infos principales *@
+                        <div class="d-flex align-center mb-4">
+                            <MudAvatar Size="Size.Large" Color="Color.Primary" Style="margin-right: 16px;">
+                                @character.Name.Substring(0, 1).ToUpper()
+                            </MudAvatar>
+                            <div>
+                                <MudText Typo="Typo.h6">@character.Name</MudText>
+                                <MudText Typo="Typo.body2" Style="color: #B0B0B0;">
+                                    @character.Class Niveau @character.Level
+                                </MudText>
+                                <MudChip Size="Size.Small" 
+                                        Variant="Variant.Text" 
+                                        Color="Color.Info"
+                                        Icon="@Icons.Material.Filled.Api">
+                                    ID: @character.Id
+                                </MudChip>
+                            </div>
+                        </div>
+
+                        @* Stats principales *@
+                        <MudGrid Class="mb-4">
+                            <MudItem xs="4">
+                                <div class="stat-item">
+                                    <div class="stat-value">@character.HitPoints</div>
+                                    <div class="stat-label">PV</div>
+                                </div>
+                            </MudItem>
+                            <MudItem xs="4">
+                                <div class="stat-item">
+                                    <div class="stat-value">@character.ArmorClass</div>
+                                    <div class="stat-label">CA</div>
+                                </div>
+                            </MudItem>
+                            <MudItem xs="4">
+                                <div class="stat-item">
+                                    <div class="stat-value">@character.Speed</div>
+                                    <div class="stat-label">Vitesse</div>
+                                </div>
+                            </MudItem>
+                        </MudGrid>
+
+                        @* Caractéristiques *@
+                        <MudText Typo="Typo.body2" Class="mb-2" Style="color: #B0B0B0;">
+                            Caractéristiques
+                        </MudText>
+                        <MudGrid Class="mb-4">
+                            <MudItem xs="2">
+                                <div class="stat-item">
+                                    <div class="stat-value" style="font-size: 1rem;">@character.Strength</div>
+                                    <div class="stat-label">FOR</div>
+                                </div>
+                            </MudItem>
+                            <MudItem xs="2">
+                                <div class="stat-item">
+                                    <div class="stat-value" style="font-size: 1rem;">@character.Dexterity</div>
+                                    <div class="stat-label">DEX</div>
+                                </div>
+                            </MudItem>
+                            <MudItem xs="2">
+                                <div class="stat-item">
+                                    <div class="stat-value" style="font-size: 1rem;">@character.Constitution</div>
+                                    <div class="stat-label">CON</div>
+                                </div>
+                            </MudItem>
+                            <MudItem xs="2">
+                                <div class="stat-item">
+                                    <div class="stat-value" style="font-size: 1rem;">@character.Intelligence</div>
+                                    <div class="stat-label">INT</div>
+                                </div>
+                            </MudItem>
+                            <MudItem xs="2">
+                                <div class="stat-item">
+                                    <div class="stat-value" style="font-size: 1rem;">@character.Wisdom</div>
+                                    <div class="stat-label">SAG</div>
+                                </div>
+                            </MudItem>
+                            <MudItem xs="2">
+                                <div class="stat-item">
+                                    <div class="stat-value" style="font-size: 1rem;">@character.Charisma</div>
+                                    <div class="stat-label">CHA</div>
+                                </div>
+                            </MudItem>
+                        </MudGrid>
+
+                        @* Informations additionnelles *@
+                        <div class="d-flex justify-space-between align-center mb-3">
+                            <MudChip Icon="@GetRaceIcon(character.Race)" 
+                                    Color="Color.Secondary" 
+                                    Size="Size.Small"
+                                    Variant="Variant.Text">
+                                @character.Race
+                            </MudChip>
+                            <MudChip Icon="@Icons.Material.Filled.Timeline" 
+                                    Color="@GetHealthColor(character.HitPoints, character.MaxHitPoints)" 
+                                    Size="Size.Small"
+                                    Variant="Variant.Text">
+                                @((character.HitPoints * 100 / character.MaxHitPoints).ToString("F0"))% PV
+                            </MudChip>
+                        </div>
+
+                        @* Actions *@
+                        <div class="d-flex justify-space-between">
+                            <MudButton Variant="Variant.Text" 
+                                      Color="Color.Primary" 
+                                      StartIcon="@Icons.Material.Filled.Visibility"
+                                      OnClick="@(() => ViewCharacter(character.Id))">
+                                Voir
+                            </MudButton>
+                            <MudButton Variant="Variant.Text" 
+                                      Color="Color.Secondary" 
+                                      StartIcon="@Icons.Material.Filled.Edit"
+                                      OnClick="@(() => EditCharacter(character.Id))">
+                                Modifier
+                            </MudButton>
+                            <MudButton Variant="Variant.Text" 
+                                      Color="Color.Error" 
+                                      StartIcon="@Icons.Material.Filled.Delete"
+                                      OnClick="@(() => DeleteCharacter(character.Id, character.Name))">
+                                Supprimer
+                            </MudButton>
+                        </div>
+
+                    </MudPaper>
+                </MudItem>
+            }
+        </MudGrid>
+    }
+
+</div>
+
+@code {
+    private List<CharacterDto> _characters = new();
+    private bool _isLoading = false;
+    private bool _hasError = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCharactersAsync();
+    }
+
+    private async Task LoadCharactersAsync()
+    {
+        _isLoading = true;
+        _hasError = false;
+        StateHasChanged();
+
+        try
+        {
+            _characters = await CharacterApiService.GetCharactersAsync();
+            Snackbar.Add($"✅ {_characters.Count} personnages chargés depuis l'API", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            _hasError = true;
+            Snackbar.Add("❌ Erreur lors du chargement des personnages", Severity.Error);
+            Console.WriteLine($"Erreur API: {ex.Message}");
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void CreateCharacterPlaceholder()
+    {
+        Snackbar.Add("➕ Création de personnage - Fonctionnalité à implémenter", Severity.Info);
+    }
+
+    private void ViewCharacter(int characterId)
+    {
+        Snackbar.Add($"🔍 Affichage du personnage {characterId} - Fonctionnalité à implémenter", Severity.Info);
+    }
+
+    private void EditCharacter(int characterId)
+    {
+        Snackbar.Add($"✏️ Modification du personnage {characterId} - Fonctionnalité à implémenter", Severity.Info);
+    }
+
+    private void DeleteCharacter(int characterId, string characterName)
+    {
+        Snackbar.Add($"🗑️ Suppression du personnage '{characterName}' - Fonctionnalité à implémenter", Severity.Warning);
+    }
+
+    private string GetRaceIcon(string race) => race switch
+    {
+        "Nain" => Icons.Material.Filled.Terrain,
+        "Elfe" => Icons.Material.Filled.Park,
+        "Humain" => Icons.Material.Filled.Person,
+        "Halfelin" => Icons.Material.Filled.Home,
+        "Demi-Orc" => Icons.Material.Filled.Whatshot,
+        "Tieffelin" => Icons.Material.Filled.LocalFireDepartment,
+        _ => Icons.Material.Filled.Person
+    };
+
+    private Color GetHealthColor(int current, int max)
+    {
+        var percentage = (double)current / max * 100;
+        return percentage switch
+        {
+            >= 75 => Color.Success,
+            >= 50 => Color.Warning,
+            >= 25 => Color.Error,
+            _ => Color.Error
+        };
+    }
+}

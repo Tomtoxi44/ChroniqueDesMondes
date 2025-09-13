@@ -1,4 +1,9 @@
 ﻿using Cdm.Web.Components;
+using Cdm.Web.Services.Authentication;
+using Cdm.Web.Services.Api;
+using Cdm.Web.Services.Characters;
+using Cdm.Web.Services.Combat;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,12 +15,47 @@ builder.Services.AddRazorComponents()
 // MudBlazor pour l'UI moderne
 builder.Services.AddMudServices();
 
-// Services de base
+// Services HTTP et authentification
 builder.Services.AddHttpContextAccessor();
+
+// Configuration HttpClient pour l'API
+var apiBaseUrl = builder.Configuration.GetValue<string>("ApiSettings:BaseUrl") ?? "https://localhost:7428";
+
+builder.Services.AddHttpClient<ICharacterApiService, CharacterApiService>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
+builder.Services.AddHttpClient<ICombatApiService, CombatApiService>(client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
+// Services d'authentification existants
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/login";
+        options.LogoutPath = "/logout";
+        options.AccessDeniedPath = "/access-denied";
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.SlidingExpiration = true;
+        options.Cookie.Name = "CdmAuth";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+    });
+
+builder.Services.AddAuthorization();
+
+// Services applicatifs
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IApiService, ApiService>();
 
 var app = builder.Build();
 
-// Pipeline simple
+// Pipeline de requêtes
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
@@ -23,13 +63,16 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-Console.WriteLine("🌃 Chronique des Mondes - Mode Sombre Moderne");
-Console.WriteLine("📍 http://localhost:5222");
+Console.WriteLine($"🌃 Chronique des Mondes - API Integration Mode");
+Console.WriteLine($"📍 Frontend: http://localhost:5222");
+Console.WriteLine($"🔌 API Backend: {apiBaseUrl}");
 
 app.Run();
