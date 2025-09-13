@@ -5,6 +5,7 @@ namespace Cdm.Web.Components.Layout;
 
 public partial class MainLayout : LayoutComponentBase
 {
-    [Inject] private IAuthenticationService AuthService { get; set; } = default!;
+    // 🔧 TEMPORARY: Comment out auth service for demo mode
+    // [Inject] private IAuthenticationService AuthService { get; set; } = default!;
     [Inject] private NavigationManager Navigation { get; set; } = default!;
 }

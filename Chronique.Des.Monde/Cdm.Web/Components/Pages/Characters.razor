@@ -2,94 +2,330 @@
 
 <PageTitle>Personnages - Chronique des Mondes</PageTitle>
 
-<div class="characters-container">
-    <div class="page-header">
-        <h1 class="page-title">⚔️ Mes Personnages</h1>
-        <p class="page-subtitle">Gérez vos héros et créez de nouvelles légendes</p>
+<div class="fade-in">
+
+    @* Header avec actions *@
+    <div class="d-flex justify-space-between align-center mb-6">
+        <div>
+            <MudText Typo="Typo.h3" Style="font-weight: 300;">
+                Mes Personnages
+            </MudText>
+            <MudText Typo="Typo.body1" Style="color: #B0B0B0;">
+                Gérez vos héros et leurs aventures
+            </MudText>
+        </div>
         
-        <div class="character-actions">
-            <button class="btn btn-primary">Créer un Personnage</button>
-            <button class="btn btn-secondary">Importer</button>
-        </div>
+        <MudButton Variant="Variant.Filled" 
+                  Color="Color.Primary" 
+                  StartIcon="@Icons.Material.Filled.Add"
+                  Size="Size.Large">
+            Nouveau Personnage
+        </MudButton>
     </div>
 
-    <div class="characters-grid">
-        @foreach (var character in characters)
+    @* Grille des personnages *@
+    <MudGrid>
+        @foreach (var character in _characters)
         {
-            <div class="character-card @GetClassTheme(character.Class)">
-                <div class="character-portrait">
-                    <div class="portrait-icon">@character.Icon</div>
-                    <div class="character-level">Niv. @character.Level</div>
-                </div>
-                
-                <div class="character-info">
-                    <h3 class="character-name">@character.Name</h3>
-                    <p class="character-class-race">@character.Race @character.Class</p>
+            <MudItem xs="12" sm="6" md="4">
+                <MudPaper Class="character-card">
                     
-                    <div class="character-stats">
-                        <div class="stat-group">
-                            <span class="stat-label">PV:</span>
-                            <span class="stat-value">@character.CurrentHP/@character.MaxHP</span>
-                        </div>
-                        <div class="stat-group">
-                            <span class="stat-label">CA:</span>
-                            <span class="stat-value">@character.ArmorClass</span>
-                        </div>
-                        <div class="stat-group">
-                            <span class="stat-label">XP:</span>
-                            <span class="stat-value">@character.Experience</span>
+                    @* Avatar et infos principales *@
+                    <div class="d-flex align-center mb-4">
+                        <MudAvatar Size="Size.Large" Color="Color.Primary" Style="margin-right: 16px;">
+                            @character.Name.Substring(0, 1).ToUpper()
+                        </MudAvatar>
+                        <div>
+                            <MudText Typo="Typo.h6">@character.Name</MudText>
+                            <MudText Typo="Typo.body2" Style="color: #B0B0B0;">
+                                @character.Class Niveau @character.Level
+                            </MudText>
                         </div>
                     </div>
-                    
-                    <div class="ability-scores">
-                        <div class="ability">
-                            <span class="ability-label">FOR</span>
-                            <span class="ability-score">@character.Strength</span>
-                        </div>
-                        <div class="ability">
-                            <span class="ability-label">DEX</span>
-                            <span class="ability-score">@character.Dexterity</span>
-                        </div>
-                        <div class="ability">
-                            <span class="ability-label">CON</span>
-                            <span class="ability-score">@character.Constitution</span>
-                        </div>
-                        <div class="ability">
-                            <span class="ability-label">INT</span>
-                            <span class="ability-score">@character.Intelligence</span>
-                        </div>
-                        <div class="ability">
-                            <span class="ability-label">SAG</span>
-                            <span class="ability-score">@character.Wisdom</span>
-                        </div>
-                        <div class="ability">
-                            <span class="ability-label">CHA</span>
-                            <span class="ability-score">@character.Charisma</span>
-                        </div>
-                    </div>
-                    
-                    <div class="character-campaign">
-                        <span class="campaign-label">Campagne:</span>
-                        <span class="campaign-name">@character.Campaign</span>
-                    </div>
-                </div>
-                
-                <div class="character-actions-card">
-                    <button class="btn btn-primary btn-sm">Jouer</button>
-                    <button class="btn btn-secondary btn-sm">Éditer</button>
-                    <button class="btn btn-outline btn-sm">Fiche</button>
-                </div>
-            </div>
-        }
-    </div>
 
-    @if (!characters.Any())
+                    @* Stats principales *@
+                    <MudGrid Class="mb-4">
+                        <MudItem xs="4">
+                            <div class="stat-item">
+                                <div class="stat-value">@character.HitPoints</div>
+                                <div class="stat-label">PV</div>
+                            </div>
+                        </MudItem>
+                        <MudItem xs="4">
+                            <div class="stat-item">
+                                <div class="stat-value">@character.ArmorClass</div>
+                                <div class="stat-label">CA</div>
+                            </div>
+                        </MudItem>
+                        <MudItem xs="4">
+                            <div class="stat-item">
+                                <div class="stat-value">@character.Speed</div>
+                                <div class="stat-label">Vitesse</div>
+                            </div>
+                        </MudItem>
+                    </MudGrid>
+
+                    @* Caractéristiques *@
+                    <MudText Typo="Typo.body2" Class="mb-2" Style="color: #B0B0B0;">
+                        Caractéristiques
+                    </MudText>
+                    <MudGrid Class="mb-4">
+                        <MudItem xs="2">
+                            <div class="stat-item">
+                                <div class="stat-value" style="font-size: 1rem;">@character.Strength</div>
+                                <div class="stat-label">FOR</div>
+                            </div>
+                        </MudItem>
+                        <MudItem xs="2">
+                            <div class="stat-item">
+                                <div class="stat-value" style="font-size: 1rem;">@character.Dexterity</div>
+                                <div class="stat-label">DEX</div>
+                            </div>
+                        </MudItem>
+                        <MudItem xs="2">
+                            <div class="stat-item">
+                                <div class="stat-value" style="font-size: 1rem;">@character.Constitution</div>
+                                <div class="stat-label">CON</div>
+                            </div>
+                        </MudItem>
+                        <MudItem xs="2">
+                            <div class="stat-item">
+                                <div class="stat-value" style="font-size: 1rem;">@character.Intelligence</div>
+                                <div class="stat-label">INT</div>
+                            </div>
+                        </MudItem>
+                        <MudItem xs="2">
+                            <div class="stat-item">
+                                <div class="stat-value" style="font-size: 1rem;">@character.Wisdom</div>
+                                <div class="stat-label">SAG</div>
+                            </div>
+                        </MudItem>
+                        <MudItem xs="2">
+                            <div class="stat-item">
+                                <div class="stat-value" style="font-size: 1rem;">@character.Charisma</div>
+                                <div class="stat-label">CHA</div>
+                            </div>
+                        </MudItem>
+                    </MudGrid>
+
+                    @* Informations additionnelles *@
+                    <div class="d-flex justify-space-between align-center mb-3">
+                        <MudChip Icon="@GetRaceIcon(character.Race)" 
+                                Color="Color.Secondary" 
+                                Size="Size.Small"
+                                Variant="Variant.Text">
+                            @character.Race
+                        </MudChip>
+                        <MudChip Icon="@Icons.Material.Filled.Timeline" 
+                                Color="@GetHealthColor(character.HitPoints, character.MaxHitPoints)" 
+                                Size="Size.Small"
+                                Variant="Variant.Text">
+                            @((character.HitPoints * 100 / character.MaxHitPoints).ToString("F0"))% PV
+                        </MudChip>
+                    </div>
+
+                    @* Actions *@
+                    <div class="d-flex justify-space-between">
+                        <MudButton Variant="Variant.Text" 
+                                  Color="Color.Primary" 
+                                  StartIcon="@Icons.Material.Filled.Visibility">
+                            Voir
+                        </MudButton>
+                        <MudButton Variant="Variant.Text" 
+                                  Color="Color.Secondary" 
+                                  StartIcon="@Icons.Material.Filled.Edit">
+                            Modifier
+                        </MudButton>
+                        <MudButton Variant="Variant.Text" 
+                                  Color="Color.Error" 
+                                  StartIcon="@Icons.Material.Filled.Delete">
+                            Supprimer
+                        </MudButton>
+                    </div>
+
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+
+    @* Message si aucun personnage *@
+    @if (!_characters.Any())
     {
-        <div class="empty-state">
-            <div class="empty-icon">🎭</div>
-            <h3>Aucun personnage créé</h3>
-            <p>Créez votre premier héros et commencez votre aventure !</p>
-            <button class="btn btn-primary">Créer mon Premier Héros</button>
-        </div>
+        <MudPaper Class="pa-8 text-center" Elevation="2">
+            <MudIcon Icon="@Icons.Material.Filled.PersonOff" 
+                    Style="font-size: 4rem; color: #666; margin-bottom: 16px;" />
+            <MudText Typo="Typo.h5" Class="mb-2">Aucun personnage</MudText>
+            <MudText Typo="Typo.body1" Style="color: #B0B0B0;" Class="mb-4">
+                Créez votre premier héros pour commencer l'aventure
+            </MudText>
+            <MudButton Variant="Variant.Filled" 
+                      Color="Color.Primary" 
+                      StartIcon="@Icons.Material.Filled.Add">
+                Créer un Personnage
+            </MudButton>
+        </MudPaper>
     }
+
 </div>
+
+@code {
+    private List<Character> _characters = new();
+
+    protected override void OnInitialized()
+    {
+        // Données fictives pour démonstration
+        _characters = new List<Character>
+        {
+            new Character
+            {
+                Id = 1,
+                Name = "Thomas Ironforge",
+                Race = "Nain",
+                Class = "Guerrier",
+                Level = 8,
+                HitPoints = 68,
+                MaxHitPoints = 85,
+                ArmorClass = 18,
+                Speed = 25,
+                Strength = 18,
+                Dexterity = 12,
+                Constitution = 16,
+                Intelligence = 10,
+                Wisdom = 13,
+                Charisma = 8
+            },
+            new Character
+            {
+                Id = 2,
+                Name = "Lisa Silverleaf",
+                Race = "Elfe",
+                Class = "Rôdeuse",
+                Level = 6,
+                HitPoints = 42,
+                MaxHitPoints = 48,
+                ArmorClass = 15,
+                Speed = 30,
+                Strength = 12,
+                Dexterity = 18,
+                Constitution = 14,
+                Intelligence = 14,
+                Wisdom = 16,
+                Charisma = 11
+            },
+            new Character
+            {
+                Id = 3,
+                Name = "Marcus Spellweaver",
+                Race = "Humain",
+                Class = "Magicien",
+                Level = 7,
+                HitPoints = 28,
+                MaxHitPoints = 35,
+                ArmorClass = 12,
+                Speed = 30,
+                Strength = 8,
+                Dexterity = 14,
+                Constitution = 12,
+                Intelligence = 18,
+                Wisdom = 15,
+                Charisma = 10
+            },
+            new Character
+            {
+                Id = 4,
+                Name = "Emma Lightbringer",
+                Race = "Halfelin",
+                Class = "Clerc",
+                Level = 5,
+                HitPoints = 32,
+                MaxHitPoints = 40,
+                ArmorClass = 16,
+                Speed = 25,
+                Strength = 10,
+                Dexterity = 12,
+                Constitution = 14,
+                Intelligence = 12,
+                Wisdom = 18,
+                Charisma = 16
+            },
+            new Character
+            {
+                Id = 5,
+                Name = "Ragnar Stormaxe",
+                Race = "Demi-Orc",
+                Class = "Barbare",
+                Level = 4,
+                HitPoints = 45,
+                MaxHitPoints = 52,
+                ArmorClass = 14,
+                Speed = 40,
+                Strength = 17,
+                Dexterity = 14,
+                Constitution = 16,
+                Intelligence = 8,
+                Wisdom = 11,
+                Charisma = 9
+            },
+            new Character
+            {
+                Id = 6,
+                Name = "Aria Shadowdancer",
+                Race = "Tieffelin",
+                Class = "Roublard",
+                Level = 6,
+                HitPoints = 35,
+                MaxHitPoints = 42,
+                ArmorClass = 16,
+                Speed = 30,
+                Strength = 10,
+                Dexterity = 18,
+                Constitution = 13,
+                Intelligence = 14,
+                Wisdom = 12,
+                Charisma = 16
+            }
+        };
+    }
+
+    private string GetRaceIcon(string race) => race switch
+    {
+        "Nain" => Icons.Material.Filled.Terrain,
+        "Elfe" => Icons.Material.Filled.Park,
+        "Humain" => Icons.Material.Filled.Person,
+        "Halfelin" => Icons.Material.Filled.Home,
+        "Demi-Orc" => Icons.Material.Filled.Whatshot,
+        "Tieffelin" => Icons.Material.Filled.LocalFireDepartment,
+        _ => Icons.Material.Filled.Person
+    };
+
+    private Color GetHealthColor(int current, int max)
+    {
+        var percentage = (double)current / max * 100;
+        return percentage switch
+        {
+            >= 75 => Color.Success,
+            >= 50 => Color.Warning,
+            >= 25 => Color.Error,
+            _ => Color.Error
+        };
+    }
+
+    public class Character
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public string Race { get; set; } = "";
+        public string Class { get; set; } = "";
+        public int Level { get; set; }
+        public int HitPoints { get; set; }
+        public int MaxHitPoints { get; set; }
+        public int ArmorClass { get; set; }
+        public int Speed { get; set; }
+        public int Strength { get; set; }
+        public int Dexterity { get; set; }
+        public int Constitution { get; set; }
+        public int Intelligence { get; set; }
+        public int Wisdom { get; set; }
+        public int Charisma { get; set; }
+    }
+}

@@ -1,83 +1,60 @@
 ﻿@using MudBlazor
 @inherits LayoutComponentBase
-@* Temporary: Comment out auth for demo
-@using Cdm.Web.Services.Authentication
-*@
-@inject IThemeService ThemeService
 
-<MudLayout>
-    @* 🔧 TEMPORARY: Always show authenticated layout for demo *@
-    @* @if (AuthService.IsAuthenticated) *@
-    @if (true)
-    {
-        @* 🏰 AppBar avec thème D&D *@
-        <MudAppBar Elevation="2" Class="cdm-appbar">
+<div class="cdm-layout">
+    <MudLayout>
+        
+        @* AppBar moderne *@
+        <MudAppBar Elevation="0" Class="cdm-appbar">
             <MudIconButton Icon="@Icons.Material.Filled.Menu" 
                           Color="Color.Inherit" 
                           Edge="Edge.Start" 
                           OnClick="@ToggleDrawer" />
             
-            <MudSpacer />
-            
-            <div class="cdm-appbar-brand">
-                <img src="/Icons/Icon_cdm.webp" alt="CDM" class="cdm-appbar-logo" />
-                <MudText Typo="Typo.h6" Class="cdm-appbar-title">Chronique des Mondes</MudText>
-            </div>
+            <MudText Typo="Typo.h6" Class="ml-3">
+                Chronique des Mondes
+            </MudText>
             
             <MudSpacer />
             
-            @* 🌙 Bouton de basculement de thème *@
-            <MudIconButton Icon="@(ThemeService.IsDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)"
-                          Color="Color.Inherit"
-                          OnClick="@ToggleTheme"
-                          Title="@(ThemeService.IsDarkMode ? "Mode Clair" : "Mode Sombre")" />
-            
-            @* 👤 Menu utilisateur - Temporary demo user *@
-            <MudMenu Icon="@Icons.Material.Filled.AccountCircle" 
-                    Color="Color.Inherit" 
-                    AnchorOrigin="Origin.BottomLeft"
-                    TransformOrigin="Origin.TopLeft">
-                <MudMenuItem>
-                    <div class="cdm-user-info">
-                        <MudText Typo="Typo.body2">🎨 Mode Démo - Design System</MudText>
-                    </div>
-                </MudMenuItem>
-                <MudDivider />
-                <MudMenuItem>
-                    <MudButton Variant="Variant.Text" 
-                              Color="Color.Info"
-                              StartIcon="@Icons.Material.Filled.Palette"
-                              FullWidth="true"
-                              Href="/design-system">
-                        Voir Design System
-                    </MudButton>
-                </MudMenuItem>
-            </MudMenu>
+            @* User info simple *@
+            <MudChip Icon="@Icons.Material.Filled.Person" Color="Color.Primary" Variant="Variant.Text">
+                Utilisateur
+            </MudChip>
+
         </MudAppBar>
 
-        @* 🏰 Drawer (Menu latéral) avec style D&D *@
+        @* Drawer avec navigation simple *@
         <MudDrawer @bind-Open="@_drawerOpen" 
                    ClipMode="DrawerClipMode.Always" 
-                   Elevation="2"
+                   Elevation="0"
                    Class="cdm-drawer">
-            <CdmNavMenu />
+            
+            <div class="pa-4">
+                <MudText Typo="Typo.h6" Class="mb-4">Navigation</MudText>
+                
+                <MudNavMenu>
+                    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">
+                        Accueil
+                    </MudNavLink>
+                    <MudNavLink Href="/characters" Icon="@Icons.Material.Filled.Person">
+                        Personnages
+                    </MudNavLink>
+                    <MudNavLink Href="/login" Icon="@Icons.Material.Filled.Login">
+                        Connexion
+                    </MudNavLink>
+                </MudNavMenu>
+            </div>
+
         </MudDrawer>
 
-        @* 📜 Contenu principal *@
+        @* Contenu principal *@
         <MudMainContent Class="cdm-main-content">
-            <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="pa-4">
-                @Body
-            </MudContainer>
-        </MudMainContent>
-    }
-    else
-    {
-        @* 🗡️ Layout pour pages d'authentification *@
-        <div class="cdm-auth-layout">
             @Body
-        </div>
-    }
-</MudLayout>
+        </MudMainContent>
+
+    </MudLayout>
+</div>
 
 @code {
     private bool _drawerOpen = true;
@@ -85,26 +62,5 @@
     private void ToggleDrawer()
     {
         _drawerOpen = !_drawerOpen;
-    }
-
-    private async Task ToggleTheme()
-    {
-        await ThemeService.ToggleDarkModeAsync();
-        StateHasChanged();
-    }
-
-    protected override void OnInitialized()
-    {
-        ThemeService.ThemeChanged += OnThemeChanged;
-    }
-
-    private void OnThemeChanged(object? sender, EventArgs e)
-    {
-        InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose()
-    {
-        ThemeService.ThemeChanged -= OnThemeChanged;
     }
 }

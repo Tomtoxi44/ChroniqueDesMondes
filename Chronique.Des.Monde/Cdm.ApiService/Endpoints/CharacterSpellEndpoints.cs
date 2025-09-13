@@ -120,7 +120,7 @@ public static class CharacterSpellEndpoints
         characterSpellGroup.MapPut("/{spellId:int}", async (
             int characterId,
             int spellId,
-            [FromBody] UpdateCharacterSpellRequest request,
+            [FromBody] UpdateSpellRequest request,
             ICharacterSpellService spellService,
             ClaimsPrincipal user) =>
         {
@@ -129,7 +129,16 @@ public static class CharacterSpellEndpoints
                 var userId = GetUserIdFromClaims(user);
                 // TODO: Vérifier que l'utilisateur possède ce personnage
 
-                var updatedSpell = await spellService.UpdateCharacterSpellAsync(characterId, spellId, request);
+                // Créer le bon type de requête pour le service
+                var updateRequest = new UpdateCharacterSpellRequest
+                {
+                    Notes = request.Notes,
+                    IsPrepared = request.IsPrepared,
+                    SpellSlotLevel = request.SlotLevel,
+                    CustomName = request.CustomName
+                };
+
+                var updatedSpell = await spellService.UpdateCharacterSpellAsync(characterId, spellId, updateRequest);
                 return Results.Ok(updatedSpell);
             }
             catch (InvalidOperationException)
@@ -186,7 +195,7 @@ public static class CharacterSpellEndpoints
                     return Results.NotFound();
                 }
 
-                return Results.Ok(new { message = request.IsPrepared ? "Spell prepared" : "Spell unprepared" });
+                return Results.Ok(new { message = request.IsPrepared ? "Sort préparé" : "Sort dépréparé" });
             }
             catch (Exception ex)
             {
@@ -213,7 +222,7 @@ public static class CharacterSpellEndpoints
                     return Results.NotFound();
                 }
 
-                return Results.Ok(new { message = "Spell slot level updated" });
+                return Results.Ok(new { message = "Niveau de l'emplacement du sort mis à jour" });
             }
             catch (Exception ex)
             {
@@ -221,10 +230,12 @@ public static class CharacterSpellEndpoints
             }
         });
 
-        // ========== NOUVEAUX ENDPOINTS PRIORITÉ 3A - INVENTAIRE PERSONNAGES ==========
+        // ========== ENDPOINTS INVENTAIRE - GROUPE SÉPARÉ ==========
+        // Créer un groupe distinct pour éviter les conflits de paramètres
+        var characterInventoryGroup = app.MapGroup("/api/characters/{characterId:int}/inventory").RequireAuthorization();
 
-        // GET /api/character/{id}/inventory - Inventaire du personnage (NOUVEAU selon doc)
-        characterSpellGroup.MapGet("/../../character/{characterId:int}/inventory", async (
+        // GET /api/characters/{characterId}/inventory - Inventaire du personnage
+        characterInventoryGroup.MapGet("/", async (
             int characterId,
             ClaimsPrincipal user) =>
         {
@@ -254,8 +265,8 @@ public static class CharacterSpellEndpoints
             }
         });
 
-        // POST /api/character/{id}/inventory - Ajouter équipement simplifié (NOUVEAU selon doc)
-        characterSpellGroup.MapPost("/../../character/{characterId:int}/inventory", async (
+        // POST /api/characters/{characterId}/inventory - Ajouter équipement simplifié
+        characterInventoryGroup.MapPost("/", async (
             int characterId,
             [FromBody] SimpleInventoryRequest request,
             ClaimsPrincipal user) =>
@@ -274,7 +285,7 @@ public static class CharacterSpellEndpoints
                     message = "Équipement ajouté à l'inventaire"
                 };
 
-                return Results.Created($"/api/character/{characterId}/inventory/{result.id}", result);
+                return Results.Created($"/api/characters/{characterId}/inventory/{result.id}", result);
             }
             catch (Exception ex)
             {
@@ -294,9 +305,10 @@ public static class CharacterSpellEndpoints
     }
 }
 
-// === MODÈLES DE REQUÊTE ===
+// === MODÈLES DE REQUÊTE LOCAUX ===
 
 public record LearnSpellRequest(string? Notes);
 public record PrepareSpellRequest(bool IsPrepared);
 public record SetSpellSlotRequest(int? SlotLevel);
 public record SimpleInventoryRequest(string EquipmentName, int Quantity);
+public record UpdateSpellRequest(string? Notes, bool? IsPrepared, int? SlotLevel, string? CustomName);
