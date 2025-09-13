@@ -13,6 +13,7 @@
     --cdm-accent-green: #50C878;
     --cdm-border-color: #333333;
     --cdm-hover-bg: rgba(255, 255, 255, 0.08);
+    --cdm-appbar-height: 64px; /* 📏 Hauteur de l'AppBar */
 }
 
 /* Override global styles */
@@ -34,6 +35,7 @@ body {
     background-color: var(--cdm-bg-secondary) !important;
     border-bottom: 1px solid var(--cdm-border-color);
     backdrop-filter: blur(10px);
+    height: var(--cdm-appbar-height) !important;
 }
 
 .cdm-appbar .mud-typography {
@@ -77,11 +79,23 @@ body {
     border-color: var(--cdm-accent-blue);
 }
 
-/* Conteneur principal */
+/* 🔧 CORRECTION : Conteneur principal avec bon espacement */
 .cdm-main-content {
     background-color: var(--cdm-bg-primary);
-    min-height: calc(100vh - 64px);
+    min-height: calc(100vh - var(--cdm-appbar-height));
     padding: 24px;
+    margin-top: 0; /* MudBlazor gère automatiquement */
+}
+
+/* 🔧 CORRECTION : S'assurer que MudMainContent respecte l'AppBar */
+.mud-main-content {
+    padding-top: 0 !important; /* Laisser MudBlazor gérer */
+    background-color: var(--cdm-bg-primary) !important;
+}
+
+/* 🔧 CORRECTION : Espacement pour le contenu des pages */
+.page-content {
+    padding-top: 0; /* Pas de padding supplémentaire */
 }
 
 /* Tables sombres */
