@@ -36,6 +36,11 @@ body {
     border-bottom: 1px solid var(--cdm-border-color);
     backdrop-filter: blur(10px);
     height: var(--cdm-appbar-height) !important;
+    position: fixed !important; /* 🔧 CORRECTION : AppBar fixe */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1300;
 }
 
 .cdm-appbar .mud-typography {
@@ -46,6 +51,8 @@ body {
 .cdm-drawer .mud-drawer-content {
     background-color: var(--cdm-bg-secondary) !important;
     border-right: 1px solid var(--cdm-border-color);
+    margin-top: var(--cdm-appbar-height); /* 🔧 CORRECTION : Compenser AppBar */
+    height: calc(100vh - var(--cdm-appbar-height));
 }
 
 /* Navigation moderne */
@@ -79,23 +86,25 @@ body {
     border-color: var(--cdm-accent-blue);
 }
 
-/* 🔧 CORRECTION : Conteneur principal avec bon espacement */
+/* 🔧 CORRECTION : Conteneur principal avec VRAI espacement */
 .cdm-main-content {
     background-color: var(--cdm-bg-primary);
     min-height: calc(100vh - var(--cdm-appbar-height));
     padding: 24px;
-    margin-top: 0; /* MudBlazor gère automatiquement */
+    margin-top: var(--cdm-appbar-height); /* 🎯 CORRECTION : Utiliser la variable ! */
+    margin-left: 0; /* MudBlazor gère le drawer */
 }
 
 /* 🔧 CORRECTION : S'assurer que MudMainContent respecte l'AppBar */
 .mud-main-content {
-    padding-top: 0 !important; /* Laisser MudBlazor gérer */
+    padding-top: var(--cdm-appbar-height) !important; /* 🎯 CORRECTION : Utiliser la variable ! */
     background-color: var(--cdm-bg-primary) !important;
 }
 
-/* 🔧 CORRECTION : Espacement pour le contenu des pages */
+/* 🔧 CORRECTION : Espacement pour le contenu des pages avec la variable */
 .page-content {
-    padding-top: 0; /* Pas de padding supplémentaire */
+    padding-top: 8px; /* Un petit espacement supplémentaire */
+    margin-top: 0; /* Pas besoin car MudMainContent gère déjà */
 }
 
 /* Tables sombres */
@@ -209,6 +218,7 @@ body {
 @media (max-width: 768px) {
     .cdm-main-content {
         padding: 16px;
+        margin-top: var(--cdm-appbar-height); /* 🎯 CORRECTION : Variable aussi en mobile */
     }
     
     .login-card {
