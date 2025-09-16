@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace Cdm.Data.Dnd.Migrations
+namespace Cdm.Migrations.Migrations
 {
     /// <inheritdoc />
-    public partial class AddEquipmentExchangeSystem : Migration
+    public partial class RemoveCombatFromGeneralContext : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -4,7 +4,6 @@ using Cdm.Data.Models;
 using Cdm.Common.Enums;
 using Microsoft.EntityFrameworkCore;
 using Cdm.Data.Dnd.Models.Configuration;
-using Cdm.Data.Common.Models.Combat;
 
 namespace Cdm.Data.Dnd;
 
@@ -14,32 +13,20 @@ public class DndDbContext : DbContext
     {
     }
 
-    // Character DbSets
+    // 🔧 TABLES PRINCIPALES D&D - MINIMUM POUR TESTER LE SEEDER
     public DbSet<CharacterDnd> CharactersDnd { get; set; }
-
-    // Spell DbSets
     public DbSet<SpellDnd> SpellsDnd { get; set; }
-
-    // Equipment DbSets
     public DbSet<EquipmentDnd> EquipmentDnd { get; set; }
 
-    // Combat System DbSets ⚔️
-    public DbSet<CombatSession> CombatSessions { get; set; }
-    public DbSet<CombatParticipant> CombatParticipants { get; set; }
-    public DbSet<CombatAction> CombatActions { get; set; }
-    public DbSet<CombatStatusEffect> CombatStatusEffects { get; set; }
-
-    // Import shared entities from AppDbContext for navigation
+    // 🔧 Tables partagées minimales
     public DbSet<Cdm.Data.Models.User> Users { get; set; }
     public DbSet<Cdm.Data.Models.Campaign> Campaigns { get; set; }
     public DbSet<Cdm.Data.Models.Chapter> Chapters { get; set; }
     public DbSet<Cdm.Data.Models.ContentBlock> ContentBlocks { get; set; }
 
-    // Import character liaison entities
+    // 🔧 Tables de liaison (pour éviter les erreurs des services Common)
     public DbSet<Cdm.Data.Common.Models.CharacterSpells> CharacterSpells { get; set; }
     public DbSet<Cdm.Data.Common.Models.CharacterInventory> CharacterInventory { get; set; }
-
-    // Import equipment exchange entities
     public DbSet<Cdm.Data.Common.Models.EquipmentOffer> EquipmentOffers { get; set; }
     public DbSet<Cdm.Data.Common.Models.EquipmentTrade> EquipmentTrades { get; set; }
 
@@ -47,168 +34,72 @@ public class DndDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Apply D&D specific configurations
-        // modelBuilder.ApplyConfiguration(new CharacterDndConfiguration());
+        // Configuration pour les tables D&D spécialisées SEULEMENT
         modelBuilder.ApplyConfiguration(new SpellDndConfiguration());
         modelBuilder.ApplyConfiguration(new EquipmentDndConfiguration());
 
-        // Apply base configurations
-        modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.ASpellConfiguration());
-        modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.AEquipmentConfiguration());
-        
-        // Apply character liaison configurations
-        modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.CharacterSpellsConfiguration());
-        modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.CharacterInventoryConfiguration());
-
-        // Apply equipment exchange configurations
-        modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.EquipmentOfferConfiguration());
-        modelBuilder.ApplyConfiguration(new Cdm.Data.Common.Models.Configuration.EquipmentTradeConfiguration());
-
-        // Combat system configurations with D&D specific relations ⚔️
-        ConfigureDndCombatEntities(modelBuilder);
+        // Configuration minimale pour éviter les recréations
+        ConfigureExistingTables(modelBuilder);
     }
 
     /// <summary>
-    /// Configure les entités de combat avec les relations spécifiques D&D
+    /// Configure les tables existantes avec configuration minimale
     /// </summary>
-    private static void ConfigureDndCombatEntities(ModelBuilder modelBuilder)
+    private static void ConfigureExistingTables(ModelBuilder modelBuilder)
     {
-        // Configuration CombatSession (héritée du AppDbContext)
-        modelBuilder.Entity<CombatSession>(entity =>
+        // Configuration minimale pour éviter les conflits
+        modelBuilder.Entity<CharacterDnd>(entity =>
         {
+            entity.ToTable("CharacterDnd");
             entity.HasKey(e => e.Id);
-            
-            entity.Property(e => e.SessionId)
-                .IsRequired()
-                .HasMaxLength(50);
-                
-            entity.Property(e => e.Name)
-                .IsRequired()
-                .HasMaxLength(200);
-                
-            entity.Property(e => e.Status)
-                .IsRequired()
-                .HasMaxLength(20);
-                
-            entity.Property(e => e.GameType)
-                .IsRequired()
-                .HasConversion<string>();
-
-            // Index pour les requêtes fréquentes
-            entity.HasIndex(e => e.SessionId);
-            entity.HasIndex(e => e.Status);
-            entity.HasIndex(e => new { e.SessionId, e.Status });
         });
 
-        // Configuration CombatParticipant avec relation vers CharacterDnd
-        modelBuilder.Entity<CombatParticipant>(entity =>
+        modelBuilder.Entity<Cdm.Data.Models.User>(entity =>
         {
+            entity.ToTable("Users");
             entity.HasKey(e => e.Id);
-            
-            entity.Property(e => e.ParticipantType)
-                .IsRequired()
-                .HasMaxLength(20);
-                
-            entity.Property(e => e.Name)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            // Relations combat
-            entity.HasOne(e => e.Combat)
-                .WithMany(e => e.Participants)
-                .HasForeignKey(e => e.CombatId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Relation spécifique D&D vers CharacterDnd
-            entity.HasOne<CharacterDnd>()
-                .WithMany()
-                .HasForeignKey(e => e.CharacterId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Index pour les requêtes fréquentes
-            entity.HasIndex(e => e.CombatId);
-            entity.HasIndex(e => new { e.CombatId, e.ParticipantType });
-            entity.HasIndex(e => new { e.CombatId, e.Initiative });
-            entity.HasIndex(e => e.CharacterId);
         });
 
-        // Configuration CombatAction (héritée du AppDbContext)
-        modelBuilder.Entity<CombatAction>(entity =>
+        modelBuilder.Entity<Cdm.Data.Models.Campaign>(entity =>
         {
+            entity.ToTable("Campaigns");
             entity.HasKey(e => e.Id);
-            
-            entity.Property(e => e.ActionType)
-                .IsRequired()
-                .HasMaxLength(50);
-                
-            entity.Property(e => e.ActionName)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            // Relations
-            entity.HasOne(e => e.Combat)
-                .WithMany(e => e.Actions)
-                .HasForeignKey(e => e.CombatId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasOne(e => e.Actor)
-                .WithMany(e => e.Actions)
-                .HasForeignKey(e => e.ActorId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            entity.HasOne(e => e.Target)
-                .WithMany()
-                .HasForeignKey(e => e.TargetId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Relations spécifiques D&D vers équipements et sorts
-            entity.HasOne<EquipmentDnd>()
-                .WithMany()
-                .HasForeignKey(e => e.EquipmentId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasOne<SpellDnd>()
-                .WithMany()
-                .HasForeignKey(e => e.SpellId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Index pour les requêtes fréquentes
-            entity.HasIndex(e => e.CombatId);
-            entity.HasIndex(e => e.ActorId);
-            entity.HasIndex(e => new { e.CombatId, e.Round });
-            entity.HasIndex(e => e.ExecutedAt);
-            entity.HasIndex(e => e.EquipmentId);
-            entity.HasIndex(e => e.SpellId);
         });
 
-        // Configuration CombatStatusEffect (héritée du AppDbContext)
-        modelBuilder.Entity<CombatStatusEffect>(entity =>
+        modelBuilder.Entity<Cdm.Data.Models.Chapter>(entity =>
         {
+            entity.ToTable("Chapters");
             entity.HasKey(e => e.Id);
-            
-            entity.Property(e => e.Name)
-                .IsRequired()
-                .HasMaxLength(100);
-                
-            entity.Property(e => e.EffectType)
-                .IsRequired()
-                .HasMaxLength(20);
+        });
 
-            // Relations
-            entity.HasOne(e => e.Participant)
-                .WithMany()
-                .HasForeignKey(e => e.ParticipantId)
-                .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Cdm.Data.Models.ContentBlock>(entity =>
+        {
+            entity.ToTable("ContentBlocks");
+            entity.HasKey(e => e.Id);
+        });
 
-            entity.HasOne(e => e.SourceParticipant)
-                .WithMany()
-                .HasForeignKey(e => e.SourceParticipantId)
-                .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Cdm.Data.Common.Models.CharacterSpells>(entity =>
+        {
+            entity.ToTable("CharacterSpells");
+            entity.HasKey(e => e.Id);
+        });
 
-            // Index pour les requêtes fréquentes
-            entity.HasIndex(e => e.ParticipantId);
-            entity.HasIndex(e => new { e.ParticipantId, e.IsActive });
-            entity.HasIndex(e => e.EffectType);
+        modelBuilder.Entity<Cdm.Data.Common.Models.CharacterInventory>(entity =>
+        {
+            entity.ToTable("CharacterInventory");
+            entity.HasKey(e => e.Id);
+        });
+
+        modelBuilder.Entity<Cdm.Data.Common.Models.EquipmentOffer>(entity =>
+        {
+            entity.ToTable("EquipmentOffers");
+            entity.HasKey(e => e.Id);
+        });
+
+        modelBuilder.Entity<Cdm.Data.Common.Models.EquipmentTrade>(entity =>
+        {
+            entity.ToTable("EquipmentTrades");
+            entity.HasKey(e => e.Id);
         });
     }
 }

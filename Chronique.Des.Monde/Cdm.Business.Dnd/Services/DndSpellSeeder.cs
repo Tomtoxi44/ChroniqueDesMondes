@@ -1,4 +1,4 @@
-﻿using Cdm.Data.Dnd;
+﻿using Cdm.Data.Dnd; // 🔧 RETOUR au DndDbContext pour le seeder
 using Cdm.Data.Dnd.Models;
 using Cdm.Common.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -8,14 +8,14 @@ namespace Cdm.Business.Dnd.Services;
 
 /// <summary>
 /// Service spécialisé pour l'injection des sorts officiels D&D 5e
-/// Contient la base de données complète des sorts du System Reference Document
+/// 🔧 RETOUR : Utilise DndDbContext (avec tables complètes ajoutées)
 /// </summary>
 public class DndSpellSeeder
 {
-    private readonly DndDbContext context;
+    private readonly DndDbContext context; // 🔧 RETOUR au DndDbContext
     private readonly ILogger<DndSpellSeeder> logger;
 
-    public DndSpellSeeder(DndDbContext context, ILogger<DndSpellSeeder> logger)
+    public DndSpellSeeder(DndDbContext context, ILogger<DndSpellSeeder> logger) // 🔧 RETOUR
     {
         this.context = context;
         this.logger = logger;
@@ -28,14 +28,14 @@ public class DndSpellSeeder
     {
         this.logger.LogInformation("📚 Seeding official D&D 5e spells...");
 
-        // Vérifier si des sorts officiels existent déjà
+        // Vérifier si des sorts officiels D&D existent déjà
         var existingOfficialSpells = await this.context.SpellsDnd
             .Where(s => s.CreatedByUserId == 0) // 0 = Officiel
             .CountAsync();
 
         if (existingOfficialSpells > 0)
         {
-            this.logger.LogInformation("📖 Official spells already exist ({Count} spells), skipping seeding", existingOfficialSpells);
+            this.logger.LogInformation("📖 Official D&D spells already exist ({Count} spells), skipping seeding", existingOfficialSpells);
             return;
         }
 
@@ -1636,7 +1636,7 @@ public class DndSpellSeeder
             Name = "Régénération",
             Description = "Vous touchez une créature et stimulez ses capacités de guérison naturelle. La cible récupère immédiatement 4d8 + 15 points de vie. Pendant la durée du sort, la cible récupère 1 point de vie au début de chacun de ses tours (10 points de vie par minute).",
             School = "Transmutation",
- Level = 7,
+            Level = 7,
             CastingTime = "1 minute",
             Range = "Contact",
             Duration = "1 heure",

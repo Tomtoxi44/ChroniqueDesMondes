@@ -1,4 +1,4 @@
-﻿using Cdm.Data.Dnd;
+﻿using Cdm.Data.Dnd; // 🔧 RETOUR au DndDbContext
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -6,18 +6,17 @@ namespace Cdm.Business.Dnd.Services;
 
 /// <summary>
 /// Service d'injection principal des données officielles D&D 5e dans la base de données
-/// Coordonne l'injection des sorts, équipements et autres éléments du System Reference Document
-/// Délègue le travail aux seeders spécialisés
+/// 🔧 RETOUR : Utilise DndDbContext pour le seeding spécialisé
 /// </summary>
 public class DndOfficialDataSeeder
 {
-    private readonly DndDbContext context;
+    private readonly DndDbContext context; // 🔧 RETOUR au DndDbContext
     private readonly ILogger<DndOfficialDataSeeder> logger;
     private readonly DndSpellSeeder spellSeeder;
     private readonly DndEquipmentSeeder equipmentSeeder;
 
     public DndOfficialDataSeeder(
-        DndDbContext context,
+        DndDbContext context, // 🔧 RETOUR
         ILogger<DndOfficialDataSeeder> logger,
         DndSpellSeeder spellSeeder,
         DndEquipmentSeeder equipmentSeeder)
@@ -60,6 +59,7 @@ public class DndOfficialDataSeeder
 
 /// <summary>
 /// Extensions pour simplifier l'injection de données
+/// 🔧 RETOUR : Utilise DndDbContext
 /// </summary>
 public static class DndDataSeederExtensions
 {
