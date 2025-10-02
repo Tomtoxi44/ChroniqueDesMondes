@@ -25,6 +25,12 @@ public static class EndpointMappingExtensions
 
         // Endpoints de combat ⚔️
         app.MapCombatEndpoints();
+        
+        // Endpoints de test pour le seeding
+        app.MapDataSeedingTestEndpoints();
+        
+        // Endpoints de diagnostic temporaire
+        app.MapTempDiagnosticEndpoints();
 
         return app;
     }

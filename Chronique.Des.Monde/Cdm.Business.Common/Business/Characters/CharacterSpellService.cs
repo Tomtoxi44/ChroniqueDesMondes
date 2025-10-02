@@ -1,4 +1,5 @@
 ﻿using Cdm.Data.Dnd;
+using Cdm.Data.Dnd.Models; // 🔧 AJOUT pour SpellDnd
 using Cdm.Data.Common.Models;
 using Cdm.Data; // 🔧 AJOUT pour AppDbContext
 using Cdm.Common;
@@ -30,7 +31,7 @@ public class CharacterSpellService : ICharacterSpellService
 
         var characterSpells = await this.context.CharacterSpells
             .Where(cs => cs.CharacterId == characterId)
-            .Join(this.context.Spells, // 🔧 CHANGÉ de SpellsDnd à Spells (classe de base)
+            .Join(this.context.Spells.OfType<SpellDnd>(), // 🔧 Utilisation d'OfType pour filtrer les SpellDnd
                 cs => cs.SpellId,
                 s => s.Id,
                 (cs, s) => new { CharacterSpell = cs, Spell = s })
@@ -97,7 +98,7 @@ public class CharacterSpellService : ICharacterSpellService
         this.logger.LogInformation("Spell {SpellId} successfully added to character {CharacterId}", spellId, characterId);
 
         // Retourner le sort avec ses détails
-        var spell = await this.context.Spells.FindAsync(spellId); // 🔧 CHANGÉ de SpellsDnd à Spells
+        var spell = await this.context.Spells.OfType<SpellDnd>().FirstOrDefaultAsync(s => s.Id == spellId); // 🔧 Cast vers SpellDnd
         return new CharacterSpellDto
         {
             Id = characterSpell.Id,
@@ -167,7 +168,7 @@ public class CharacterSpellService : ICharacterSpellService
         await this.context.SaveChangesAsync();
 
         // Retourner le sort mis à jour
-        var spell = await this.context.Spells.FindAsync(spellId); // 🔧 CHANGÉ
+        var spell = await this.context.Spells.OfType<SpellDnd>().FirstOrDefaultAsync(s => s.Id == spellId); // 🔧 Cast vers SpellDnd
         return new CharacterSpellDto
         {
             Id = characterSpell.Id,
@@ -197,7 +198,7 @@ public class CharacterSpellService : ICharacterSpellService
 
         var preparedSpells = await this.context.CharacterSpells
             .Where(cs => cs.CharacterId == characterId && cs.IsPrepared)
-            .Join(this.context.Spells, // 🔧 CHANGÉ
+            .Join(this.context.Spells.OfType<SpellDnd>(), // 🔧 Cast vers SpellDnd
                 cs => cs.SpellId,
                 s => s.Id,
                 (cs, s) => new { CharacterSpell = cs, Spell = s })
@@ -272,7 +273,7 @@ public class CharacterSpellService : ICharacterSpellService
         // Pour l'instant, utilisons une approche générale
         
         // Récupérer le sort
-        var spell = await this.context.Spells.FindAsync(spellId);
+        var spell = await this.context.Spells.OfType<SpellDnd>().FirstOrDefaultAsync(s => s.Id == spellId);
         if (spell == null)
         {
             throw new InvalidOperationException($"Spell with ID {spellId} not found");
@@ -287,7 +288,7 @@ public class CharacterSpellService : ICharacterSpellService
         this.logger.LogInformation("Getting available spells for character {CharacterId}", characterId);
 
         // Récupérer tous les sorts disponibles (officiels + privés de l'utilisateur)
-        var availableSpells = await this.context.Spells
+        var availableSpells = await this.context.Spells.OfType<SpellDnd>()
             .Where(s => s.IsActive && (s.IsPublic || s.CreatedByUserId == userId))
             .ToListAsync();
 

@@ -24,12 +24,12 @@ public class CampaignParticipantConfiguration : IEntityTypeConfiguration<Campaig
         builder.HasOne(cp => cp.Campaign)
             .WithMany()
             .HasForeignKey(cp => cp.CampaignId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict); // Éviter les cycles de suppression
 
         builder.HasOne(cp => cp.User)
             .WithMany()
             .HasForeignKey(cp => cp.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict); // Éviter les cycles de suppression
 
         builder.HasOne(cp => cp.Invitation)
             .WithMany()

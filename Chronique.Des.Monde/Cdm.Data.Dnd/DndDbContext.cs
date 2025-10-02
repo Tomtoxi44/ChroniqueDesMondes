@@ -47,11 +47,23 @@ public class DndDbContext : DbContext
     /// </summary>
     private static void ConfigureExistingTables(ModelBuilder modelBuilder)
     {
-        // Configuration minimale pour éviter les conflits
+        // 🔧 Configuration TPH : Les types dérivés partagent les tables des parents
+        // CharacterDnd hérite de ACharacter → même table "ACharacter"
         modelBuilder.Entity<CharacterDnd>(entity =>
         {
-            entity.ToTable("CharacterDnd");
-            entity.HasKey(e => e.Id);
+            entity.ToTable("ACharacter");  // ✅ Même table que le parent
+        });
+        
+        // SpellDnd hérite de ASpell → même table "ASpell"  
+        modelBuilder.Entity<SpellDnd>(entity =>
+        {
+            entity.ToTable("ASpell");  // ✅ Même table que le parent
+        });
+        
+        // EquipmentDnd hérite de AEquipment → même table "AEquipment"
+        modelBuilder.Entity<EquipmentDnd>(entity =>
+        {
+            entity.ToTable("AEquipment");  // ✅ Même table que le parent
         });
 
         modelBuilder.Entity<Cdm.Data.Models.User>(entity =>
